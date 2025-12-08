@@ -21,7 +21,7 @@ namespace CMentions::utils {
             .timeout(std::chrono::seconds(10))
             .bodyString(params)
             .post(BOOMLINGS + "getGJLevels21.php")
-            .listen([&succeded, &errMsg](web::WebResponse *res) {
+            .listen([succeded, errMsg](web::WebResponse *res) mutable {
                 if (!res || !res->ok()) {
                     succeded = false;
                     if (res->code() == 403) {
