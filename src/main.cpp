@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
-
 using namespace geode::prelude;
+
+#include <core/comments/comments.hpp>
 
 #include <Geode/modify/MenuLayer.hpp>
 class $modify(MyMenuLayer, MenuLayer) {
@@ -28,6 +29,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 	}
 
 	void onMyButton(CCObject*) {
+		CMentions::comments::lookForMention(-1);
 		FLAlertLayer::create("Geode", "Hello from my custom mod!", "OK")->show();
 	}
 };
