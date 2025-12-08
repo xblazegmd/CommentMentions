@@ -6,7 +6,7 @@ using namespace geode::prelude;
 class $modify(CMentionsProfilePage, ProfilePage) {
     bool init(int accountID, bool ownProfile) {
         if (!ProfilePage::init(accountID, ownProfile)) return false;
-        auto btmMenu = m_mainLayer->getChildByID("bottom-menu");
+        auto btmMenu = ProfilePage::m_mainLayer->getChildByID("bottom-menu");
         if (!btmMenu) {
             log::error("Could not find bottom-menu (returned null-ptr)");
             return true;
