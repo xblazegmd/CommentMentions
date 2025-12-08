@@ -29,10 +29,6 @@ class $modify(MyMenuLayer, MenuLayer) {
 	}
 
 	void onMyButton(CCObject*) {
-		try {
-			CMentions::comments::lookForMention(-1);
-		} catch (...) {
-			geode::log::error("crap");
-		}
+		CMentions::comments::lookForMention(-1);
 	}
 };

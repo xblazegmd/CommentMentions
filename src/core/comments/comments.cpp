@@ -21,7 +21,10 @@ namespace CMentions::comments {
 
     void lookForMention(int levelID) {
         geode::log::debug("called lookForMention");
-        utils::getDailyLevel();
+        auto res = utils::getDailyLevel();
+        if (!res.isOk()) {
+            geode::log::error("NOT ok");
+        }
     }
 
     void uploadComment() {}
