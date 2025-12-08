@@ -28,7 +28,7 @@ class $modify(MyMenuLayer, MenuLayer) {
 		return true;
 	}
 
-	void onMyButton(CCObject*) {
+	void onMyButton(CCObject* sender) {
         FLAlertLayer::create(
             "Useless button",
             "This button is USELESS",
