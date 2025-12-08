@@ -6,5 +6,26 @@ using namespace geode::prelude;
 
 $on_mod(Loaded) {
 	log::info("Successfully loaded CommentMentions");
-	CMentions::utils::notify("Notification", "This notification's useless rn");
 }
+
+#include <Geode/modify/MenuLayer.hpp>
+class $modify(CMentionsMenuLayer, MenuLayer) {
+	bool init() {
+		if (!MenuLayer::init()) return false;
+
+		auto testBt = CCMenuItemSpriteExtra::create(
+			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
+			this,
+			menu_selector(CMentionsMenuLayer::onTestBt)
+		);
+
+		return true;
+	}
+
+	void onTestBt(CCObject* sender) {
+		CMentions::utils::notify(
+			"Notification",
+			"This is a test notification"
+		);
+	}
+};

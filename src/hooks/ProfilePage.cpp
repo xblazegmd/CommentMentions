@@ -4,13 +4,6 @@
 using namespace geode::prelude;
 
 class $modify(CMentionsProfilePage, ProfilePage) {
-    bool init(int accountID, bool ownProfile) {
-        if (!ProfilePage::init(accountID, ownProfile)) return false;
-        auto btmMenu = m_mainLayer->getChildByID("bottom-menu");
-        btmMenu->updateLayout();
-        return true;
-    }
-
     void getUserInfoFinished(GJUserScore* score) {
         ProfilePage::getUserInfoFinished(score);
 
