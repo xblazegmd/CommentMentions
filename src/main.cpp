@@ -29,6 +29,10 @@ class $modify(MyMenuLayer, MenuLayer) {
 	}
 
 	void onMyButton(CCObject*) {
-		CMentions::comments::lookForMention(-1);
+        FLAlertLayer::create(
+            "Useless button",
+            "This button is USELESS",
+            "ty for telling me ig"
+        )->show();
 	}
 };
