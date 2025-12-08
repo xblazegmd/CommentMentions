@@ -30,6 +30,5 @@ class $modify(MyMenuLayer, MenuLayer) {
 
 	void onMyButton(CCObject*) {
 		CMentions::comments::lookForMention(-1);
-		FLAlertLayer::create("Geode", "Hello from my custom mod!", "OK")->show();
 	}
 };
