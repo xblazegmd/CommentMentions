@@ -29,7 +29,7 @@ namespace CMentions::utils {
                         errMsg = "Request to {} returned a 403 error", BOOMLINGS + "getGJLevels21.php";
                     } else {
                         geode::log::error("Failed to get daily level info (status code: {})", res->code());
-                        errMsg = std::format("Failed to get daily level info (status code: {})", res->code());
+                        errMsg = "Failed to get daily level info (status code: " + std::to_string(res->code()) + ")";
                     }
                     return;
                 }
