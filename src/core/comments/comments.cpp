@@ -1,5 +1,6 @@
 #include "comments.hpp"
 
+#include <Geode/Geode.hpp>
 #include <core/utils.hpp>
 #include <iostream>
 #include <string>
@@ -19,6 +20,7 @@ namespace CMentions::comments {
     }
 
     void lookForMention(int levelID) {
+        geode::log::debug("called lookForMention");
         utils::getDailyLevel();
     }
 
