@@ -1,38 +1,10 @@
 #include <Geode/Geode.hpp>
+#include <Geode/loader/ModEvent.hpp>
+#include <core/utils.hpp>
+
 using namespace geode::prelude;
 
-#include <core/comments/comments.hpp>
-
-#include <Geode/modify/MenuLayer.hpp>
-class $modify(MyMenuLayer, MenuLayer) {
-	bool init() {
-		if (!MenuLayer::init()) {
-			return false;
-		}
-
-		log::debug("Hello from my MenuLayer::init hook! This layer has {} children.", this->getChildrenCount());
-
-		auto myButton = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			menu_selector(MyMenuLayer::onMyButton)
-		);
-
-		auto menu = this->getChildByID("bottom-menu");
-		menu->addChild(myButton);
-
-		myButton->setID("my-button"_spr);
-
-		menu->updateLayout();
-
-		return true;
-	}
-
-	void onMyButton(CCObject* sender) {
-        FLAlertLayer::create(
-            "Useless button",
-            "This button is USELESS",
-            "ty for telling me ig"
-        )->show();
-	}
-};
+$on_mod(Loaded) {
+	log::info("Successfully loaded CommentMentions");
+	CMentions::utils::notify("Notification", "This notification's useless rn");
+}
