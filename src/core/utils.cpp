@@ -40,11 +40,11 @@ namespace CMentions::utils {
             }
             std::string text = res->string().unwrapOr("100");
 
-            FLAlertLayer::create(
-                "Daily level ID",
-                "The daily level id SHOULD BE " + text,
-                "Ok ig"
-            )->show();
+            // FLAlertLayer::create(
+            //     "Daily level ID",
+            //     "The daily level id SHOULD BE " + text,
+            //     "Ok ig"
+            // )->show();
         });
         
         return Ok(1);
