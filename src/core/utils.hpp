@@ -10,6 +10,4 @@ namespace CMentions::utils {
     const std::string SECRET = "Wmfd2893gb7";
 
     void notify(std::string title, std::string msg);
-
-    Result<int> getDailyLevel();
 }

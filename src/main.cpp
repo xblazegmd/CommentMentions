@@ -18,6 +18,11 @@ class $modify(CMentionsMenuLayer, MenuLayer) {
 			this,
 			menu_selector(CMentionsMenuLayer::onTestBt)
 		);
+		testBt->setID("notify_menu"_spr);
+
+		auto btmMenu = this->getChildByID("bottom-menu");
+		btmMenu->addChild(testBt);
+		btmMenu->updateLayout();
 
 		return true;
 	}
