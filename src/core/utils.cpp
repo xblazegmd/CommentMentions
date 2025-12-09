@@ -33,7 +33,7 @@ namespace CMutils {
             .userAgent("")
             .bodyString(params);
             
-        m_reqListener.bind([](web::WebTask::Event* ev) {
+        m_reqListener->bind([](web::WebTask::Event* ev) {
             if (web::WebResponse* res = ev->getValue()) {
                 if (res->ok() && res->string().isOk()) {
                     log::info("Response: {}", res->string().unwrap());
@@ -48,7 +48,7 @@ namespace CMutils {
         });
 
         auto reqTask = req.post(BOOMLINGS + "getGJLevels21.php");
-        m_reqListener.setFilter(reqTask);
+        m_reqListener->setFilter(reqTask);
 
         FLAlertLayer::create(
             "This is risky but",

@@ -25,7 +25,7 @@ namespace CMutils {
 
             int fetchID();
         private:
-            EventListener<web::WebTask> m_reqListener;
+            std::shared_ptr<EventListener<web::WebTask>> m_reqListener;
             LevelFetchTarget m_target;
     };
 }
