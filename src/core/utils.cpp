@@ -40,6 +40,10 @@ namespace CMutils {
                 } else {
                     log::error("Error when fetching daily level ID ({}, response: {})", res->code(), res->string().unwrap());
                 }
+            } else if (web::WebProgress* prog = ev->getProgress()) {
+                log::info("Progress: {}", prog->downloadProgress().value_or(0.f));
+            } else if (ev->isCancelled()) {
+                log::error("Request got CANCELLED for whatever reason ;-;");
             }
         });
 
