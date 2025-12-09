@@ -1,8 +1,11 @@
 #include "utils.hpp"
 
 #include <Geode/Geode.hpp>
+#include <Geode/Result.hpp>
 #include <Geode/loader/Event.hpp>
+#include <Geode/utils/string.hpp>
 #include <Geode/utils/web.hpp>
+#include <chrono>
 #include <string>
 
 using namespace geode;
@@ -21,7 +24,7 @@ namespace CMutils {
 
     LevelFetch::LevelFetch(LevelFetchTarget target) : m_target(target) {}
 
-    int LevelFetch::fetchID() {
+    void LevelFetch::fetchID(std::function<void(Result<int>)> callback) {
         std::string ftype = "21";
         if (m_target == LevelFetchTarget::Weekly) {
             ftype = "22";
@@ -31,23 +34,18 @@ namespace CMutils {
 
         auto req = web::WebRequest();
         req.userAgent("");
+        req.timeout(std::chrono::seconds(10));
         req.bodyString(params);
             
         m_reqListener = std::make_shared<EventListener<web::WebTask>>();
-        m_reqListener->bind([this](web::WebTask::Event* ev) {
+        m_reqListener->bind([this, callback](web::WebTask::Event* ev) {
             if (web::WebResponse* res = ev->getValue()) {
                 if (res->ok() && res->string().isOk()) {
-                    notify(
-                        "IT WORKED",
-                        "This is proof it 100% worked"
-                    );
                     log::info("Response: {}", res->string().unwrap());
+                    callback(Ok(parseResponse(res->string().unwrap())));
                 } else {
-                    notify(
-                        "It worked... BUT",
-                        "The request failed (" + std::to_string(res->code()) + ")"
-                    );
                     log::error("Error when fetching daily level ID ({}, response: {})", res->code(), res->string().unwrap());
+                    callback(Err(std::to_string(res->code())));
                 }
             } else if (web::WebProgress* prog = ev->getProgress()) {
                 log::info("Progress: {}", prog->downloadProgress().value_or(0.f));
@@ -64,6 +62,19 @@ namespace CMutils {
             "This is proof the code worked",
             "Ok"
         )->show();
-        return 0;
+    }
+
+    int LevelFetch::parseResponse(std::string res) {
+        // split the response TWO TIMES (gosh)
+        auto levels = utils::string::split(res, "#");
+        auto levelsSplit = utils::string::split(levels[0], "|");
+        auto dailyLevel = utils::string::split(levelsSplit[0], ":");
+
+        for (int i = 0; i < dailyLevel.size(); i += 2) {
+            if (dailyLevel[i] == "1") {
+                int dailyID = std::stoi(dailyLevel[i + 1]);
+                return dailyID;
+            }
+        }
     }
 }

@@ -1,8 +1,10 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
+#include <Geode/Result.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/utils/web.hpp>
+#include <functional>
 #include <string>
 
 using namespace geode;
@@ -23,9 +25,12 @@ namespace CMutils {
         public:
             LevelFetch(LevelFetchTarget target);
 
-            int fetchID();
+            void fetchID(std::function<void(Result<int>)> callback);
+
         private:
             std::shared_ptr<EventListener<web::WebTask>> m_reqListener;
             LevelFetchTarget m_target;
+
+            int parseResponse(std::string res);
     };
 }

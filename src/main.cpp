@@ -1,6 +1,8 @@
 #include <Geode/Geode.hpp>
+#include <Geode/Result.hpp>
 #include <Geode/loader/ModEvent.hpp>
 #include <Geode/loader/GameEvent.hpp>
+#include <Geode/ui/Notification.hpp>
 #include <core/utils.hpp>
 
 using namespace geode::prelude;
@@ -17,7 +19,18 @@ $on_game(Loaded) {
 		[](auto, bool btn2) {
 			if (btn2) {
 				auto* lvlFetch = new CMutils::LevelFetch(CMutils::LevelFetchTarget::Daily);
-				lvlFetch->fetchID();
+				lvlFetch->fetchID([](Result<int> dailyID) {
+					if (dailyID.isErr()) {
+						Notification::create(
+							"Could not fetch daily level ID",
+							NotificationIcon::Error,
+							2
+						)->show();
+						return;
+					}
+
+					// TODO: Rest of logic
+				});
 			}
 		}
 	);
