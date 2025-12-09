@@ -8,7 +8,7 @@
 using namespace geode;
 using namespace geode::utils;
 
-namespace CMentions::utils {
+namespace CMutils {
     const std::string BOOMLINGS = "http://www.boomlings.com/database/";
     const std::string SECRET = "Wmfd2893gb7";
 

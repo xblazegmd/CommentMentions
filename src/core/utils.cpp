@@ -1,6 +1,7 @@
 #include "utils.hpp"
 
 #include <Geode/Geode.hpp>
+#include <Geode/binding_arm/FLAlertLayer.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/utils/web.hpp>
 #include <string>
@@ -9,7 +10,7 @@ using namespace geode;
 using namespace geode::prelude;
 using namespace geode::utils;
 
-namespace CMentions::utils {
+namespace CMutils {
     void notify(std::string title, std::string msg) {
         AchievementNotifier::sharedState()->notifyAchievement(
             title.c_str(),
@@ -46,6 +47,11 @@ namespace CMentions::utils {
         auto reqTask = req.post(BOOMLINGS + "getGJLevels21.php");
         m_reqListener.setFilter(reqTask);
 
+        FLAlertLayer::create(
+            "This is risky but",
+            "This is proof the code worked",
+            "Ok"
+        )->show();
         return 0;
     }
 }

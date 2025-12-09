@@ -14,9 +14,9 @@ $on_game(Loaded) {
 		"Daily level fetch",
 		"Do you want to fetch the daily lvl id?",
 		"No", "Yes",
-		[](auto, bool bt2) {
-			if (bt2) {
-				CMentions::utils::LevelFetch lvlFetch(CMentions::utils::LevelFetchTarget::Daily);
+		[](auto, bool btn2) {
+			if (btn2) {
+				CMutils::LevelFetch lvlFetch(CMutils::LevelFetchTarget::Daily);
 				lvlFetch.fetchID();
 			}
 		}
@@ -24,14 +24,14 @@ $on_game(Loaded) {
 }
 
 #include <Geode/modify/MenuLayer.hpp>
-class $modify(CMentionsMenuLayer, MenuLayer) {
+class $modify(CMMenuLayer, MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
 
 		auto testBt = CCMenuItemSpriteExtra::create(
 			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
 			this,
-			menu_selector(CMentionsMenuLayer::onTestBt)
+			menu_selector(CMMenuLayer::onTestBt)
 		);
 		testBt->setID("notify_menu"_spr);
 
@@ -43,7 +43,7 @@ class $modify(CMentionsMenuLayer, MenuLayer) {
 	}
 
 	void onTestBt(CCObject* sender) {
-		CMentions::utils::notify(
+		CMutils::notify(
 			"Notification",
 			"This is a test notification"
 		);
