@@ -16,8 +16,8 @@ $on_game(Loaded) {
 		"No", "Yes",
 		[](auto, bool btn2) {
 			if (btn2) {
-				CMutils::LevelFetch lvlFetch(CMutils::LevelFetchTarget::Daily);
-				lvlFetch.fetchID();
+				auto* lvlFetch = new CMutils::LevelFetch(CMutils::LevelFetchTarget::Daily);
+				lvlFetch->fetchID();
 			}
 		}
 	);

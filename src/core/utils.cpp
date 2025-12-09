@@ -29,9 +29,9 @@ namespace CMutils {
 
         std::string params = "type=" + ftype + "&secret=" + SECRET;
 
-        auto req = web::WebRequest()
-            .userAgent("")
-            .bodyString(params);
+        auto req = web::WebRequest();
+        req.userAgent("");
+        req.bodyString(params);
             
         m_reqListener = std::make_shared<EventListener<web::WebTask>>();
         m_reqListener->bind([this](web::WebTask::Event* ev) {
