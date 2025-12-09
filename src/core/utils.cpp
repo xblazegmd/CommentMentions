@@ -24,7 +24,7 @@ namespace CMutils {
     int LevelFetch::fetchID() {
         std::string ftype = "21";
         if (m_target == LevelFetchTarget::Weekly) {
-            std::string ftype = "22";
+            ftype = "22";
         }
 
         std::string params = "type=" + ftype + "&secret=" + SECRET;
@@ -34,11 +34,19 @@ namespace CMutils {
             .bodyString(params);
             
         m_reqListener = std::make_shared<EventListener<web::WebTask>>();
-        m_reqListener->bind([](web::WebTask::Event* ev) {
+        m_reqListener->bind([this](web::WebTask::Event* ev) {
             if (web::WebResponse* res = ev->getValue()) {
                 if (res->ok() && res->string().isOk()) {
+                    notify(
+                        "IT WORKED",
+                        "This is proof it 100% worked"
+                    );
                     log::info("Response: {}", res->string().unwrap());
                 } else {
+                    notify(
+                        "It worked... BUT",
+                        "The request failed (" + std::to_string(res->code()) + ")"
+                    );
                     log::error("Error when fetching daily level ID ({}, response: {})", res->code(), res->string().unwrap());
                 }
             } else if (web::WebProgress* prog = ev->getProgress()) {
