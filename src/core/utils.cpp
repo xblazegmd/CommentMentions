@@ -1,7 +1,6 @@
 #include "utils.hpp"
 
 #include <Geode/Geode.hpp>
-#include <Geode/binding_arm/FLAlertLayer.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/utils/web.hpp>
 #include <string>
