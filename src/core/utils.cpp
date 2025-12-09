@@ -2,7 +2,6 @@
 
 #include <Geode/Geode.hpp>
 #include <Geode/loader/Event.hpp>
-#include <Geode/utils/coro.hpp>
 #include <Geode/utils/web.hpp>
 #include <string>
 
@@ -18,5 +17,35 @@ namespace CMentions::utils {
             "accountBtn_messages_001.png",
             true
         );
+    }
+
+    LevelFetch::LevelFetch(LevelFetchTarget target) : m_target(target) {}
+
+    int LevelFetch::fetchID() {
+        std::string ftype = "21";
+        if (m_target == LevelFetchTarget::Weekly) {
+            std::string ftype = "22";
+        }
+
+        std::string params = "type=" + ftype + "&secret=" + SECRET;
+
+        auto req = web::WebRequest()
+            .userAgent("")
+            .bodyString(params);
+            
+        m_reqListener.bind([](web::WebTask::Event* ev) {
+            if (web::WebResponse* res = ev->getValue()) {
+                if (res->ok() && res->string().isOk()) {
+                    log::info("Response: {}", res->string().unwrap());
+                } else {
+                    log::error("Error when fetching daily level ID ({}, response: {})", res->code(), res->string().unwrap());
+                }
+            }
+        });
+
+        auto reqTask = req.post(BOOMLINGS + "getGJLevels21.php");
+        m_reqListener.setFilter(reqTask);
+
+        return 0;
     }
 }
