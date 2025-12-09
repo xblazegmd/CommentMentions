@@ -76,5 +76,6 @@ namespace CMutils {
                 return dailyID;
             }
         }
+        return 0;
     }
 }

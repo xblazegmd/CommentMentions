@@ -18,8 +18,8 @@ $on_game(Loaded) {
 		"No", "Yes",
 		[](auto, bool btn2) {
 			if (btn2) {
-				auto* lvlFetch = new CMutils::LevelFetch(CMutils::LevelFetchTarget::Daily);
-				lvlFetch->fetchID([](Result<int> dailyID) {
+				auto lvlFetch = std::make_shared<CMutils::LevelFetch>(CMutils::LevelFetchTarget::Daily);
+				lvlFetch->fetchID([lvlFetch](Result<int> dailyID) {
 					if (dailyID.isErr()) {
 						Notification::create(
 							"Could not fetch daily level ID",
