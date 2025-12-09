@@ -33,6 +33,7 @@ namespace CMutils {
             .userAgent("")
             .bodyString(params);
             
+        m_reqListener = std::make_shared<EventListener<web::WebTask>>();
         m_reqListener->bind([](web::WebTask::Event* ev) {
             if (web::WebResponse* res = ev->getValue()) {
                 if (res->ok() && res->string().isOk()) {
