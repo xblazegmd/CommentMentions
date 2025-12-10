@@ -5,6 +5,7 @@
 #include <Geode/ui/Notification.hpp>
 #include <core/utils.hpp>
 #include <core/comments/comments.hpp>
+#include <memory>
 
 using namespace geode::prelude;
 
@@ -30,13 +31,15 @@ $on_game(Loaded) {
 						return;
 					}
 
-					auto commentListener = comments::CommentListener(dailyID.unwrap(), [](auto user, auto msg) {
+					// Why didn't I make this "auto"? idk!
+					std::shared_ptr<comments::CommentListener> commentListener = std::make_shared<comments::CommentListener>(dailyID.unwrap(), [](auto user, auto msg) {
 						log::info("Mention from @{}, '{}'", user, msg);
 						CMutils::notify(
 							"@" + user + " mentioned you",
 							msg
 						);
 					});
+					commentListener->start();
 				});
 			}
 		}
