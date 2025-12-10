@@ -32,7 +32,7 @@ $on_game(Loaded) {
 					}
 
 					// Why didn't I make this "auto"? idk!
-					std::shared_ptr<comments::CommentListener> commentListener = std::make_shared<comments::CommentListener>(dailyID.unwrap(), [](auto user, auto msg) {
+					auto* commentListener = new comments::CommentListener(dailyID.unwrap(), [](auto user, auto msg) {
 						log::info("Mention from @{}, '{}'", user, msg);
 						CMutils::notify(
 							"@" + user + " mentioned you",
