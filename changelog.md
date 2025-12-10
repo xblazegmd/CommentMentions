@@ -1,2 +1,2 @@
-# v0.1-dev
-- The mod itself lol (not even released)
+# v0.0.1
+- In-Development Version

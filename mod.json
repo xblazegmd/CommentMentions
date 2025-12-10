@@ -13,5 +13,9 @@
 	"description": "Get notified everytime someone 'mentions' you",
 	"dependencies": {
 		"geode.node-ids": ">=v1.20.0"
+	},
+	"tags": [ "online", "enhancement" ],
+	"links": {
+		"source": "https://github.com/xblazegmd/CommentMentions"
 	}
 }

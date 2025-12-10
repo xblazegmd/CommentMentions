@@ -62,3 +62,7 @@ build-*/
 # CLion
 .idea/
 /cmake-build-*/
+
+# You don't need to see my secret design files (affinity)
+*.af
+**/*.af
