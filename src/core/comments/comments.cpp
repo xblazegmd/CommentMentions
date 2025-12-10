@@ -36,7 +36,16 @@ namespace comments {
                     */
                     auto commentObj = formatReq::formatCommentObj(mention);
 
-                    m_onMentionCallback(commentObj["authorStr"]["username"], commentObj["commentStr"]["comment"]);
+                    auto commentDecodedRes = base64::decode(commentObj["commentStr"]["comment"], base64::Base64Variant::Url);
+                    if (commentDecodedRes.isErr()) {
+                        log::error("Could not decode comment '{}': {}", commentObj["commentStr"]["comment"], commentDecodedRes.unwrapErr());
+                        continue;
+                    }
+
+                    auto bytes = commentDecodedRes.unwrap();
+                    std::string commentDecoded(bytes.begin(), bytes.end());
+
+                    m_onMentionCallback(commentObj["authorStr"]["username"], commentDecoded);
                 }
             }
 
