@@ -11,14 +11,14 @@ namespace formatReq {
         auto parts = string::split(str, sep);
 
         StrMap product;
-        for (int i = 0; i < parts.size(); i += 2) {
+        for (int i = 0; i + 1 < parts.size(); i += 2) {
             product[parts[i]] = parts[i + 1];
         }
 
         return product;
     }
 
-    StrMap formatMap(StrMap map, StrMap formatKeys) {
+    StrMap formatMap(const StrMap& map, const StrMap& formatKeys) {
         StrMap product;
 
         for (const auto& [k, v] : map) {
@@ -74,5 +74,7 @@ namespace formatReq {
             { "15", "glow" },
             { "16", "accID" }
         };
+
+        return formatMap(stringToMap(str, "~"), keyMap);
     }
 }
