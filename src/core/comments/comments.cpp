@@ -1,6 +1,8 @@
 #include "comments.hpp"
 
 #include <core/utils.hpp>
+#include <core/formatReq/formatReq.hpp>
+#include <Geode/utils/base64.hpp>
 #include <Geode/utils/coro.hpp>
 #include <Geode/utils/string.hpp>
 #include <Geode/utils/Task.hpp>
@@ -27,8 +29,18 @@ namespace comments {
             auto mentions = co_await evalComments();
 
             if (!mentions.empty()) {
+                for (const auto& mention : mentions) {
+                    /* 
+                        Why not, idk, make the function return the comment object maybe? idk, it's a pain to change how that function works anyways
+                        so I'll stick with this for now
+                    */
+                    auto commentObj = formatReq::formatCommentObj(mention);
 
+                    m_onMentionCallback(commentObj["authorStr"]["username"], commentObj["commentStr"]["comment"]);
+                }
             }
+
+            co_await coro::sleep(10);
         }
     }
 
@@ -48,7 +60,8 @@ namespace comments {
                         std::vector<std::string> foundComments;
 
                         for (std::string comment : comments) {
-                            if (this->containsMention(comment)) {
+                            auto commentObj = formatReq::formatCommentObj(comment);
+                            if (this->containsMention(commentObj["commentStr"]["comment"])) {
                                 foundComments.push_back(comment);
                             }
                         }
@@ -64,9 +77,23 @@ namespace comments {
     }
 
     bool CommentListener::containsMention(std::string str) {
-        auto strSplit = string::split(str, ":");
-        auto commentStr = string::split(strSplit[0], "~");
-        auto authorStr = string::split(strSplit[1], "~");
-        return true;
+        std::vector<std::string> tags = { "xblazegmd", "xblaze", "blaze" };
+
+        auto commentDecodedRes = base64::decode(str, base64::Base64Variant::Url);
+        if (commentDecodedRes.isErr()) {
+            log::error("Could not decode comment '{}': {}", str, commentDecodedRes.unwrapErr());
+            return false;
+        }
+
+        auto bytes = commentDecodedRes.unwrap();
+        std::string commentDecoded(bytes.begin(), bytes.end());
+
+        std::string commentDecodedLower = string::toLower(commentDecoded);
+        for (const auto& tag : tags) {
+            if (commentDecodedLower.find(tag) != std::string::npos) {
+                return true;
+            }
+        }
+        return false;
     }
 }

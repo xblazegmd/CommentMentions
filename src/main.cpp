@@ -4,6 +4,7 @@
 #include <Geode/loader/GameEvent.hpp>
 #include <Geode/ui/Notification.hpp>
 #include <core/utils.hpp>
+#include <core/comments/comments.hpp>
 
 using namespace geode::prelude;
 
@@ -29,7 +30,13 @@ $on_game(Loaded) {
 						return;
 					}
 
-					// TODO: Rest of logic
+					auto commentListener = comments::CommentListener(dailyID.unwrap(), [](auto user, auto msg) {
+						log::info("Mention from @{}, '{}'", user, msg);
+						CMutils::notify(
+							"@" + user + " mentioned you",
+							msg
+						);
+					});
 				});
 			}
 		}

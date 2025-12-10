@@ -16,7 +16,7 @@ namespace comments {
 
             void start();
 
-            void stop();
+            // void stop();
         private:
             int m_levelID;
             std::function<void(std::string, std::string)> m_onMentionCallback;
