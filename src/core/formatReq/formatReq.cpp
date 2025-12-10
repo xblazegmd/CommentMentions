@@ -12,7 +12,7 @@ namespace formatReq {
 
         StrMap product;
         for (int i = 0; i < parts.size(); i += 2) {
-            product[parts[i]] = product[parts[i + 1]];
+            product[parts[i]] = parts[i + 1];
         }
 
         return product;
