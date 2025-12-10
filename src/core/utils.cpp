@@ -3,10 +3,12 @@
 #include <Geode/Geode.hpp>
 #include <Geode/Result.hpp>
 #include <Geode/loader/Event.hpp>
+#include <Geode/utils/general.hpp>
 #include <Geode/utils/string.hpp>
 #include <Geode/utils/web.hpp>
 #include <chrono>
 #include <string>
+#include <vector>
 
 using namespace geode;
 using namespace geode::prelude;
@@ -66,13 +68,13 @@ namespace CMutils {
 
     int LevelFetch::parseResponse(std::string res) {
         // split the response TWO TIMES (gosh)
-        auto levels = utils::string::split(res, "#");
-        auto levelsSplit = utils::string::split(levels[0], "|");
-        auto dailyLevel = utils::string::split(levelsSplit[0], ":");
+        auto levels = string::split(res, "#");
+        auto levelsSplit = string::split(levels[0], "|");
+        auto dailyLevel = string::split(levelsSplit[0], ":");
 
         for (int i = 0; i < dailyLevel.size(); i += 2) {
             if (dailyLevel[i] == "1") {
-                int dailyID = std::stoi(dailyLevel[i + 1]);
+                int dailyID = numFromString<int>(dailyLevel[i + 1]).unwrapOr(0); // TODO: Proper handling for errors
                 return dailyID;
             }
         }
