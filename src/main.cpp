@@ -72,8 +72,5 @@ class $modify(CMMenuLayer, MenuLayer) {
 		// 	"Notification",
 		// 	"This is a test notification"
 		// );
-		auto layer = layers::CMMentionsPage::create();
-		this->addChild(layer);
-		this->scheduleUpdate();
 	}
 };
