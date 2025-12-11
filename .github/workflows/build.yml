@@ -1,10 +1,12 @@
-name: Build Geode Mod
+name: Build Mod
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - build
+  workflow_call:
+    outputs:
+      build-path:
+        description: "Build output"
+        value: ${{ jobs.build.outputs.build-path }}
 
 jobs:
   build:
@@ -32,6 +34,8 @@ jobs:
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
+    outputs:
+      build-path: dist
 
     steps:
       - uses: actions/checkout@v4
@@ -53,5 +57,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Build Output
+          name: build-out
           path: ${{ steps.build.outputs.build-output }}

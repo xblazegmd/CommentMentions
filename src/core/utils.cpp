@@ -58,12 +58,6 @@ namespace CMUtils {
 
         auto reqTask = req.post(BOOMLINGS + "getGJLevels21.php");
         m_reqListener->setFilter(reqTask);
-
-        FLAlertLayer::create(
-            "This is risky but",
-            "This is proof the code worked",
-            "Ok"
-        )->show();
     }
 
     int LevelFetch::parseResponse(std::string res) {
