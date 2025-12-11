@@ -16,7 +16,7 @@ using namespace geode;
 using namespace geode::utils;
 
 namespace comments {
-    CommentListener::CommentListener(int levelID, std::function<void(std::string, std::string)> onMentionCallback) :
+    CommentListener::CommentListener(int levelID, std::function<void(std::string, std::string, std::string)> onMentionCallback) :
         m_levelID(levelID),
         m_onMentionCallback(onMentionCallback)
     {};
@@ -47,7 +47,7 @@ namespace comments {
                     auto bytes = commentDecodedRes.unwrap();
                     std::string commentDecoded(bytes.begin(), bytes.end());
 
-                    m_onMentionCallback(mention["authorStr"]["username"], commentDecoded);
+                    m_onMentionCallback(mention["authorStr"]["username"], commentDecoded, mention["commentStr"]["messageID"]);
                 }
             }
 

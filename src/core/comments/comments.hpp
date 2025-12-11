@@ -15,13 +15,13 @@ namespace comments {
 
     class CommentListener {
         public:
-            CommentListener(int levelID, std::function<void(std::string, std::string)> onMentionCallback);
+            CommentListener(int levelID, std::function<void(std::string, std::string, std::string)> onMentionCallback);
 
             void start();
             void stop();
         private:
             int m_levelID;
-            std::function<void(std::string, std::string)> m_onMentionCallback;
+            std::function<void(std::string, std::string, std::string)> m_onMentionCallback;
             ListenerTask m_listenerCoro;
             bool m_running = false;
 

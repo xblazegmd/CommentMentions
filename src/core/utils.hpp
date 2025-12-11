@@ -26,7 +26,6 @@ namespace CMUtils {
             LevelFetch(LevelFetchTarget target);
 
             void fetchID(std::function<void(Result<int>)> callback);
-
         private:
             std::shared_ptr<EventListener<web::WebTask>> m_reqListener;
             LevelFetchTarget m_target;

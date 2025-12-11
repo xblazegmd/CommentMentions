@@ -42,8 +42,15 @@
 			"type": "string",
 			"name": "Tags",
 			"description": "A comma separated string of tags the mod WILL look for in the comments",
-			"default": "xblazegmd, xblaze, blaze",
-			"match": "^([^,]+)(?:,\\s[^,]+)*$"
+			"default": "xblazegmd, xblaze, blaze"
+		},
+		"mention-history-maxsize": {
+			"type": "int",
+			"name": "Maximum Mention History Size",
+			"description": "The maximum size the comment mention history (default: 20)",
+			"default": 20,
+			"min": 1,
+			"max": 1000
 		}
 	}
 }
