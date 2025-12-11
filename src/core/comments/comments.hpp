@@ -28,5 +28,6 @@ namespace comments {
             ListenerTask startListener();
             EvalTask evalComments();
             bool containsMention(std::string str);
+            std::vector<std::string> getTags();
     };
 }

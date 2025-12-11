@@ -2,6 +2,7 @@
 
 #include <core/utils.hpp>
 #include <core/formatReq/formatReq.hpp>
+#include <Geode/loader/Mod.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/coro.hpp>
 #include <Geode/utils/string.hpp>
@@ -87,7 +88,7 @@ namespace comments {
     }
 
     bool CommentListener::containsMention(std::string str) {
-        std::vector<std::string> tags = { "xblazegmd", "xblaze", "blaze" };
+        std::vector<std::string> tags = getTags();
 
         auto commentDecodedRes = base64::decode(str, base64::Base64Variant::Url);
         if (commentDecodedRes.isErr()) {
@@ -105,5 +106,15 @@ namespace comments {
             }
         }
         return false;
+    }
+
+    std::vector<std::string> CommentListener::getTags() {
+        auto tags = Mod::get()->getSettingValue<std::string>("tags");
+        auto parts = string::split(tags, ",");
+
+        for (auto& part : parts) {
+            part = string::trim(part);
+        }
+        return parts;
     }
 }

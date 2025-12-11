@@ -17,5 +17,33 @@
 	"tags": [ "online", "enhancement" ],
 	"links": {
 		"source": "https://github.com/xblazegmd/CommentMentions"
+	},
+	"settings": {
+		"use-daily-lvl": {
+			"type": "bool",
+			"name": "Use Daily Level",
+			"description": "Should the listener listen to the current daily level?",
+			"default": true
+		},
+		"level-id": {
+			"type": "int",
+			"name": "Level ID",
+			"description": "The level id the listener will listen at ('Use Daily Level' must be off)",
+			"enable-if": "!setting:use-daily-lvl",
+			"default": 0,
+			"min": 0,
+			"control": {
+				"arrows": false,
+				"big-arrows": false,
+				"slider": false
+			}
+		},
+		"tags": {
+			"type": "string",
+			"name": "Tags",
+			"description": "A comma separated string of tags the mod WILL look for in the comments",
+			"default": "xblazegmd, xblaze, blaze",
+			"match": "^([^,]+)(?:,\\s[^,]+)*$"
+		}
 	}
 }
