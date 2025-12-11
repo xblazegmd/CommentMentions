@@ -1,14 +1,17 @@
 #pragma once
 
+#include <core/formatReq/formatReq.hpp>
 #include <Geode/utils/Task.hpp>
 #include <functional>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using namespace geode;
 
 namespace comments {
     using ListenerTask = Task<void>;
+    using EvalTask = Task<std::vector<std::unordered_map<std::string, formatReq::StrMap>>>;
 
     class CommentListener {
         public:
@@ -23,7 +26,7 @@ namespace comments {
 
             ListenerTask startListener();
 
-            Task<std::vector<std::string>> evalComments();
+            EvalTask evalComments();
 
             bool containsMention(std::string str);
     };

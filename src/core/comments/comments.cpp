@@ -29,23 +29,17 @@ namespace comments {
             auto mentions = co_await evalComments();
 
             if (!mentions.empty()) {
-                for (const auto& mention : mentions) {
-                    /* 
-                        Why not, idk, make the function return the comment object maybe? idk, it's a pain to change how that function works anyways
-                        so I'll stick with this for now
-                    */
-                    auto commentObj = formatReq::formatCommentObj(mention);
-
-                    auto commentDecodedRes = base64::decode(commentObj["commentStr"]["comment"], base64::Base64Variant::Url);
+                for (auto mention : mentions) {
+                    auto commentDecodedRes = base64::decode(mention["commentStr"]["comment"], base64::Base64Variant::Url);
                     if (commentDecodedRes.isErr()) {
-                        log::error("Could not decode comment '{}': {}", commentObj["commentStr"]["comment"], commentDecodedRes.unwrapErr());
+                        log::error("Could not decode comment '{}': {}", mention["commentStr"]["comment"], commentDecodedRes.unwrapErr());
                         continue;
                     }
 
                     auto bytes = commentDecodedRes.unwrap();
                     std::string commentDecoded(bytes.begin(), bytes.end());
 
-                    m_onMentionCallback(commentObj["authorStr"]["username"], commentDecoded);
+                    m_onMentionCallback(mention["authorStr"]["username"], commentDecoded);
                 }
             }
 
@@ -53,8 +47,8 @@ namespace comments {
         }
     }
 
-    Task<std::vector<std::string>> CommentListener::evalComments() {
-        return Task<std::vector<std::string>>::runWithCallback([this](auto finish, auto prog, auto isCancelled) {
+    EvalTask CommentListener::evalComments() {
+        return EvalTask::runWithCallback([this](auto finish, auto prog, auto isCancelled) {
             std::string params = "levelID=" + std::to_string(this->m_levelID) + "&page=0&secret=" + CMutils::SECRET;
 
             auto req = web::WebRequest();
@@ -66,19 +60,19 @@ namespace comments {
                 .listen([this, finish](web::WebResponse *res) {
                     if (res && res->ok() && res->string().isOk()) {
                         auto comments = string::split(res->string().unwrap(), "|");
-                        std::vector<std::string> foundComments;
+                        std::vector<std::unordered_map<std::string, formatReq::StrMap>> foundComments;
 
                         for (std::string comment : comments) {
                             auto commentObj = formatReq::formatCommentObj(comment);
                             if (this->containsMention(commentObj["commentStr"]["comment"])) {
-                                foundComments.push_back(comment);
+                                foundComments.push_back(commentObj);
                             }
                         }
 
                         finish(foundComments);
                     } else {
                         log::error("Could not fetch comments ({}, response: {})", res->code(), res->string().unwrapOr("..."));
-                        std::vector<std::string> emptyLol;
+                        std::vector<std::unordered_map<std::string, formatReq::StrMap>> emptyLol;
                         finish(emptyLol);
                     }
                 });

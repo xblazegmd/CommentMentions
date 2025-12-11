@@ -15,8 +15,8 @@ $on_mod(Loaded) {
 
 $on_game(Loaded) {
 	geode::createQuickPopup(
-		"Daily level fetch",
-		"Do you want to fetch the daily lvl id?",
+		"Start listener",
+		"Do you want to start the mention listener?",
 		"No", "Yes",
 		[](auto, bool btn2) {
 			if (btn2) {
@@ -35,7 +35,7 @@ $on_game(Loaded) {
 					auto* commentListener = new comments::CommentListener(dailyID.unwrap(), [](auto user, auto msg) {
 						log::info("Mention from @{}, '{}'", user, msg);
 						CMutils::notify(
-							"@" + user + " mentioned you",
+							user + " mentioned you",
 							msg
 						);
 					});
