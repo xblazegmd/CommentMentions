@@ -57,14 +57,14 @@ namespace comments {
 
     EvalTask CommentListener::evalComments() {
         return EvalTask::runWithCallback([this](auto finish, auto prog, auto isCancelled) {
-            std::string params = "levelID=" + std::to_string(this->m_levelID) + "&page=0&secret=" + CMutils::SECRET;
+            std::string params = "levelID=" + std::to_string(this->m_levelID) + "&page=0&secret=" + CMUtils::SECRET;
 
             auto req = web::WebRequest();
             req.userAgent("");
             req.timeout(std::chrono::seconds(10));
             req.bodyString(params);
 
-            req.post(CMutils::BOOMLINGS + "getGJComments21.php")
+            req.post(CMUtils::BOOMLINGS + "getGJComments21.php")
                 .listen([this, finish](web::WebResponse *res) {
                     if (res && res->ok() && res->string().isOk()) {
                         auto comments = string::split(res->string().unwrap(), "|");

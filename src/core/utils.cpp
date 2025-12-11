@@ -14,7 +14,7 @@ using namespace geode;
 using namespace geode::prelude;
 using namespace geode::utils;
 
-namespace CMutils {
+namespace CMUtils {
     void notify(std::string title, std::string msg) {
         AchievementNotifier::sharedState()->notifyAchievement(
             title.c_str(),

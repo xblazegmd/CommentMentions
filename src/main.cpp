@@ -15,7 +15,7 @@ static std::shared_ptr<comments::CommentListener> g_commentListener;
 void startListener(int levelID) {
 	g_commentListener = std::make_shared<comments::CommentListener>(levelID, [](auto user, auto msg) {
 		log::info("Mention from @{}, '{}'", user, msg);
-		CMutils::notify(
+		CMUtils::notify(
 			user + " mentioned you",
 			msg
 		);
@@ -28,7 +28,7 @@ $on_game(Loaded) {
 	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 
 	if (useDailyLvl) {
-		auto lvlFetch = std::make_shared<CMutils::LevelFetch>(CMutils::LevelFetchTarget::Daily);
+		auto lvlFetch = std::make_shared<CMUtils::LevelFetch>(CMUtils::LevelFetchTarget::Daily);
 		lvlFetch->fetchID([lvlFetch](Result<int> dailyID) {
 			if (dailyID.isErr()) {
 				Notification::create(
@@ -67,7 +67,7 @@ class $modify(CMMenuLayer, MenuLayer) {
 	}
 
 	void onTestBt(CCObject* sender) {
-		CMutils::notify(
+		CMUtils::notify(
 			"Notification",
 			"This is a test notification"
 		);
