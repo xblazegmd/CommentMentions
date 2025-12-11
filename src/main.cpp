@@ -49,6 +49,25 @@ void startListener(int levelID) {
 	g_commentListener->start();
 }
 
+$execute {
+	// Is the mention history initialized?
+	auto res = history::loadHistory();
+	if (res.isErr() && res.unwrapErr() == "Unable to open file: No such file or directory") {
+		log::info("Initializing mention history");
+		auto writeRes = history::writeHistory({});
+		if (writeRes.isErr()) {
+			log::error("Could not initialize mention history: {}", writeRes.unwrapErr());
+			Notification::create(
+				"Could not save mention to history",
+				NotificationIcon::Error,
+				2
+			)->show();
+			return;
+		}
+		log::info("Initialized mention history");
+	}
+}
+
 $on_game(Loaded) {
 	auto mod = Mod::get();
 	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
