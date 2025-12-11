@@ -1,11 +1,12 @@
+#include <core/utils.hpp>
+#include <core/comments/comments.hpp>
+#include <layers/CMMentionsPage.hpp>
 #include <Geode/Geode.hpp>
 #include <Geode/Result.hpp>
 #include <Geode/loader/Mod.hpp>
 #include <Geode/loader/ModEvent.hpp>
 #include <Geode/loader/GameEvent.hpp>
 #include <Geode/ui/Notification.hpp>
-#include <core/utils.hpp>
-#include <core/comments/comments.hpp>
 #include <memory>
 
 using namespace geode::prelude;
@@ -67,9 +68,12 @@ class $modify(CMMenuLayer, MenuLayer) {
 	}
 
 	void onTestBt(CCObject* sender) {
-		CMUtils::notify(
-			"Notification",
-			"This is a test notification"
-		);
+		// CMUtils::notify(
+		// 	"Notification",
+		// 	"This is a test notification"
+		// );
+		auto layer = layers::CMMentionsPage::create();
+		this->addChild(layer);
+		this->scheduleUpdate();
 	}
 };
