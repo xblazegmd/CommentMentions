@@ -18,16 +18,15 @@ namespace comments {
             CommentListener(int levelID, std::function<void(std::string, std::string)> onMentionCallback);
 
             void start();
-
-            // void stop();
+            void stop();
         private:
             int m_levelID;
             std::function<void(std::string, std::string)> m_onMentionCallback;
+            ListenerTask m_listenerCoro;
+            bool m_running = false;
 
             ListenerTask startListener();
-
             EvalTask evalComments();
-
             bool containsMention(std::string str);
     };
 }

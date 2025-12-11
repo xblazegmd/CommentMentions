@@ -21,7 +21,14 @@ namespace comments {
     {};
 
     void CommentListener::start() {
-        coro::spawn << startListener();
+        m_listenerCoro = std::get<0>(coro::spawn << startListener());
+        m_running = true;
+    }
+
+    void CommentListener::stop() {
+        if (m_running) {
+            m_listenerCoro.cancel();
+        }
     }
 
     ListenerTask CommentListener::startListener() {

@@ -9,6 +9,8 @@
 
 using namespace geode::prelude;
 
+static std::shared_ptr<comments::CommentListener> g_commentListener;
+
 $on_mod(Loaded) {
 	log::info("Successfully loaded CommentMentions");
 }
@@ -31,15 +33,15 @@ $on_game(Loaded) {
 						return;
 					}
 
-					// Why didn't I make this "auto"? idk!
-					auto* commentListener = new comments::CommentListener(dailyID.unwrap(), [](auto user, auto msg) {
+
+					g_commentListener = std::make_shared<comments::CommentListener>(dailyID.unwrap(), [](auto user, auto msg) {
 						log::info("Mention from @{}, '{}'", user, msg);
 						CMutils::notify(
 							user + " mentioned you",
 							msg
 						);
 					});
-					commentListener->start();
+					g_commentListener->start();
 				});
 			}
 		}
