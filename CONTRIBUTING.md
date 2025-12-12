@@ -1,72 +1,28 @@
-# So you wanna contribute?
-Great! This guide's just for you. Since there's many ways you (yes, you) can contribute to this mod, and many other things you need to have in mind when doing so. Anyways, let's get to it!
+# Contributing Guidelines
+So you wanna contribute? Great! Contributors are always appreciated when developing mods like this. But please follow the following guidelines when doing so.
 
-## Playtesting
-Wanna playtestthe pre-release versions of this mod? Well, here's a quick how-to guide on how to playtest the mod
+## First time contributing?
+Well, if that's you, welcome to the contributing world! We have a dedicated docs page on [how to contribute](./docs/how_to_contribute.md), so *after* you've read the rules in here (or before if you want, but plz read the rules in here), you can check out the guide to help you make your first contribution.
 
-### Download the pre-release version of the mod
-Pre-release versions are available on https://github.com/xblazegmd/CommentMentions/releases. You'll know if the version is a pre-release if:
-- It has the `Pre-release` mark (duh)
-- It contains pre-release suffixes. Pre-release suffixes contain:
-    - -dev
-    - -alpha.*
-    - -beta.*
-    - -rc.*
+## Bug Reporting
+Please be sure that the bug *is* related with CommentMentions specifically, and it not related with another mod, mod combination, or Geode itself. Make sure your bug hasn't been reported and/or fixed already.
 
-### Install the mod on Geode
-With the .geode file downloaded, open Geode, open the Geode menu in-game, and choose the button with a "file with a plus sign inside" like icon. Now choose the .geode file, and restart GD. The mod should be installed!
-
-### Try it out!
-Just use the mod how it's meant to be used. Don't just test it in this lab sorta way where you test the mod to it's limits, no, just try to use it properly. Found an issue? Report it to the GitHub with the guide below. Have suggestions? Post them in the GitHub with the guide below. That is what makes good playtesters.
-
-## Bug reporting
-Found a bug in the mod? Well GitHub has this handy Issues tool in which you can report bugs, ask questions, etc. But here's a how-to guide on how to report bugs specifically.
-
-### Make sure the bug is related with this mod specifically
-For what we know, the bug could be with this mod, with BetterInfo, with CBF, maybe even Geode itself! Try disabling all of your mods with the exception of CommentMentions. If it dissapears, then it's not related with CommentMentions at all. Try disabling CommentMentions and enabling another mod, then disabling that mod and enabling another, until you found the mod that caused the bug. Then report the bug to their GitHub if they have one (make sure to read their CONTRIBUTING.md)
-
-If the bug still persists, even with only CommentMentions enabled, try disabling CommentMentions as well (or loading Geode in safe mode). If the bug still persists, it's a Geode related bug. Report that in the [Geode issues page](https://github.com/geode-sdk/geode/issues). Make sure to read their CONTRIBUTING.md. If it dissapears, the it is 100% a CommentMentions bug.
-
-### Get more information
-Get everything you can that can help with debugging. Whether it's screenshots, game logs, crash logs (if the bug specifically crashes the game), etc, all of them are aprecciated. In the case of game logs, it's reccomended to only show the ones relevant to the bug (like error logs, or just only the logs by the mod itself). It's a waste of time to show logs that have nothing to do with the bug, let alone the mod.
-
-### Create a new issue
-Go to the "Issues" tab on the repository, and select "New Issue". Now, select the "Bug Report" form, and fill it in with the information specified in there. Have in mind that if the bug is a crash, you *will* be required to put in the crash logs.
-
-Now, with that done, press "Create", and you just reported the bug!
-
-### Follow up
-If I request more information about the bug then you should follow up on the request. At the end of the day, this is a team effort with the sole objective of working together to fix this stupid bug. Nobody likes bugs.
+All bug reports *must* be made with the "Bug Report" form in the issues page.
 
 ## Suggestions
-Suggestions can also be done with GitHub issues. Here's another how-to guide on how to suggest changes.
+Make sure your suggestion hasn't been suggested and/or implemented already. Make sure to add labels to your suggestion that are related with what the suggestion is.
 
-### Get a solid idea
-Think about what you want to do. Is it a feature? A refactor? How could it be impletented? It's reccomended to concretize your request into smaller chunks. For example:
+All feature suggestions *must* be made with the "Feature Suggestion" form in the issues page. Any other suggestion must be made with the "Suggestion" form instead.
 
-> *"The notifications could be nicer"*
+## PRs
+Make sure you have properly tested the feature you are working in. No one likes untested PRs.
 
-What exactly does "nicer" mean here? Try to break it into smaller problems like:
+All PRs *must* be targeting the `dev` branch if they're changing anything related to the code (e.g. new features, bug fixes, refactors, etc). Documentation changes don't have to target to `dev`, and can easily target `main`
 
-> *"The notifications could have a nicer UI"*
+## Commit messages
+Please make sure all commit messages follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification. It may feel weird at first, but it makes it easier to understand and read commits.
 
-> *"The notifications could change their UI to be like this*"
+Commits without this specification may be edited later to contain it, don't stress about it.
 
-And optionally:
-
-> *"The notifications could change their UI to be like this by changing that*"
-
-Now that's a better suggestion, isn't it?
-
-### Make a new issue
-Now, go to the "Issues" tab on the repository, and select "New Issue". Select the "Suggestion" template, and fill in the form with the information specified in there. Make sure to add tags related to what specifically your suggestion is (e.g. a refactor, doc changes, etc).
-
-If your suggestion is a **feature** tho, that has it's own separate form. So instead of selecting the "Suggestion" form, select the "Feature Suggestion" form instead. Again, fill it in with the specified information.
-
-Now, with that done, press "Create", and you just made a suggestion!
-
-### Follow up
-If I have any issues, suggestions, or just want more information, it's very important for you to follow up to me. How else am I gonna see your vision?
-
-## Contributing
-TODO
+## Code styling
+Idc abt how you style your code, as long as it follows the rules in the *Code styling guidelines*, which are pretty lightweight by themselves.
