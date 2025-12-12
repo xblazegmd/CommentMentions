@@ -71,5 +71,75 @@ Now, with that done, press "Create", and you just made a suggestion!
 ### Follow up
 If I have any issues, suggestions, or just want more information, it's very important for you to follow up to me. How else am I gonna see your vision?
 
-## Contributing
-TODO
+## Adding new features
+So you wanna add a new feature? Well, first of all, make sure to read and follow the [code styling guidelines](code_styling.md). They're just there to ensure code styling is consistent across all of the code (and to make sure .NET developers don't ruin my code, you'll see what I mean).
+
+But anyways, let's get to it!
+
+### Some requirements
+To work on adding features to this mod (and just developing a Geode mod in general), it's required to have:
+- The Geode SDK (duh)
+- A device with Geode installed (to test the mod)
+- A C++ compiler
+- CMake
+- Git (ofc)
+- The [Geode CLI](https://docs.geode-sdk.org/getting-started/geode-cli)
+
+### Think about your feature
+What do you want to add? How do you plan to add it? How will it be compatible with other platforms? All of these questions and more should be answered by you. Think about them. Just like with making suggestions, it's a good principle to concretize your idea.
+
+### Suggest your feature
+While not absolutely required, if you're unsure about some areas, want help from others to develop your feature, or just want aproval to make it, it's a good idea to suggest your feature to us (see [suggestions](#suggestions)). If we like it, you can start working on it!
+
+### Fork the repository
+In the main GitHub repo page, click on the "Fork" button to make a new fork of the repo. This will be a "copy" of the repo where you can work on your feature.
+
+It's reccomended to make a new branch to work on the feature, instead of working directly on `main`. It's reccomended to name it like the feature. When making commits, make sure to use the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) scheme. It'll make commits nicer to read.
+
+Now, in your local machine, run the following command:
+```sh
+git clone https://github.com/<your-github-username>/<your-fork>
+cd <your-fork>
+
+# If you made a new branch for working on the feature
+git checkout <branch>
+```
+Now you'll have a clone of your fork in your local machine! In here you can work on your feature in your prefered code editor (VSCode is the prefered editor for developing Geode mods, more information [here](https://docs.geode-sdk.org/getting-started/ide-setup))
+
+### Test your work
+Nobody likes an untested feature. Try to test it in as much devices as possible. Try to contact other people to try the mod out in other devices.
+
+### Make a PR
+Now, with your feature done, push the changes to your fork.
+```sh
+git add .
+git commit -m "feat: <your-feature-desc>"
+git push origin <branch>
+```
+
+Now it's time to make a PR! On your fork you should see a "Compare and pull request" button somewhere. Press it to make a new PR. Make sure to target the `dev` branch and not `main`.
+
+Make sure your PR's name follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) scheme. For features it's wise to call it `feat: <your-feature-desc>`.
+
+Make sure to add the "feature" label to your PR
+
+Now click on "Create pull request", and you just made a pull request!
+
+### Follow up
+There's an issue with the feature? Follow up on it and fix it. I request a change? Do the change. Now, if the feature has any issues, or I don't like it, or stuff like that happens, the feature *will* be rejected. But if it's good, and I like it, it'll get merged to `dev` and be added in a future release. Congrats, you just added a new feature!
+
+## Adding anything else
+Follow all of the steps in the "Adding new features" step, but please have in mind:
+- The title of the PR and commit *must* be different than "feat: <desc\>" ofc. Some naming styles (according to the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) scheme) include:
+    - `fix`: Bug fixes
+    - `refactor`: Rewriting or restructuring code without altering behavior
+    - `perf`: Performance improvements
+    - `docs`: Doc changes (doc changes can target `main` instead of `dev`)
+    - `build`: Changing build components (e.g. GitHub Actions, CMake, etc)
+    - `chore`: Simple tasks (e.g. editing .gitignore)
+- As specified, `doc` changes *can* be targeting `main`
+- Make sure to add the required labels based on the type of change you're making
+- It is still reccomended to make the changes in a separate branch other than `main`
+
+## Anyways...
+I hope this guide helped you know how to contribute to the project! Now, read [CONTRIBUTING.md](../CONTRIBUTING.md) if you haven't, and start contributing!

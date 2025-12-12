@@ -25,4 +25,4 @@ Please make sure all commit messages follow the [Conventional Commits](https://w
 Commits without this specification may be edited later to contain it, don't stress about it.
 
 ## Code styling
-Idc abt how you style your code, as long as it follows the rules in the *Code styling guidelines*, which are pretty lightweight by themselves.
+Please make sure to follow the [code styling guidelines](./docs/code_styling.md). They're just there to ensure code styling is consistent across all of the code (and to make sure .NET developers don't ruin my code, you'll see what I mean).
