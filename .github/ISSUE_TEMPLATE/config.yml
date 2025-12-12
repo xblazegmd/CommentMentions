@@ -1,0 +1,5 @@
+blank-issues-enabled: true
+contact_links:
+  - name: Contributing rules
+    url: https://github.com/xblazegmd/CommentMentions/blob/main/CONTRIBUTING.md
+    about: Make sure to read CONTRIBUTING.md before making a new issue

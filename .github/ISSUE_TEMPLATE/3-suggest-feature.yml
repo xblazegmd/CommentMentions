@@ -1,0 +1,59 @@
+name: Feature suggestion
+description: This is where the magic happens
+title: "feat: Lorem Ipsum Dolor"
+labels: ["suggestion", "feature"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in this form to help us get a better understanding of the feature you're requesting
+  
+  - type: textarea
+    id: description
+    attributes:
+      label: What is your feature idea?
+      placeholder: Make the game rickroll the player every 0.1 seconds
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: impact
+    attributes:
+      label: How much impact does this feature have? (optional)
+      description: Be honest, don't just glaze
+      options:
+        - Little to no impact
+        - Nice QoL improvement
+        - Significant impact
+        - Game-changing feature
+  
+  - type: textarea
+    id: idea
+    attributes:
+      label: How did you think of this feature? (optional)
+      placeholder: I just like rickrolls
+  
+  - type: textarea
+    id: why
+    attributes:
+      label: Why do you think we should add your feature into the mod?
+      placeholder: Because rickroll, that's why
+    validations:
+      required: true
+  
+  - type: textarea
+    id: how
+    attributes:
+      label: How do you think this feature can be implemented? (optional)
+      placeholder: Just copy-paste the CommentListener class, but make it rickroll instead
+  
+
+  - type: checkboxes
+    id: more-stufff
+    attributes:
+      label: Just to be sure...
+      options:
+        - label: I have read the CONTRIBUTING.md guidelines and tips (I'm totally not lying I'm not a loser)
+          required: true
+        - label: I want to develop this feature myself

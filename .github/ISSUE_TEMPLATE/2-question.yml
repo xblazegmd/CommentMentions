@@ -1,0 +1,41 @@
+name: Question
+description: 
+title: "question: Lorem Ipsum Dolor"
+labels: ["question"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in this form so we can further help you with your question
+  
+  - type: textarea
+    id: question
+    attributes:
+      label: What is your question?
+      placeholder: How do I rickroll someone with the mod
+    validations:
+      required: true
+  
+  - type: input
+    id: version
+    attributes:
+      label: In which version of CommentMentions are you on?
+      placeholder: v0.1-alpha.1
+    validations:
+      required: true
+  
+  - type: input
+    id: applies-to
+    attributes:
+      label: What does this question apply to? (optional)
+      description: e.g. "Why does the listener do _____" would apply to "CommentListener"
+      placeholder: THE WHOLE MOD BABY
+  
+  - type: checkboxes
+    id: more-stuff
+    attributes:
+      label: Just to be sure...
+      options:
+        - label: I can confirm I've searched for similar questions and haven't found an answer to mine
+          required: true

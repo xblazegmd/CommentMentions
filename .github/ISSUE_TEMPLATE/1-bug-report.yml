@@ -1,0 +1,72 @@
+name: Bug Report
+description: Found an issue? Report it here
+title: "bug: Lorem Ipsum Dolor"
+labels: ["bug"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in this form to help us get a better understanding of the bug you're encountering
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What issue are you encountering?
+      placeholder: The game rickrolls me everytime I get a new mention
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Do this
+        2. Go there
+        3. Scroll down here
+        4. Click that
+        5. You get rickrolled now on mention
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What was the expected behavior?
+      placeholder: TO NOT GET RICKROLLED YOU DUMMY
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: In which version of CommentMentions are you on?
+      placeholder: v0.1-alpha.1
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: What operating system are you on? In which version?
+      placeholder: iOS 26.0.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Game logs/Crash logs (optional, required if crash)
+      description: Please only show logs relevant  to the issue
+      render: shell
+
+  - type: checkboxes
+    id: more-stuff
+    attributes:
+      label: Just to be sure...
+      options:
+        - label: I can confirm this issue is related specifically to CommentMentions, and not another Geode mod, or Geode itself
+          required: true
+        - label: I have read the CONTRIBUTING.md guidelines and tips (I'm totally not lying I'm not a loser)
+          required: true

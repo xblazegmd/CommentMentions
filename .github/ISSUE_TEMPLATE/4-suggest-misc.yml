@@ -1,0 +1,53 @@
+name: Suggestion
+description: Suggest a change in the mod (features go elsewhere)
+title: "suggestion: Lorem Ipsum Dolor"
+labels: ["suggestion"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in this form to help us get a better understanding of your suggestion
+  
+  - type: textarea
+    id: description
+    attributes:
+      label: What is your suggestion?
+      placeholder: Make every function log "Never gonna give you up"
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: type
+    attributes:
+      label: What type suggestion do you have?
+      options:
+        - Documentation Improvement
+        - Performance Upgrades
+        - Refactoring
+        - Security Changes
+        - Better Compatibility
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why do you think we should add your suggestion into the mod?
+      placeholder: Because why not?
+    validations:
+      required: true
+  
+  - type: textarea
+    id: how
+    attributes:
+      label: How do you think this suggestion can be implemented? (optional)
+      placeholder: By adding a log function at the beginning of every function, duh
+
+  - type: checkboxes
+    id: more-stufff
+    attributes:
+      label: Just to be sure...
+      options:
+        - label: I have read the CONTRIBUTING.md guidelines and tips (I'm totally not lying I'm not a loser)
+          required: true
