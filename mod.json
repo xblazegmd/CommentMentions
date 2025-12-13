@@ -42,7 +42,8 @@
 			"type": "string",
 			"name": "Tags",
 			"description": "A comma separated string of tags the mod WILL look for in the comments",
-			"default": "xblazegmd, xblaze, blaze"
+			"default": "xblazegmd, xblaze, blaze",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,"
 		},
 		"mention-history-maxsize": {
 			"type": "int",
