@@ -77,8 +77,8 @@ $on_game(Loaded) {
 	// Is this the users' first time using the mod?
 	if (!mod->setSavedValue("shown-first-time-msg", true)) {
 		FLAlertLayer::create(
-			"Thanks for using CommentMentions!",
-			"Please make sure to change the tags the mod will look for in the mod's settings",
+			"CommentMentions",
+			"Thank you for using <co>CommentMentions!</c>. Make sure to change the <cj>tags option</c> in the mod's settings",
 			"OK"
 		)->show();
 	}
