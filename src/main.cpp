@@ -91,30 +91,3 @@ $on_game(Loaded) {
 		startListener(levelID);
 	}
 }
-
-#include <Geode/modify/MenuLayer.hpp>
-class $modify(CMMenuLayer, MenuLayer) {
-	bool init() {
-		if (!MenuLayer::init()) return false;
-
-		auto testBt = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			menu_selector(CMMenuLayer::onTestBt)
-		);
-		testBt->setID("notify_menu"_spr);
-
-		auto btmMenu = this->getChildByID("bottom-menu");
-		btmMenu->addChild(testBt);
-		btmMenu->updateLayout();
-
-		return true;
-	}
-
-	void onTestBt(CCObject* sender) {
-		// CMUtils::notify(
-		// 	"Notification",
-		// 	"This is a test notification"
-		// );
-	}
-};
