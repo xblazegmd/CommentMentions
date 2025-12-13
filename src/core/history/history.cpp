@@ -12,8 +12,8 @@ using namespace geode::utils;
 
 namespace history {
     std::filesystem::path getHistoryPath() {
-        auto configDir = Mod::get()->getConfigDir();
-        return configDir / "history.json";
+        auto saveDir = Mod::get()->getSaveDir();
+        return saveDir / "history.json";
     }
 
     Result<> writeHistory(std::vector<std::string> contents) {
