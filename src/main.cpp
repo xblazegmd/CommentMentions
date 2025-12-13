@@ -74,6 +74,15 @@ $execute {
 
 $on_game(Loaded) {
 	auto mod = Mod::get();
+	// Is this the users' first time using the mod?
+	if (!mod->setSavedValue("shown-first-time-msg", true)) {
+		FLAlertLayer::create(
+			"Thanks for using CommentMentions!",
+			"Please make sure to change the tags the mod will look for in the mod's settings",
+			"OK"
+		)->show();
+	}
+
 	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 
 	if (useDailyLvl) {
