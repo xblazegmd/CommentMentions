@@ -19,7 +19,7 @@ class $modify(CMProfilePage, ProfilePage) {
         }
 
         auto mentionsBt = CCMenuItemSpriteExtra::create(
-            CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
+            CCSprite::create("CMProfileMentionsBt.png"_spr),
             this,
             menu_selector(CMProfilePage::onMentionsBt)
         );

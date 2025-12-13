@@ -68,3 +68,4 @@ build-*/
 **/*.af
 *.af~lock~
 **/*.af~lock~
+**/design/
