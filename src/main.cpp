@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #include <core/utils.hpp>
+#include <core/levelFetch/levelFetch.hpp>
 #include <core/comments/comments.hpp>
 #include <core/history/history.hpp>
 #include <Geode/Geode.hpp>
@@ -76,7 +77,7 @@ $on_game(Loaded) {
 	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 
 	if (useDailyLvl) {
-		auto lvlFetch = std::make_shared<CMUtils::LevelFetch>(CMUtils::LevelFetchTarget::Daily);
+		auto lvlFetch = std::make_shared<levelFetch::LevelFetch>(levelFetch::LevelFetchTarget::Daily);
 		lvlFetch->fetchID([lvlFetch](Result<int> dailyID) {
 			if (dailyID.isErr()) {
 				Notification::create(
