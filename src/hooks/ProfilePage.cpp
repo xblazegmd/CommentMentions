@@ -32,9 +32,9 @@ class $modify(CMProfilePage, ProfilePage) {
 
     void onMentionsBt(CCObject* sender) {
         FLAlertLayer::create(
-            "Mentions",
-            "TODO: Mentions stuff ig",
-            "Ok"
+            "Coming Soon!",
+            "Your mention history will be available here",
+            "OK"
         )->show();
     }
 };
