@@ -1,3 +1,9 @@
+# v0.1-alpha.3
+###### NOTE: Codes like `abdc123` are *Git commit hashes* or *commit ids*. Click on them for more info.
+- [`fa1d083`](https://github.com/xblazegmd/CommentMentions/commit/fa1d0831a2b25883f601295cdd4ed28077b5ca76): Fixed critical bug impeding the mention history to be properly initialized on Windows.
+
+Full Commit Changelog: [v0.1-alpha.2...v0.1-alpha.3](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.2...v0.1-alpha.3).
+
 # v0.1-alpha.2
 ###### NOTE: Codes like `abdc123` are *Git commit hashes* or *commit ids*. Click on them for more info.
 - [`f877439`](https://github.com/xblazegmd/CommentMentions/commit/f8774399f9d95859438410e10017fa6e09f98250): Removed useless button in main menu
