@@ -11,6 +11,8 @@
 #include <Geode/loader/ModEvent.hpp>
 #include <Geode/loader/GameEvent.hpp>
 #include <Geode/ui/Notification.hpp>
+#include <algorithm>
+#include <filesystem>
 #include <memory>
 
 using namespace geode::prelude;
@@ -24,20 +26,20 @@ void startListener(int levelID) {
 
 $execute {
 	// Is the mention history initialized?
-	auto res = history::loadHistory();
-	if (res.isErr() && res.unwrapErr() == "Unable to open file: No such file or directory") {
+	auto histPath = history::getHistoryPath();
+	if (!std::filesystem::exists(histPath)) {
 		log::info("Initializing mention history");
-		auto writeRes = history::writeHistory({});
-		if (writeRes.isErr()) {
-			log::error("Could not initialize mention history: {}", writeRes.unwrapErr());
-			Notification::create(
-				"Could not save mention to history",
-				NotificationIcon::Error,
-				2
-			)->show();
-			return;
-		}
-		log::info("Initialized mention history");
+	 	auto writeRes = history::writeHistory({});
+	 	if (writeRes.isErr()) {
+	 		log::error("Could not initialize mention history: {}", writeRes.unwrapErr());
+	 		Notification::create(
+	 			"Could not save mention to history",
+	 			NotificationIcon::Error,
+	 			2
+	 		)->show();
+	 		return;
+	 	}
+	 	log::info("Initialized mention history");
 	}
 }
 
