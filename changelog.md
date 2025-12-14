@@ -6,7 +6,7 @@
 - [`cf40d66`](https://github.com/xblazegmd/CommentMentions/commit/cf40d66877b6854c9cef1908ecea712aa6f6dc21): Added message for when loading the mod for the first time
 - [`1bfc7a1`](https://github.com/xblazegmd/CommentMentions/commit/1bfc7a13cb998dc6cfbd7e1554382c26456f8172): Added proper sprite to button on the profile page
 
-Full commit changelog is available [here](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.1...v0.2-alpha.2).
+Full commit changelog is available [here](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.1...v0.1-alpha.2).
 
 # v0.1-alpha.1
 - First public release
