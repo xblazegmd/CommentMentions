@@ -29,5 +29,6 @@ namespace comments {
             EvalTask evalComments();
             bool containsMention(std::string str);
             std::vector<std::string> getTags();
+            void onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data);
     };
 }
