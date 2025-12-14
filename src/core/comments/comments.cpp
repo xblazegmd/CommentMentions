@@ -11,6 +11,8 @@
 #include <chrono>
 #include <functional>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 using namespace geode;
 using namespace geode::utils;
@@ -46,6 +48,18 @@ namespace comments {
 
                     auto bytes = commentDecodedRes.unwrap();
                     std::string commentDecoded(bytes.begin(), bytes.end());
+
+                    std::unordered_map<std::string, std::string> mentionData{
+                        { "comment", commentDecoded },
+                        { "messageID", mention["commentStr"]["messageID"] },
+                        { "authorUsername", mention["authorStr"]["username"] },
+                        { "authorAccID", mention["commentStr"]["authorAccID"] },
+                        { "authorIcon", mention["authorStr"]["icon"] },
+                        { "authorColorA", mention["authorStr"]["colorA"] },
+                        { "authorColorB", mention["authorStr"]["colorB"] },
+                        { "authorIconType", mention["authorStr"]["iconType"] },
+                        { "authorGlow", mention["authorStr"]["glow"] }
+                    };
 
                     m_onMentionCallback(mention["authorStr"]["username"], commentDecoded, mention["commentStr"]["messageID"]);
                 }
