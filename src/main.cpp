@@ -18,39 +18,41 @@ using namespace geode::prelude;
 
 static std::shared_ptr<comments::CommentListener> g_commentListener;
 
-static void onMention(std::string user, std::string msg, std::string msgID) {
-	auto his = history::loadHistory();
-	if (his.isErr()) {
-		log::error("Could not load mention history: {}", his.unwrapErr());
-		Notification::create(
-			"Could not load mention history",
-			NotificationIcon::Error,
-			2
-		)->show();
-	}
-	auto hist = his.unwrap();
-	if (std::ranges::contains(hist.history, msgID)) return;
-
-	auto res = history::updateHistory({ msgID });
-	if (res.isErr()) {
-		log::error("Could not save mention to history: {}", his.unwrapErr());
-		Notification::create(
-			"Could not save mention to history",
-			NotificationIcon::Error,
-			2
-		)->show();
-	}
-
-	log::info("Mention from @{}, '{}'", user, msg);
-	CMUtils::notify(
-		user + " mentioned you",
-		msg
-	);
-}
+// Commented out, this will be removed anyways
+// static void onMention(std::string user, std::string msg, std::string msgID) {
+// 	auto his = history::loadHistory();
+// 	if (his.isErr()) {
+// 		log::error("Could not load mention history: {}", his.unwrapErr());
+// 		Notification::create(
+// 			"Could not load mention history",
+// 			NotificationIcon::Error,
+// 			2
+// 		)->show();
+// 	}
+// 	auto hist = his.unwrap();
+// 	if (std::ranges::contains(hist.history, msgID)) return;
+// 
+// 	auto res = history::updateHistory({ msgID });
+// 	if (res.isErr()) {
+// 		log::error("Could not save mention to history: {}", his.unwrapErr());
+// 		Notification::create(
+// 			"Could not save mention to history",
+// 			NotificationIcon::Error,
+// 			2
+// 		)->show();
+// 	}
+// 
+// 	log::info("Mention from @{}, '{}'", user, msg);
+// 	CMUtils::notify(
+// 		user + " mentioned you",
+// 		msg
+// 	);
+// }
 
 void startListener(int levelID) {
-	g_commentListener = std::make_shared<comments::CommentListener>(levelID, onMention);
-	g_commentListener->start();
+	// Commented out while I work on making the logic work
+	// g_commentListener = std::make_shared<comments::CommentListener>(levelID, onMention);
+	// g_commentListener->start();
 }
 
 $execute {

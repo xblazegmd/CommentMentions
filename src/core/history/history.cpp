@@ -4,7 +4,6 @@
 #include <Geode/Geode.hpp>
 #include <Geode/utils/coro.hpp>
 #include <filesystem>
-#include <string>
 #include <vector>
 
 using namespace geode::prelude;
@@ -16,7 +15,7 @@ namespace history {
         return saveDir / "history.json";
     }
 
-    Result<> writeHistory(std::vector<std::string> contents) {
+    Result<> writeHistory(std::vector<std::unordered_map<std::string, std::string>> contents) {
         auto history = getHistoryPath();
         History data;
         data.history = contents;
@@ -29,7 +28,7 @@ namespace history {
         return file::readFromJson<History>(history);
     }
 
-    Result<> updateHistory(std::vector<std::string> contents) {
+    Result<> updateHistory(std::vector<std::unordered_map<std::string, std::string>> contents) {
         auto historyPath = getHistoryPath();
         auto history = co_await loadHistory(); // co_await in this case is like ? on rust
         
