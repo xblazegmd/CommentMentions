@@ -2,7 +2,6 @@
 
 #include <core/formatReq/formatReq.hpp>
 #include <Geode/utils/Task.hpp>
-#include <functional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -15,13 +14,12 @@ namespace comments {
 
     class CommentListener {
         public:
-            CommentListener(int levelID, std::function<void(std::string, std::string, std::string)> onMentionCallback);
+            CommentListener(int levelID);
 
             void start();
             void stop();
         private:
             int m_levelID;
-            std::function<void(std::string, std::string, std::string)> m_onMentionCallback;
             ListenerTask m_listenerCoro;
             bool m_running = false;
 

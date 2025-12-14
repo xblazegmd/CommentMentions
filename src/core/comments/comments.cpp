@@ -9,8 +9,8 @@
 #include <Geode/utils/string.hpp>
 #include <Geode/utils/Task.hpp>
 #include <Geode/utils/web.hpp>
+#include <algorithm>
 #include <chrono>
-#include <functional>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -19,9 +19,8 @@ using namespace geode::prelude;
 using namespace geode::utils;
 
 namespace comments {
-    CommentListener::CommentListener(int levelID, std::function<void(std::string, std::string, std::string)> onMentionCallback) :
-        m_levelID(levelID),
-        m_onMentionCallback(onMentionCallback)
+    CommentListener::CommentListener(int levelID) :
+        m_levelID(levelID)
     {};
 
     void CommentListener::start() {
@@ -62,7 +61,7 @@ namespace comments {
                         { "authorGlow", mention["authorStr"]["glow"] }
                     };
 
-                    m_onMentionCallback(mention["authorStr"]["username"], commentDecoded, mention["commentStr"]["messageID"]);
+                    onMention(mention["authorStr"]["username"], commentDecoded, mentionData);
                 }
             }
 
@@ -135,27 +134,27 @@ namespace comments {
 
     void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
         // Commented out history logic while I work on making the history compatible with std::unordered_map
-	    // auto his = history::loadHistory();
-	    // if (his.isErr()) {
-	    // 	log::error("Could not load mention history: {}", his.unwrapErr());
-	    // 	Notification::create(
-	    // 		"Could not load mention history",
-	    // 		NotificationIcon::Error,
-	    // 		2
-	    // 	)->show();
-	    // }
-	    // auto hist = his.unwrap();
-	    // if (std::ranges::contains(hist.history, msgID)) return;
+	    auto his = history::loadHistory();
+	    if (his.isErr()) {
+	    	log::error("Could not load mention history: {}", his.unwrapErr());
+	    	Notification::create(
+	    		"Could not load mention history",
+	    		NotificationIcon::Error,
+	    		2
+	    	)->show();
+	    }
+	    auto hist = his.unwrap();
+	    if (std::ranges::contains(hist.history, data)) return;
 
-	    // auto res = history::updateHistory({ msgID });
-	    // if (res.isErr()) {
-	    // 	log::error("Could not save mention to history: {}", his.unwrapErr());
-	    // 	Notification::create(
-	    // 		"Could not save mention to history",
-	    // 		NotificationIcon::Error,
-	    // 		2
-	    // 	)->show();
-	    // }
+	    auto res = history::updateHistory({ data });
+	    if (res.isErr()) {
+	    	log::error("Could not save mention to history: {}", his.unwrapErr());
+	    	Notification::create(
+	    		"Could not save mention to history",
+	    		NotificationIcon::Error,
+	    		2
+	    	)->show();
+	    }
 
 	    log::info("Mention from @{}, '{}'", user, msg);
 	    CMUtils::notify(
