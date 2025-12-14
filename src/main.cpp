@@ -1,8 +1,8 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-
 #include <core/utils.hpp>
+#include <core/levelFetch/levelFetch.hpp>
 #include <core/comments/comments.hpp>
 #include <core/history/history.hpp>
 #include <Geode/Geode.hpp>
@@ -74,10 +74,19 @@ $execute {
 
 $on_game(Loaded) {
 	auto mod = Mod::get();
+	// Is this the users' first time using the mod?
+	if (!mod->setSavedValue("shown-first-time-msg", true)) {
+		FLAlertLayer::create(
+			"CommentMentions",
+			"Thank you for using <co>CommentMentions!</c>. Make sure to change the <cj>tags option</c> in the mod's settings",
+			"OK"
+		)->show();
+	}
+
 	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 
 	if (useDailyLvl) {
-		auto lvlFetch = std::make_shared<CMUtils::LevelFetch>(CMUtils::LevelFetchTarget::Daily);
+		auto lvlFetch = std::make_shared<levelFetch::LevelFetch>(levelFetch::LevelFetchTarget::Daily);
 		lvlFetch->fetchID([lvlFetch](Result<int> dailyID) {
 			if (dailyID.isErr()) {
 				Notification::create(
@@ -95,30 +104,3 @@ $on_game(Loaded) {
 		startListener(levelID);
 	}
 }
-
-#include <Geode/modify/MenuLayer.hpp>
-class $modify(CMMenuLayer, MenuLayer) {
-	bool init() {
-		if (!MenuLayer::init()) return false;
-
-		auto testBt = CCMenuItemSpriteExtra::create(
-			CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-			this,
-			menu_selector(CMMenuLayer::onTestBt)
-		);
-		testBt->setID("notify_menu"_spr);
-
-		auto btmMenu = this->getChildByID("bottom-menu");
-		btmMenu->addChild(testBt);
-		btmMenu->updateLayout();
-
-		return true;
-	}
-
-	void onTestBt(CCObject* sender) {
-		// CMUtils::notify(
-		// 	"Notification",
-		// 	"This is a test notification"
-		// );
-	}
-};

@@ -19,7 +19,7 @@ class $modify(CMProfilePage, ProfilePage) {
         }
 
         auto mentionsBt = CCMenuItemSpriteExtra::create(
-            CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
+            CCSprite::create("CMProfileMentionsBt.png"_spr),
             this,
             menu_selector(CMProfilePage::onMentionsBt)
         );
@@ -32,9 +32,9 @@ class $modify(CMProfilePage, ProfilePage) {
 
     void onMentionsBt(CCObject* sender) {
         FLAlertLayer::create(
-            "Mentions",
-            "TODO: Mentions stuff ig",
-            "Ok"
+            "Coming Soon!",
+            "Your mention history will be available here",
+            "OK"
         )->show();
     }
 };
