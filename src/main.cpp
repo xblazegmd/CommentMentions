@@ -56,7 +56,6 @@ void startListener(int levelID) {
 
 $execute {
 	// Is the mention history initialized?
-	// Changed to more cross-platform version
 	auto histPath = history::getHistoryPath();
 	if (!std::filesystem::exists(histPath)) {
 		log::info("Initializing mention history");
