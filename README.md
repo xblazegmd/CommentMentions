@@ -13,8 +13,10 @@ Basically [I Have Been Summoned](https://github.com/xblazegmd/ihavebeensummoned)
 ## DISCLAIMER
 This mod is still in development. Bugs are to be expected. This mod was mainly tested in iOS, and can't get properly tested on any other platforms, so playtesting is appreciated A LOT.
 
-## Known issues
-- Can't put multiple values in the tags setting (cannot put any commas)
+## License
+This mod is licensed under the **Mozilla Public License 2.0**. TLDR (not legal advice); you can do whatever you want with my code, but you must open-source any changes to the source code under the MPL-2.0. Other additions (like files added by *you*) can be licensed under anything else, or even be close-source.
+
+More information in [LICENSE.txt](LICENSE.txt) or [here](https://choosealicense.com/licenses/mpl-2.0/).
 
 ## Credits
 - GuineaPG for the mod idea (long story on how)
