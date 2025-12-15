@@ -2,23 +2,25 @@
 
 #include <core/utils.hpp>
 #include <core/formatReq/formatReq.hpp>
-#include <Geode/loader/Mod.hpp>
+#include <core/history/history.hpp>
+#include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/coro.hpp>
 #include <Geode/utils/string.hpp>
 #include <Geode/utils/Task.hpp>
 #include <Geode/utils/web.hpp>
+#include <algorithm>
 #include <chrono>
-#include <functional>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
-using namespace geode;
+using namespace geode::prelude;
 using namespace geode::utils;
 
 namespace comments {
-    CommentListener::CommentListener(int levelID, std::function<void(std::string, std::string, std::string)> onMentionCallback) :
-        m_levelID(levelID),
-        m_onMentionCallback(onMentionCallback)
+    CommentListener::CommentListener(int levelID) :
+        m_levelID(levelID)
     {};
 
     void CommentListener::start() {
@@ -47,7 +49,19 @@ namespace comments {
                     auto bytes = commentDecodedRes.unwrap();
                     std::string commentDecoded(bytes.begin(), bytes.end());
 
-                    m_onMentionCallback(mention["authorStr"]["username"], commentDecoded, mention["commentStr"]["messageID"]);
+                    std::unordered_map<std::string, std::string> mentionData{
+                        { "comment", commentDecoded },
+                        { "messageID", mention["commentStr"]["messageID"] },
+                        { "authorUsername", mention["authorStr"]["username"] },
+                        { "authorAccID", mention["commentStr"]["authorAccID"] },
+                        { "authorIcon", mention["authorStr"]["icon"] },
+                        { "authorColorA", mention["authorStr"]["colorA"] },
+                        { "authorColorB", mention["authorStr"]["colorB"] },
+                        { "authorIconType", mention["authorStr"]["iconType"] },
+                        { "authorGlow", mention["authorStr"]["glow"] }
+                    };
+
+                    onMention(mention["authorStr"]["username"], commentDecoded, mentionData);
                 }
             }
 
@@ -116,5 +130,17 @@ namespace comments {
             part = string::trim(part);
         }
         return parts;
+    }
+
+    void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
+	    auto hist = history::loadHistory();
+	    if (std::ranges::contains(hist, data)) return;
+        history::updateHistory({ data });
+
+	    log::info("Mention from @{}, '{}'", user, msg);
+	    CMUtils::notify(
+	    	user + " mentioned you",
+	    	msg
+	    );
     }
 }
