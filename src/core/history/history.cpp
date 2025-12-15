@@ -4,6 +4,7 @@
 #include <Geode/Geode.hpp>
 #include <Geode/utils/coro.hpp>
 #include <filesystem>
+#include <unordered_map>
 #include <vector>
 
 using namespace geode::prelude;
@@ -16,20 +17,24 @@ namespace history {
     }
 
     Result<> writeHistory(std::vector<std::unordered_map<std::string, std::string>> contents) {
-        auto history = getHistoryPath();
-        History data;
-        data.history = contents;
+        // auto history = getHistoryPath();
+        // History data;
+        // data.history = contents;
 
-        return file::writeToJson(history, data);
+        // return file::writeToJson(history, data);
+        Mod::get()->setSavedValue<std::vector<std::unordered_map<std::string, std::string>>>("history", contents);
+        return Ok();
     }
 
     Result<History> loadHistory() {
-        auto history = getHistoryPath();
-        return file::readFromJson<History>(history);
+        // auto history = getHistoryPath();
+        // return file::readFromJson<History>(history);
+        auto hist = Mod::get()->getSavedValue<std::vector<std::unordered_map<std::string, std::string>>>("history");
+        return Ok(History { .history = hist });
     }
 
     Result<> updateHistory(std::vector<std::unordered_map<std::string, std::string>> contents) {
-        auto historyPath = getHistoryPath();
+        // auto historyPath = getHistoryPath();
         auto history = co_await loadHistory(); // co_await in this case is like ? on rust
         
         // In here we'll handle the "mention-history-maxsize" configuration option

@@ -11,7 +11,6 @@
 #include <Geode/loader/ModEvent.hpp>
 #include <Geode/loader/GameEvent.hpp>
 #include <Geode/ui/Notification.hpp>
-#include <algorithm>
 #include <filesystem>
 #include <memory>
 
