@@ -18,11 +18,6 @@
 	"links": {
 		"source": "https://github.com/xblazegmd/CommentMentions"
 	},
-	"resources": {
-		"sprites": [
-			"resources/CMProfileMentionsBt.png"
-		]
-	},
 	"settings": {
 		"use-daily-lvl": {
 			"type": "bool",
