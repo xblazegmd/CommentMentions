@@ -133,28 +133,9 @@ namespace comments {
     }
 
     void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
-        // Commented out history logic while I work on making the history compatible with std::unordered_map
-	    auto his = history::loadHistory();
-	    if (his.isErr()) {
-	    	log::error("Could not load mention history: {}", his.unwrapErr());
-	    	Notification::create(
-	    		"Could not load mention history",
-	    		NotificationIcon::Error,
-	    		2
-	    	)->show();
-	    }
-	    auto hist = his.unwrap();
-	    if (std::ranges::contains(hist.history, data)) return;
-
-	    auto res = history::updateHistory({ data });
-	    if (res.isErr()) {
-	    	log::error("Could not save mention to history: {}", his.unwrapErr());
-	    	Notification::create(
-	    		"Could not save mention to history",
-	    		NotificationIcon::Error,
-	    		2
-	    	)->show();
-	    }
+	    auto hist = history::loadHistory();
+	    if (std::ranges::contains(hist, data)) return;
+        history::updateHistory({ data });
 
 	    log::info("Mention from @{}, '{}'", user, msg);
 	    CMUtils::notify(

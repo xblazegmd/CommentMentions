@@ -1,51 +1,29 @@
 #include "history.hpp"
-#include "Geode/utils/file.hpp"
 
 #include <Geode/Geode.hpp>
-#include <Geode/utils/coro.hpp>
-#include <filesystem>
-#include <unordered_map>
-#include <vector>
 
 using namespace geode::prelude;
-using namespace geode::utils;
 
 namespace history {
-    std::filesystem::path getHistoryPath() {
-        auto saveDir = Mod::get()->getSaveDir();
-        return saveDir / "history.json";
+    void writeHistory(History contents) {
+        Mod::get()->setSavedValue<History>("history", contents);
     }
 
-    Result<> writeHistory(std::vector<std::unordered_map<std::string, std::string>> contents) {
-        // auto history = getHistoryPath();
-        // History data;
-        // data.history = contents;
-
-        // return file::writeToJson(history, data);
-        Mod::get()->setSavedValue<std::vector<std::unordered_map<std::string, std::string>>>("history", contents);
-        return Ok();
+    History loadHistory() {
+        return Mod::get()->getSavedValue<History>("history");
     }
 
-    Result<History> loadHistory() {
-        // auto history = getHistoryPath();
-        // return file::readFromJson<History>(history);
-        auto hist = Mod::get()->getSavedValue<std::vector<std::unordered_map<std::string, std::string>>>("history");
-        return Ok(History { .history = hist });
-    }
-
-    Result<> updateHistory(std::vector<std::unordered_map<std::string, std::string>> contents) {
-        // auto historyPath = getHistoryPath();
-        auto history = co_await loadHistory(); // co_await in this case is like ? on rust
+    void updateHistory(History contents) {
+        auto history = loadHistory();
         
         // In here we'll handle the "mention-history-maxsize" configuration option
         auto maxsize = Mod::get()->getSettingValue<int64_t>("mention-history-maxsize");
-        if (history.history.size() > maxsize) {
-            history.history.erase(history.history.begin());
+        if (history.size() > maxsize) {
+            history.erase(history.begin());
         }
 
         for (const auto& item : contents) {
-            history.history.push_back(item);
+            history.push_back(item);
         }
-        co_return writeHistory(history.history);
     }
 }
