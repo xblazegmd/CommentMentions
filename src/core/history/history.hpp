@@ -9,6 +9,6 @@ namespace history {
 
     void writeHistory(History contents);
     History loadHistory();
-    void updateHistory(History contents);
+    void updateHistory(std::unordered_map<std::string, std::string> contents);
     bool mentionExists(std::unordered_map<std::string, std::string> mention);
 }

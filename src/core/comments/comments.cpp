@@ -134,7 +134,7 @@ namespace comments {
 
     void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
         if (history::mentionExists(data)) return;
-        history::updateHistory({ data });
+        history::updateHistory(data);
 
 	    log::info("Mention from @{}, '{}'", user, msg);
 	    CMUtils::notify(

@@ -1,6 +1,7 @@
 #include "history.hpp"
 
 #include <Geode/Geode.hpp>
+#include <unordered_map>
 
 using namespace geode::prelude;
 
@@ -13,7 +14,7 @@ namespace history {
         return Mod::get()->getSavedValue<History>("history");
     }
 
-    void updateHistory(History contents) {
+    void updateHistory(std::unordered_map<std::string, std::string> mention) {
         auto hist = loadHistory();
         
         // In here we'll handle the "mention-history-maxsize" configuration option
@@ -22,9 +23,7 @@ namespace history {
             hist.erase(hist.begin());
         }
 
-        for (const auto& item : contents) {
-            hist.push_back(item);
-        }
+        hist.push_back(mention);
         writeHistory(hist);
     }
 
