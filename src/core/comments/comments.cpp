@@ -2,23 +2,25 @@
 
 #include <core/utils.hpp>
 #include <core/formatReq/formatReq.hpp>
-#include <Geode/loader/Mod.hpp>
+#include <core/history/history.hpp>
+#include <core/queue/queue.hpp>
+#include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/coro.hpp>
 #include <Geode/utils/string.hpp>
 #include <Geode/utils/Task.hpp>
 #include <Geode/utils/web.hpp>
 #include <chrono>
-#include <functional>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
-using namespace geode;
+using namespace geode::prelude;
 using namespace geode::utils;
 
 namespace comments {
-    CommentListener::CommentListener(int levelID, std::function<void(std::string, std::string, std::string)> onMentionCallback) :
-        m_levelID(levelID),
-        m_onMentionCallback(onMentionCallback)
+    CommentListener::CommentListener(int levelID) :
+        m_levelID(levelID)
     {};
 
     void CommentListener::start() {
@@ -34,6 +36,25 @@ namespace comments {
 
     ListenerTask CommentListener::startListener() {
         while (true) {
+            auto q = queue::loadQueue();
+            if (!q.empty() && !PlayLayer::get()) { // '!PlayLayer::get() since we don't wanna pop the queue while the user is playing, duh
+                log::info("Popping queue...");
+                queue::clearQueue();
+
+                for (const auto& mention : q) {
+                    auto qUserIt = mention.find("authorUsername");
+                    auto qMsgIt = mention.find("comment");
+
+                    // Fallbacks
+                    std::string qUser = qUserIt != mention.end() ? qUserIt->second : "Someone";
+                    std::string qMsg = qMsgIt != mention.end() ? qMsgIt->second : "Could not load mention but it exists, trust me";
+
+                    onMention(qUser, qMsg, mention);
+                }
+
+                log::info("Loaded {} mentions", q.size());
+            }
+
             auto mentions = co_await evalComments();
 
             if (!mentions.empty()) {
@@ -47,7 +68,26 @@ namespace comments {
                     auto bytes = commentDecodedRes.unwrap();
                     std::string commentDecoded(bytes.begin(), bytes.end());
 
-                    m_onMentionCallback(mention["authorStr"]["username"], commentDecoded, mention["commentStr"]["messageID"]);
+                    std::unordered_map<std::string, std::string> mentionData{
+                        { "comment", commentDecoded },
+                        { "messageID", mention["commentStr"]["messageID"] },
+                        { "authorUsername", mention["authorStr"]["username"] },
+                        { "authorAccID", mention["commentStr"]["authorAccID"] },
+                        { "authorIcon", mention["authorStr"]["icon"] },
+                        { "authorColorA", mention["authorStr"]["colorA"] },
+                        { "authorColorB", mention["authorStr"]["colorB"] },
+                        { "authorIconType", mention["authorStr"]["iconType"] },
+                        { "authorGlow", mention["authorStr"]["glow"] }
+                    };
+
+                    // Queue mention if the user is playing a level
+                    if (PlayLayer::get()) {
+                        log::info("Queued mention from @{}, '{}'", mention["authorStr"]["username"], commentDecoded);
+                        queue::addToQueue(mentionData);
+                        continue;
+                    }
+
+                    onMention(mention["authorStr"]["username"], commentDecoded, mentionData);
                 }
             }
 
@@ -116,5 +156,16 @@ namespace comments {
             part = string::trim(part);
         }
         return parts;
+    }
+
+    void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
+        if (history::mentionExists(data)) return;
+        history::updateHistory(data);
+
+	    log::info("Mention from @{}, '{}'", user, msg);
+	    CMUtils::notify(
+	    	user + " mentioned you",
+	    	msg
+	    );
     }
 }

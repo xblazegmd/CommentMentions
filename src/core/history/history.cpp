@@ -1,47 +1,44 @@
 #include "history.hpp"
-#include "Geode/utils/file.hpp"
 
 #include <Geode/Geode.hpp>
-#include <Geode/utils/coro.hpp>
-#include <filesystem>
-#include <string>
-#include <vector>
+#include <unordered_map>
 
 using namespace geode::prelude;
-using namespace geode::utils;
 
 namespace history {
-    std::filesystem::path getHistoryPath() {
-        auto saveDir = Mod::get()->getSaveDir();
-        return saveDir / "history.json";
+    void writeHistory(History contents) {
+        Mod::get()->setSavedValue<History>("history", contents);
     }
 
-    Result<> writeHistory(std::vector<std::string> contents) {
-        auto history = getHistoryPath();
-        History data;
-        data.history = contents;
-
-        return file::writeToJson(history, data);
+    History loadHistory() {
+        return Mod::get()->getSavedValue<History>("history");
     }
 
-    Result<History> loadHistory() {
-        auto history = getHistoryPath();
-        return file::readFromJson<History>(history);
-    }
-
-    Result<> updateHistory(std::vector<std::string> contents) {
-        auto historyPath = getHistoryPath();
-        auto history = co_await loadHistory(); // co_await in this case is like ? on rust
+    void updateHistory(std::unordered_map<std::string, std::string> mention) {
+        auto hist = loadHistory();
         
         // In here we'll handle the "mention-history-maxsize" configuration option
         auto maxsize = Mod::get()->getSettingValue<int64_t>("mention-history-maxsize");
-        if (history.history.size() > maxsize) {
-            history.history.erase(history.history.begin());
+        if (hist.size() > maxsize) {
+            hist.erase(hist.begin());
         }
 
-        for (const auto& item : contents) {
-            history.history.push_back(item);
+        hist.push_back(mention);
+        writeHistory(hist);
+    }
+
+    bool mentionExists(std::unordered_map<std::string, std::string> mention) {
+        auto hist = loadHistory();
+        for (const auto& item : hist) {
+            // Differ between mention with the messageID
+            auto msgID = item.find("messageID");
+            if (msgID == item.end()) {
+                log::error("Could not find 'messageID' in: {}", item);
+                continue;
+            };
+
+            if (msgID->second == mention["messageID"]) return true;
         }
-        co_return writeHistory(history.history);
+        return false;
     }
 }

@@ -8,7 +8,7 @@
 	},
 	"id": "xblazegmd.commentmentions",
 	"name": "CommentMentions",
-	"version": "v0.1.0-alpha.3",
+	"version": "v0.1.0-alpha.4",
 	"developer": "XblazeGMD",
 	"description": "Get notified everytime someone 'mentions' you",
 	"dependencies": {
@@ -17,11 +17,6 @@
 	"tags": [ "online", "enhancement" ],
 	"links": {
 		"source": "https://github.com/xblazegmd/CommentMentions"
-	},
-	"resources": {
-		"sprites": [
-			"resources/CMProfileMentionsBt.png"
-		]
 	},
 	"settings": {
 		"use-daily-lvl": {
