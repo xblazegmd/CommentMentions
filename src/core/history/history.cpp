@@ -26,4 +26,19 @@ namespace history {
             history.push_back(item);
         }
     }
+
+    bool mentionExists(std::unordered_map<std::string, std::string> mention) {
+        auto hist = loadHistory();
+        for (const auto& item : hist) {
+            // Differ between mention with the messageID
+            auto msgID = item.find("messageID");
+            if (msgID == item.end()) {
+                log::error("Could not find 'messageID' in: {}", item);
+                continue;
+            };
+
+            if (msgID->second == mention["messageID"]) return true;
+        }
+        return false;
+    }
 }

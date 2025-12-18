@@ -133,8 +133,7 @@ namespace comments {
     }
 
     void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
-	    auto hist = history::loadHistory();
-	    if (std::ranges::contains(hist, data)) return;
+        if (history::mentionExists(data)) return;
         history::updateHistory({ data });
 
 	    log::info("Mention from @{}, '{}'", user, msg);
