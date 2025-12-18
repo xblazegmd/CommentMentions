@@ -30,7 +30,7 @@
 			"name": "Level ID",
 			"description": "The level id the listener will listen at ('Use Daily Level' must be off)",
 			"enable-if": "!setting:use-daily-lvl",
-			"default": 0,
+			"default": 68668045,
 			"min": 0,
 			"control": {
 				"arrows": false,
