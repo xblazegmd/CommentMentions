@@ -14,17 +14,18 @@ namespace history {
     }
 
     void updateHistory(History contents) {
-        auto history = loadHistory();
+        auto hist = loadHistory();
         
         // In here we'll handle the "mention-history-maxsize" configuration option
         auto maxsize = Mod::get()->getSettingValue<int64_t>("mention-history-maxsize");
-        if (history.size() > maxsize) {
-            history.erase(history.begin());
+        if (hist.size() > maxsize) {
+            hist.erase(hist.begin());
         }
 
         for (const auto& item : contents) {
-            history.push_back(item);
+            hist.push_back(item);
         }
+        writeHistory(hist);
     }
 
     bool mentionExists(std::unordered_map<std::string, std::string> mention) {
