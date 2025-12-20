@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Geode/loader/Event.hpp>
+#include <Geode/utils/Task.hpp>
 #include <functional>
 #include <string>
 
@@ -45,11 +46,14 @@ namespace notifier {
                 this, &Notifier::onEvent, NotificationEventFilter()
             };
             std::vector<Notification> m_queue;
+            Task<void> m_queueCoro;
 
             ListenerResult onEvent(NotificationEvent* ev);
             ListenerResult onNotificationEvent(Notification notification);
             ListenerResult onQueueEvent(Notification notification);
             ListenerResult onPopQueueEvent();
+
+            Task<void> queueCoro();
         public:
             void notify(std::string title, std::string message);
     };

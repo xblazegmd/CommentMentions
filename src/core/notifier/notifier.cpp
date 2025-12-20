@@ -1,8 +1,9 @@
 #include "notifier.hpp"
 
 #include <Geode/Geode.hpp>
-#include <Geode/binding_arm/AchievementNotifier.hpp>
 #include <Geode/loader/Event.hpp>
+#include <Geode/utils/Task.hpp>
+#include <Geode/utils/coro.hpp>
 #include <functional>
 
 using namespace geode::prelude;
@@ -68,8 +69,19 @@ namespace notifier {
 
         if (PlayLayer::get()) {
             NotificationEvent(notification, true).post();
+            m_queueCoro = std::get<0>(coro::spawn << queueCoro());
         } else {
             NotificationEvent(notification, false).post();
+        }
+    }
+
+    Task<void> Notifier::queueCoro() {
+        while (true) {
+            if (!PlayLayer::get()) {
+                NotificationEvent(true).post();
+                co_return;
+            };
+            co_await coro::sleep(0.5f);
         }
     }
 }
