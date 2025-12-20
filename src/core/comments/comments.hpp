@@ -1,7 +1,10 @@
 #pragma once
 
 #include <core/formatReq/formatReq.hpp>
+#include <core/notifier/notifier.hpp>
+
 #include <Geode/utils/Task.hpp>
+
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -22,6 +25,7 @@ namespace comments {
             int m_levelID;
             ListenerTask m_listenerCoro;
             bool m_running = false;
+            notifier::Notifier m_notifier;
 
             ListenerTask startListener();
             EvalTask evalComments();
