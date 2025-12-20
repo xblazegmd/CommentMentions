@@ -69,13 +69,13 @@ namespace notifier {
 
         if (PlayLayer::get()) {
             NotificationEvent(notification, true).post();
-            m_queueCoro = std::get<0>(coro::spawn << queueCoro());
+            m_canPopQueue = std::get<0>(coro::spawn << canPopQueue());
         } else {
             NotificationEvent(notification, false).post();
         }
     }
 
-    Task<void> Notifier::queueCoro() {
+    Task<void> Notifier::canPopQueue() {
         while (true) {
             if (!PlayLayer::get()) {
                 NotificationEvent(true).post();

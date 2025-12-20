@@ -46,14 +46,13 @@ namespace notifier {
                 this, &Notifier::onEvent, NotificationEventFilter()
             };
             std::vector<Notification> m_queue;
-            Task<void> m_queueCoro;
+            Task<void> m_canPopQueue;
 
             ListenerResult onEvent(NotificationEvent* ev);
             ListenerResult onNotificationEvent(Notification notification);
             ListenerResult onQueueEvent(Notification notification);
             ListenerResult onPopQueueEvent();
-
-            Task<void> queueCoro();
+            Task<void> canPopQueue();
         public:
             void notify(std::string title, std::string message);
     };
