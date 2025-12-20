@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Geode/loader/Event.hpp>
+#include <functional>
 #include <string>
 
 using namespace geode::prelude;
@@ -17,24 +18,39 @@ namespace notifier {
             bool m_queue;
             bool m_popQueue;
         public:
-            NotificationEvent(Notification notification, bool queue);
-            NotificationEvent(bool popQueue);
+            NotificationEvent(Notification notification, bool queue) :
+                m_notification(notification),
+                m_queue(queue)
+            {};
+            NotificationEvent(bool popQueue) :
+                m_popQueue(popQueue)
+            {};
 
             Notification getNotification() const;
             bool queue() const;
             bool popQueue() const;
     };
 
+    // I think this is not needed at all but idk how else to define the notifier without this
+    class NotificationEventFilter : public EventFilter<NotificationEvent> {
+        public:
+            using Callback = ListenerResult(NotificationEvent*);
+
+            ListenerResult handle(std::function<Callback> callback, NotificationEvent* ev);
+    };
+
     class Notifier {
         protected:
-            EventListener<EventFilter<NotificationEvent>> m_notification;
+            EventListener<NotificationEventFilter> m_notification = {
+                this, &Notifier::onEvent, NotificationEventFilter()
+            };
             std::vector<Notification> m_queue;
 
-            ListenerResult onEvent(Notification notification);
+            ListenerResult onEvent(NotificationEvent* ev);
             ListenerResult onNotificationEvent(Notification notification);
             ListenerResult onQueueEvent(Notification notification);
-            ListenerResult onPopQueueEvent(Notification notification);
+            ListenerResult onPopQueueEvent();
         public:
-            static void notify(std::string title, std::string message);
+            void notify(std::string title, std::string message);
     };
 }
