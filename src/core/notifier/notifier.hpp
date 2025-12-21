@@ -21,7 +21,8 @@ namespace notifier {
         public:
             NotificationEvent(Notification notification, bool queue) :
                 m_notification(notification),
-                m_queue(queue)
+                m_queue(queue),
+                m_popQueue(false)
             {};
             NotificationEvent(bool popQueue) :
                 m_popQueue(popQueue)
