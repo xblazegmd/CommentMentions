@@ -1,3 +1,6 @@
+# v0.1-alpha.5
+- Rewrote ALL of the notification logic
+
 # v0.1-alpha.4
 - Removed useless button in the profile page - that was for a scrapped feature
 - Added mention queue - now you shouldn't get notified while playing levels
