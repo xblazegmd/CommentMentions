@@ -1,8 +1,9 @@
-# v0.1-alpha.5
+# v0.1-beta.1
 - Rewrote ALL of the notification logic
 - Changed the logic that checks for mentions
+- Updated the icon that appears on the notifications
 
-Full Commit Changelog: [v1.1-alpha.4...v0.1-alpha.5](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.4...v0.1-alpha.5).
+Full Commit Changelog: [v1.1-alpha.4...v0.1-beta.1](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.4...v0.1-beta.1).
 
 # v0.1-alpha.4
 - Removed useless button in the profile page - that was for a scrapped feature

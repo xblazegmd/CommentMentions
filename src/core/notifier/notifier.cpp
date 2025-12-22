@@ -69,7 +69,7 @@ namespace notifier {
         AchievementNotifier::sharedState()->notifyAchievement(
             notification.title.c_str(),
             notification.message.c_str(),
-            "accountBtn_messages_001.png",
+            "accountBtn_pendingRequest_001.png",
             true
         );
     }
