@@ -1,5 +1,6 @@
 # v0.1-alpha.5
 - Rewrote ALL of the notification logic
+- Changed the logic that checks for mentions
 
 Full Commit Changelog: [v1.1-alpha.4...v0.1-alpha.5](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.4...v0.1-alpha.5).
 

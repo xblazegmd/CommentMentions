@@ -14,4 +14,26 @@ namespace CMUtils {
     const std::string SECRET = "Wmfd2893gb7";
 
     void notify(std::string title, std::string msg);
+
+    /**
+     * Does "this that" have "that" in it?
+     *
+     * The logic in this function is made specifically for finding mentions in comments
+     */
+    bool contains(std::string const& text, std::string const& contains);
+
+    /**
+     * Basically `cleanString` but with proper cleanup for "'s" or "s'"
+     */
+    std::string cleanNameString(std::string name);
+
+    /**
+     * Removes all special characters from a string
+     */
+    std::string cleanString(std::string const& text);
+
+    /**
+     * Why not std::isalnum instead? Idk
+     */
+    bool isAlnum(char c);
 }

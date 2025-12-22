@@ -106,18 +106,18 @@ namespace comments {
     bool CommentListener::containsMention(std::string str) {
         std::vector<std::string> tags = getTags();
 
-        auto commentDecodedRes = base64::decode(str, base64::Base64Variant::Url);
-        if (commentDecodedRes.isErr()) {
-            log::error("Could not decode comment '{}': {}", str, commentDecodedRes.unwrapErr());
+        auto commentRes = base64::decode(str, base64::Base64Variant::Url);
+        if (commentRes.isErr()) {
+            log::error("Could not decode comment '{}': {}", str, commentRes.unwrapErr());
             return false;
         }
 
-        auto bytes = commentDecodedRes.unwrap();
-        std::string commentDecoded(bytes.begin(), bytes.end());
+        auto bytes = commentRes.unwrap();
+        std::string comment(bytes.begin(), bytes.end());
 
-        std::string commentDecodedLower = string::toLower(commentDecoded);
+        std::string commentLower = string::toLower(comment);
         for (const auto& tag : tags) {
-            if (commentDecodedLower.find(tag) != std::string::npos) {
+            if (CMUtils::contains(commentLower, tag)) {
                 return true;
             }
         }
