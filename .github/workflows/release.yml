@@ -1,4 +1,4 @@
-name: Release on GitHub
+name: Release Mod (GitHub)
 
 on:
   push:
