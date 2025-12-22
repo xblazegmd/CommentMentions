@@ -13,7 +13,7 @@ Basically [I Have Been Summoned](https://github.com/xblazegmd/ihavebeensummoned)
 ## DISCLAIMER
 This mod is still in development. Bugs are to be expected.
 
-This mod was only properly tested in iOS, Windows, and macOS. While stability for Android should exist (hopefully), *it's not guaranteed*.
+This mod was only properly tested in iOS, Windows, and macOS. While stability for Android should exist (hopefully), *it's not 100% guaranteed*.
 
 ###### *but imo if it works on iOS Windows and macOS it works on Android*
 
