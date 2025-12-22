@@ -55,7 +55,7 @@ namespace comments {
                         { "comment", commentDecoded },
                         { "messageID", mention["commentStr"]["messageID"] },
                         { "authorUsername", mention["authorStr"]["username"] },
-                        { "authorAccID", mention["commentStr"]["authorAccID"] },
+                        { "authorAccID", mention["authorStr"]["accID"] },
                         { "authorIcon", mention["authorStr"]["icon"] },
                         { "authorColorA", mention["authorStr"]["colorA"] },
                         { "authorColorB", mention["authorStr"]["colorB"] },
