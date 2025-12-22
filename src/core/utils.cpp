@@ -2,22 +2,12 @@
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/string.hpp>
-#include <algorithm>
 #include <string>
 
 using namespace geode::prelude;
 using namespace geode::utils;
 
 namespace CMUtils {
-    void notify(std::string title, std::string msg) {
-        AchievementNotifier::sharedState()->notifyAchievement(
-            title.c_str(),
-            msg.c_str(),
-            "accountBtn_messages_001.png",
-            true
-        );
-    }
-
     bool contains(std::string const& text, std::string const& contains) {
         auto pieces = string::split(text, " ");
 
