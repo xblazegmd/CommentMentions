@@ -3,6 +3,11 @@ name: Build Mod
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+        default: ""
     outputs:
       build-path:
         description: "Build output"
@@ -39,6 +44,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Build the mod
         uses: geode-sdk/build-geode-mod@main

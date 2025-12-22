@@ -1,0 +1,15 @@
+name: Nightly Build
+
+on:
+  schedule:
+    - cron: "0 3 * * *" # Should be 10:00 PM UTC-5
+  workflow_dispatch:
+  
+permissions:
+  contents: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      ref: dev
