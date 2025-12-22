@@ -36,12 +36,7 @@ namespace notifier {
     }
 
     ListenerResult Notifier::onNotificationEvent(Notification notification) {
-        AchievementNotifier::sharedState()->notifyAchievement(
-            notification.title.c_str(),
-            notification.message.c_str(),
-            "accountBtn_messages_001.png",
-            true
-        );
+        showNotification(notification);
         return ListenerResult::Stop;
     }
 
@@ -52,12 +47,7 @@ namespace notifier {
 
     ListenerResult Notifier::onPopQueueEvent() {
         for (const auto& notification : m_queue) {
-            AchievementNotifier::sharedState()->notifyAchievement(
-                notification.title.c_str(),
-                notification.message.c_str(),
-                "accountBtn_messages_001.png",
-                true
-            );
+            showNotification(notification);
         }
 
         m_queue.clear();
@@ -73,6 +63,15 @@ namespace notifier {
         } else {
             NotificationEvent(notification, false).post();
         }
+    }
+
+    void Notifier::showNotification(Notification const& notification) {
+        AchievementNotifier::sharedState()->notifyAchievement(
+            notification.title.c_str(),
+            notification.message.c_str(),
+            "accountBtn_messages_001.png",
+            true
+        );
     }
 
     Task<void> Notifier::canPopQueue() {

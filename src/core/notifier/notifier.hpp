@@ -53,6 +53,8 @@ namespace notifier {
             ListenerResult onNotificationEvent(Notification notification);
             ListenerResult onQueueEvent(Notification notification);
             ListenerResult onPopQueueEvent();
+
+            void showNotification(Notification const& notification);
             Task<void> canPopQueue();
         public:
             void notify(std::string title, std::string message);
