@@ -1,8 +1,15 @@
+# v0.1-beta.1
+- Rewrote ALL of the notification logic
+- Changed the logic that checks for mentions
+- Updated the icon that appears on the notifications
+
+Full Commit Changelog: [v1.1-alpha.4...v0.1-beta.1](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.4...v0.1-beta.1).
+
 # v0.1-alpha.4
 - Removed useless button in the profile page - that was for a scrapped feature
 - Added mention queue - now you shouldn't get notified while playing levels
 
-Full Commit Changelog: [v0.1-alpha.3...v0.1-alpha.4](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.2...v0.1-alpha.3).
+Full Commit Changelog: [v1.1-alpha.3...v0.1-alpha.4](https://github.com/xblazegmd/CommentMentions/compare/v0.1-alpha.3...v0.1-alpha.4).
 
 # v0.1-alpha.3
 ###### NOTE: Codes like `abdc123` are *Git commit hashes* or *commit ids*. Click on them for more info.

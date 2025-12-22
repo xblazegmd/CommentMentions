@@ -8,7 +8,7 @@
 	},
 	"id": "xblazegmd.commentmentions",
 	"name": "CommentMentions",
-	"version": "v0.1.0-alpha.4",
+	"version": "v0.1.0-beta.1",
 	"developer": "XblazeGMD",
 	"description": "Get notified everytime someone 'mentions' you",
 	"dependencies": {
@@ -30,7 +30,7 @@
 			"name": "Level ID",
 			"description": "The level id the listener will listen at ('Use Daily Level' must be off)",
 			"enable-if": "!setting:use-daily-lvl",
-			"default": 0,
+			"default": 68668045,
 			"min": 0,
 			"control": {
 				"arrows": false,
@@ -51,7 +51,7 @@
 			"description": "The maximum size the comment mention history (default: 20)",
 			"default": 20,
 			"min": 1,
-			"max": 1000
+			"max": 100
 		}
 	}
 }
