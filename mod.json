@@ -50,6 +50,13 @@
 			"default": "everyone, yourusernamehere",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
 		},
+		"tags": {
+			"type": "string",
+			"name": "Tags (deprecated)",
+			"description": "A comma separated string of tags the mod WILL look for in the comments.\n\n<co>DEPRECATED:</c> This setting was deprecated, and is currently not functional. Please use the \"Names\" setting instead.\nThis setting will be removed in <cj>v0.1-beta.3</c>",
+			"default": "everyone, yourusernamehere",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
+		},
 		"advanced-options-title": {
 			"type": "title",
 			"name": "Advanced"
