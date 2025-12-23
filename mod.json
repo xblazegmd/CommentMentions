@@ -43,7 +43,7 @@
 				"slider": false
 			}
 		},
-		"tags": {
+		"names": {
 			"type": "string",
 			"name": "Names",
 			"description": "A comma separated <cy>string of names that</c>, if found in a comment, will be considered a mention.\n\nThis is so people don't have to type your exact username for you to get notified.\n\nPlease note that the @ sign is <cr>not needed</c> for a comment to count as a mention",

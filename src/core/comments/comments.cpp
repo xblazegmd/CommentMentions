@@ -111,7 +111,7 @@ namespace comments {
     }
 
     bool CommentListener::containsMention(std::string str) {
-        std::vector<std::string> tags = getTags();
+        std::vector<std::string> names = getNames();
 
         auto commentRes = base64::decode(str, base64::Base64Variant::Url);
         if (commentRes.isErr()) {
@@ -123,17 +123,17 @@ namespace comments {
         std::string comment(bytes.begin(), bytes.end());
 
         std::string commentLower = string::toLower(comment);
-        for (const auto& tag : tags) {
-            if (CMUtils::contains(commentLower, tag)) {
+        for (const auto& name : names) {
+            if (CMUtils::contains(commentLower, name)) {
                 return true;
             }
         }
         return false;
     }
 
-    std::vector<std::string> CommentListener::getTags() {
-        auto tags = Mod::get()->getSettingValue<std::string>("tags");
-        auto parts = string::split(tags, ",");
+    std::vector<std::string> CommentListener::getNames() {
+        auto names = Mod::get()->getSettingValue<std::string>("names");
+        auto parts = string::split(names, ",");
 
         for (auto& part : parts) {
             part = string::trim(part);

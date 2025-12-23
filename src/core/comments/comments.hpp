@@ -26,7 +26,7 @@ namespace comments {
             ListenerTask startListener();
             EvalTask evalComments();
             bool containsMention(std::string str);
-            std::vector<std::string> getTags();
+            std::vector<std::string> getNames();
             void onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data);
         public:
             CommentListener(int levelID);
