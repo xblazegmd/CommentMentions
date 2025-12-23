@@ -16,11 +16,9 @@
 
 using namespace geode::prelude;
 
-static std::shared_ptr<comments::CommentListener> g_commentListener;
-
 void startListener(int levelID) {
-	g_commentListener = std::make_shared<comments::CommentListener>(levelID);
-	g_commentListener->start();
+	comments::CommentListener::sharedState() = std::make_shared<comments::CommentListener>(levelID);
+	comments::CommentListener::sharedState()->start();
 }
 
 $on_game(Loaded) {

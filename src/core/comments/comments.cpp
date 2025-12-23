@@ -13,6 +13,7 @@
 #include <Geode/utils/web.hpp>
 
 #include <chrono>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -34,6 +35,11 @@ namespace comments {
         if (m_running) {
             m_listenerCoro.cancel();
         }
+    }
+
+    std::shared_ptr<CommentListener>& CommentListener::sharedState() {
+        static std::shared_ptr<CommentListener> commentListener;
+        return commentListener;
     }
 
     ListenerTask CommentListener::startListener() {

@@ -5,6 +5,7 @@
 
 #include <Geode/utils/Task.hpp>
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -16,11 +17,6 @@ namespace comments {
     using EvalTask = Task<std::vector<std::unordered_map<std::string, formatReq::StrMap>>>;
 
     class CommentListener {
-        public:
-            CommentListener(int levelID);
-
-            void start();
-            void stop();
         private:
             int m_levelID;
             ListenerTask m_listenerCoro;
@@ -32,5 +28,17 @@ namespace comments {
             bool containsMention(std::string str);
             std::vector<std::string> getTags();
             void onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data);
+        public:
+            CommentListener(int levelID);
+
+            void start();
+            void stop();
+
+            /**
+             * WARNING: If the comment listener was not initialized this will return nullptr
+             *
+             * Please make sure to initialize this beforehand and check for nullptr when interacting with this
+             */
+            static std::shared_ptr<CommentListener>& sharedState();
     };
 }
