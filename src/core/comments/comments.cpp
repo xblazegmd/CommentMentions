@@ -37,6 +37,7 @@ namespace comments {
     }
 
     ListenerTask CommentListener::startListener() {
+        auto refreshInterval = Mod::get()->getSettingValue<int64_t>("refresh-interval");
         while (true) {
             auto mentions = co_await evalComments();
 
@@ -67,7 +68,7 @@ namespace comments {
                 }
             }
 
-            co_await coro::sleep(10);
+            co_await coro::sleep(refreshInterval);
         }
     }
 

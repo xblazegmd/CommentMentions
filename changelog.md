@@ -1,3 +1,6 @@
+# v0.1-beta.2
+- Added "Refresh Interval" option in settings
+
 # v0.1-beta.1
 - Rewrote ALL of the notification logic
 - Changed the logic that checks for mentions

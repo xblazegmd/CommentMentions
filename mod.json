@@ -45,6 +45,14 @@
 			"default": "everyone, yourusernamehere",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
 		},
+		"refresh-interval": {
+			"type": "int",
+			"name": "Refresh Interval",
+			"description": "The interval (in seconds) in which the mod will check for new mentions (default: 5)",
+			"default": 5,
+			"min": 5,
+			"max": 60
+		},
 		"mention-history-maxsize": {
 			"type": "int",
 			"name": "Maximum Mention History Size",
