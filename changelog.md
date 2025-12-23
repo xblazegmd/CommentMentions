@@ -1,5 +1,6 @@
 # v0.1-beta.2
 - Added "Refresh Interval" option in settings
+- Improved the mod's settings
 
 # v0.1-beta.1
 - Rewrote ALL of the notification logic
