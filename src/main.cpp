@@ -48,7 +48,7 @@ $on_game(Loaded) {
 		// THANK YOU FOR THE NEW ASYNC SYSTEM GEODE
 		// Bro tasks were so annoying man, I love this change
 		async::spawn(req.post(CMUtils::BOOMLINGS + "getGJLevels21.php"), [](web::WebResponse res) {
-			if (!(res.ok() && res.string().isOk())) {
+			if (res.ok() && res.string().isOk()) {
         		auto levels = string::split(res.string().unwrap(), "#");
         		auto levelsSplit = string::split(levels[0], "|");
         		auto dailyLevel = string::split(levelsSplit[0], ":");
