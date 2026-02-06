@@ -15,7 +15,6 @@
 #include <Geode/utils/web.hpp>
 
 #include <chrono>
-#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -36,6 +35,14 @@ namespace comments {
 
     void CommentManager::stopAll() {
         m_listener.cancel();
+    }
+
+    void CommentManager::addLevelID(int id) {
+        m_levelIDs.push_back(id);
+    }
+
+    void CommentManager::removeLevelID(int id) {
+        // TODO: Safely remove ID without breaking everything
     }
 
     arc::Future<> CommentManager::commentEval() {
