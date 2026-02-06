@@ -1,6 +1,7 @@
 #include "comments.hpp"
 #include "Geode/loader/Log.hpp"
 #include "Geode/utils/StringMap.hpp"
+#include "Geode/utils/general.hpp"
 
 #include <arc/future/Future.hpp>
 #include <arc/time/Sleep.hpp>
@@ -48,9 +49,9 @@ namespace comments {
             auto req = web::WebRequest()
                 .userAgent("")
                 .timeout(std::chrono::seconds(10))
-                .bodyString("body");
-            auto res = co_await req.post(CMUtils::BOOMLINGS + "getGJComments21.php");
+                .bodyString("levelID=" + utils::numToString(m_levelID) + "&page=0&secret=" + CMUtils::SECRET);
 
+            auto res = co_await req.post(CMUtils::BOOMLINGS + "getGJComments21.php");
             if (res.ok() && res.string().isOk()) {
                 auto comments = string::split(res.string().unwrap(), "|");
                 for (const auto& comment : comments) {

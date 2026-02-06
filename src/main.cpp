@@ -40,10 +40,11 @@ $on_game(Loaded) {
 	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 
 	if (useDailyLvl) {
+		std::string ftype = "21"; // TODO: Weekly and event level support
 		auto req = web::WebRequest()
 			.userAgent("")
 			.timeout(std::chrono::seconds(10))
-			.bodyString("body-goes-here");
+			.bodyString("type=" + ftype + "&secret=" + CMUtils::SECRET);
 
 		// THANK YOU FOR THE NEW ASYNC SYSTEM GEODE
 		// Bro tasks were so annoying man, I love this change
