@@ -19,17 +19,22 @@
 		"source": "https://github.com/xblazegmd/CommentMentions"
 	},
 	"settings": {
+		"options-title": {
+			"type": "title",
+			"name": "Basic Options"
+		},
 		"use-daily-lvl": {
 			"type": "bool",
 			"name": "Use Daily Level",
-			"description": "Should the listener listen to the current daily level?",
+			"description": "Should the mod check for mentions in the <cj>current daily level?</c>",
 			"default": true
 		},
 		"level-id": {
 			"type": "int",
 			"name": "Level ID",
-			"description": "The level id the listener will listen at ('Use Daily Level' must be off)",
+			"description": "The level id the mod will look for mentions at\n(<cg>'Use Daily Level'</c> must be <cr>off</c>)",
 			"enable-if": "!setting:use-daily-lvl",
+			"enable-if-description": "'Use Daily Level' must be off",
 			"default": 68668045,
 			"min": 0,
 			"control": {
@@ -38,17 +43,36 @@
 				"slider": false
 			}
 		},
-		"tags": {
+		"names": {
 			"type": "string",
-			"name": "Tags",
-			"description": "A comma separated string of tags the mod WILL look for in the comments",
+			"name": "Names",
+			"description": "A comma separated <cy>string of names that</c>, if found in a comment, will be considered a mention.\n\nThis is so people don't have to type your exact username for you to get notified.\n\nPlease note that the @ sign is <cr>not needed</c> for a comment to count as a mention",
 			"default": "everyone, yourusernamehere",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
 		},
+		"tags": {
+			"type": "string",
+			"name": "Tags (deprecated)",
+			"description": "A comma separated string of tags the mod WILL look for in the comments.\n\n<co>DEPRECATED:</c> This setting was deprecated, and is currently not functional. Please use the \"Names\" setting instead.\nThis setting will be removed in <cj>v0.1-beta.3</c>",
+			"default": "everyone, yourusernamehere",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
+		},
+		"advanced-options-title": {
+			"type": "title",
+			"name": "Advanced"
+		},
+		"refresh-interval": {
+			"type": "int",
+			"name": "Refresh Interval",
+			"description": "The <cy>interval</c> (in seconds) in which the mod will check for new mentions (default: 5)",
+			"default": 5,
+			"min": 5,
+			"max": 60
+		},
 		"mention-history-maxsize": {
 			"type": "int",
-			"name": "Maximum Mention History Size",
-			"description": "The maximum size the comment mention history (default: 20)",
+			"name": "Maximum History Size",
+			"description": "The maximum size for the <cy>internal mention history</c> (default: 20)",
 			"default": 20,
 			"min": 1,
 			"max": 100
