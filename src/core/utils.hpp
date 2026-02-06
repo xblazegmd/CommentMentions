@@ -2,6 +2,7 @@
 
 #include <Geode/Result.hpp>
 #include <Geode/utils/general.hpp>
+#include <arc/future/Future.hpp>
 #include <string>
 
 using namespace geode::prelude;
@@ -21,6 +22,7 @@ namespace CMUtils {
         const utils::StringMap<std::string>& formatMap
     );
     CommentObject formatCommentObj(const std::string& str);
+    arc::Future<Result<int>> getSpecialID(const std::string& type);
 
     bool stringIsOk(Result<std::string> str);
 

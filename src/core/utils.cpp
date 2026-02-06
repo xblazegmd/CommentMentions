@@ -1,9 +1,13 @@
 #include "utils.hpp"
 
 #include <Geode/Geode.hpp>
+#include <Geode/Result.hpp>
 #include <Geode/utils/general.hpp>
+#include <Geode/utils/async.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/string.hpp>
+#include <Geode/utils/web.hpp>
+#include <arc/future/Future.hpp>
 #include <string>
 
 using namespace geode::prelude;
@@ -68,6 +72,33 @@ namespace CMUtils {
         } else log::error("Could not decode base64: {}", decoded.unwrapErr());
 
         return ret;
+    }
+
+    arc::Future<Result<int>> getSpecialID(const std::string& type) {
+        auto req = web::WebRequest()
+            .userAgent("")
+            .timeout(std::chrono::seconds(10))
+            .bodyString("type=" + type + "&secret=" + SECRET);
+        auto res = co_await req.post(BOOMLINGS + "getGJLevels21.php");
+		if (res.ok() && CMUtils::stringIsOk(res.string())) {
+     		auto levels = string::split(res.string().unwrap(), "#");
+     		auto levelsSplit = string::split(levels[0], "|");
+     		auto dailyLevel = string::split(levelsSplit[0], ":");
+
+     		for (int i = 0; i < dailyLevel.size(); i += 2) {
+     		    if (dailyLevel[i] == "1") {
+     		        int dailyID = numFromString<int>(dailyLevel[i + 1]).unwrapOr(0); // TODO: Fallback to fixed ID
+                    co_return Ok(dailyID);
+     		    }
+     		}
+		} else {
+			Notification::create(
+				"Could not fetch daily level ID",
+				NotificationIcon::Error,
+				2
+			)->show();
+            co_return Err("Coult not fetch daily level ID");
+		}
     }
 
     bool stringIsOk(Result<std::string> str) {
