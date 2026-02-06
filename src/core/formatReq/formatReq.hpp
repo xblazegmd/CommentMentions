@@ -1,18 +1,25 @@
 #pragma once
 
+#include <Geode/utils/general.hpp>
 #include <string>
 #include <unordered_map>
 
-namespace formatReq {
-    using StrMap = std::unordered_map<std::string, std::string>;
+namespace format {
+    // geode::utils::StringMap<std::string> stringToMap(const std::string& str, const std::string& sep);
+    // geode::utils::StringMap<std::string> formatMap(
+    //     const geode::utils::StringMap<std::string>& x,
+    //     const geode::utils::StringMap<std::string>& map
+    // );
+    // geode::utils::StringMap<std::string> formatString(
+    //     const std::string& str,
+    //     const std::string& sep,
+    //     const geode::utils::StringMap<std::string>& map
+    // );
 
-    StrMap stringToMap(std::string str, std::string sep);
+    // struct CommentObject {
+    //     geode::utils::StringMap<std::string> comment;
+    //     geode::utils::StringMap<std::string> author;
+    // };
 
-    StrMap formatMap(const StrMap& map, const StrMap& formatKeys);
-
-    std::unordered_map<std::string, StrMap> formatCommentObj(std::string str);
-
-    StrMap formatCommentStr(std::string str);
-
-    StrMap formatAuthorStr(std::string str);
+    // CommentObject formatCommentObj(const std::string& str);
 }

@@ -1,13 +1,9 @@
 #include "comments.hpp"
-#include "Geode/loader/Log.hpp"
-#include "Geode/utils/StringMap.hpp"
-#include "Geode/utils/general.hpp"
 
 #include <arc/future/Future.hpp>
 #include <arc/time/Sleep.hpp>
 #include <asp/time/Duration.hpp>
 #include <core/utils.hpp>
-#include <core/formatReq/formatReq.hpp>
 #include <core/history/history.hpp>
 // #include <core/notifier/notifier.hpp>
 
@@ -21,6 +17,7 @@
 #include <chrono>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 using namespace geode::prelude;
@@ -44,7 +41,7 @@ namespace comments {
 
     arc::Future<> CommentListener::commentEval() {
         while (true) {
-            std::vector<utils::StringMap<std::string>> foundComments;
+            std::vector<CMUtils::CommentObject> foundComments;
 
             auto req = web::WebRequest()
                 .userAgent("")
@@ -52,10 +49,13 @@ namespace comments {
                 .bodyString("levelID=" + utils::numToString(m_levelID) + "&page=0&secret=" + CMUtils::SECRET);
 
             auto res = co_await req.post(CMUtils::BOOMLINGS + "getGJComments21.php");
-            if (res.ok() && res.string().isOk()) {
+            if (res.ok() && CMUtils::stringIsOk(res.string())) {
                 auto comments = string::split(res.string().unwrap(), "|");
                 for (const auto& comment : comments) {
-                    // TODO:  Match finder & formatting
+                    auto obj = CMUtils::formatCommentObj(comment);
+                    if (containsMention(obj.comment["comment"])) {
+                        foundComments.emplace_back(obj);
+                    }
                 }
             } else {
                 log::error("Failed to fetch comments for ID '{}'", m_levelID);

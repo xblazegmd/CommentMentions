@@ -2,7 +2,6 @@
 
 #include "Geode/utils/StringMap.hpp"
 #include <arc/future/Future.hpp>
-#include <core/formatReq/formatReq.hpp>
 // #include <core/notifier/notifier.hpp>
 
 #include <Geode/utils/async.hpp>
@@ -14,8 +13,8 @@
 using namespace geode;
 
 namespace comments {
-    using ListenerTask = Task<void>;
-    using EvalTask = Task<std::vector<std::unordered_map<std::string, formatReq::StrMap>>>;
+    // using ListenerTask = Task<void>;
+    // using EvalTask = Task<std::vector<std::unordered_map<std::string, formatReq::StrMap>>>;
 
     class CommentListener {
     public:
