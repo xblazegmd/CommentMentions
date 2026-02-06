@@ -26,7 +26,7 @@ namespace levelFetch {
         req.userAgent("");
         req.timeout(std::chrono::seconds(10));
         req.bodyString(params);
-            
+
         m_reqListener = std::make_shared<EventListener<web::WebTask>>();
         m_reqListener->bind([this, callback](web::WebTask::Event* ev) {
             if (web::WebResponse* res = ev->getValue()) {
