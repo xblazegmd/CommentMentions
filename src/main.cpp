@@ -29,19 +29,13 @@ void startListener(int levelID) {
 $on_game(Loaded) {
 	auto mod = Mod::get();
 	// Is this the users' first time using the mod?
-	if (!mod->setSavedValue("shown-first-time-msg", true)) {
-		FLAlertLayer::create(
-			"CommentMentions",
-			"Thank you for using <co>CommentMentions!</c>. Make sure to change the <cj>names option</c> in the mod's settings",
-			"OK"
-		)->show();
-	} else if (!mod->setSavedValue("tags-to-names-migration-disc", true)) {
-		FLAlertLayer::create(
-			"WARNING",
-			"The <cg>Tags</c> setting in <co>CommentMentions</c> was deprecated, and is currently not functional. Please use the <cy>Names</c> setting instead.\n<cr>THE OLD TAGS SETTING WILL BE REMOVED IN v0.1-BETA.3</c>",
-			"OK"
-		)->show();
-	}
+	// if (!mod->setSavedValue("shown-first-time-msg", true)) {
+	// 	FLAlertLayer::create(
+	// 		"CommentMentions",
+	// 		"Thank you for using <co>CommentMentions!</c>. Make sure to change the <cj>tags option</c> in the mod's settings",
+	// 		"OK"
+	// 	)->show();
+	// }
 
 	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 
