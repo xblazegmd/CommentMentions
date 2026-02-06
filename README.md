@@ -7,15 +7,8 @@ Basically [I Have Been Summoned](https://github.com/xblazegmd/ihavebeensummoned)
 <div align="center">
 </div>
 
-> [!IMPORTANT]
-> This mod is only compatible with Geode 4.10.0. 4.11 support *may* be added in the future but idrk
-
 ## DISCLAIMER
 This mod is still in development. Bugs are to be expected.
-
-This mod was only properly tested in iOS, Windows, and macOS. While stability for Android should exist (hopefully), *it's not 100% guaranteed*.
-
-###### *but imo if it works on iOS Windows and macOS it works on Android*
 
 ## License
 This mod is licensed under the **Mozilla Public License 2.0**.
