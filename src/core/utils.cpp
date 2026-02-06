@@ -36,7 +36,7 @@ namespace CMUtils {
         CommentObject ret;
         auto pieces = string::split(str, ":");
 
-        ret.comment = formatReq(str, "~", {
+        ret.comment = formatReq(pieces[0], "~", {
             { "1", "levelID" },
             { "2", "comment" },
             { "3", "authorPlayerID" },
@@ -50,7 +50,7 @@ namespace CMUtils {
             { "11", "modBadge" },
             { "12", "moderatorChatColor" },
         });
-        ret.author = formatReq(str, "~", {
+        ret.author = formatReq(pieces[1], "~", {
             { "1", "userName" },
             { "9", "icon" },
             { "10", "playerColor" },
