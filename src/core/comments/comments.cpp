@@ -67,7 +67,7 @@ namespace comments {
                 for (const auto& comment : foundComments) {
                     auto username = comment.author.find("userName");
                     auto accountID = comment.author.find("accountID");
-                    auto msg = comment.author.find("comment");
+                    auto msg = comment.comment.find("comment");
 
                     onMention(
                         username != comment.author.end() ? username->second : "User",
