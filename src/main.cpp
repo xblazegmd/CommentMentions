@@ -1,7 +1,6 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
-#include "Geode/loader/Log.hpp"
 #include <chrono>
 #include <core/comments/comments.hpp>
 #include <core/utils.hpp>
@@ -48,7 +47,7 @@ $on_game(Loaded) {
 
 		// THANK YOU FOR THE NEW ASYNC SYSTEM GEODE
 		// Bro tasks were so annoying man, I love this change
-		async::spawn(req.post(CMUtils::BOOMLINGS), [](web::WebResponse res) {
+		async::spawn(req.post(CMUtils::BOOMLINGS + "getGJLevels21.php"), [](web::WebResponse res) {
 			if (!(res.ok() && res.string().isOk())) {
         		auto levels = string::split(res.string().unwrap(), "#");
         		auto levelsSplit = string::split(levels[0], "|");

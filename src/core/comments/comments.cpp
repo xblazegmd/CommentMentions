@@ -1,13 +1,16 @@
 #include "comments.hpp"
 
+#include <arc/future/Future.hpp>
+#include <arc/time/Sleep.hpp>
+#include <asp/time/Duration.hpp>
 #include <core/utils.hpp>
 #include <core/formatReq/formatReq.hpp>
 #include <core/history/history.hpp>
-#include <core/notifier/notifier.hpp>
+// #include <core/notifier/notifier.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
-#include <Geode/utils/coro.hpp>
+#include <Geode/utils/async.hpp>
 #include <Geode/utils/string.hpp>
 #include <Geode/utils/Task.hpp>
 #include <Geode/utils/web.hpp>
@@ -26,122 +29,137 @@ namespace comments {
     {};
 
     void CommentListener::start() {
-        m_listenerCoro = std::get<0>(coro::spawn << startListener());
-        m_running = true;
+        m_listener.spawn(
+            "Comment Listener",
+            commentEval()
+        );
     }
 
     void CommentListener::stop() {
-        if (m_running) {
-            m_listenerCoro.cancel();
-        }
+        m_listener.cancel();
     }
 
-    ListenerTask CommentListener::startListener() {
+    arc::Future<> CommentListener::commentEval() {
         while (true) {
-            auto mentions = co_await evalComments();
+            auto req = web::WebRequest()
+                .userAgent("")
+                .timeout(std::chrono::seconds(10))
+                .bodyString("body");
 
-            if (!mentions.empty()) {
-                for (auto mention : mentions) {
-                    auto commentDecodedRes = base64::decode(mention["commentStr"]["comment"], base64::Base64Variant::Url);
-                    if (commentDecodedRes.isErr()) {
-                        log::error("Could not decode comment '{}': {}", mention["commentStr"]["comment"], commentDecodedRes.unwrapErr());
-                        continue;
-                    }
+            auto handle = async::spawn(req.post(CMUtils::BOOMLINGS + "getGJComments21.php"));
 
-                    auto bytes = commentDecodedRes.unwrap();
-                    std::string commentDecoded(bytes.begin(), bytes.end());
+            // TODO: Basically everything lol
 
-                    std::unordered_map<std::string, std::string> mentionData{
-                        { "comment", commentDecoded },
-                        { "messageID", mention["commentStr"]["messageID"] },
-                        { "authorUsername", mention["authorStr"]["username"] },
-                        { "authorAccID", mention["authorStr"]["accID"] },
-                        { "authorIcon", mention["authorStr"]["icon"] },
-                        { "authorColorA", mention["authorStr"]["colorA"] },
-                        { "authorColorB", mention["authorStr"]["colorB"] },
-                        { "authorIconType", mention["authorStr"]["iconType"] },
-                        { "authorGlow", mention["authorStr"]["glow"] }
-                    };
-
-                    onMention(mention["authorStr"]["username"], commentDecoded, mentionData);
-                }
-            }
-
-            co_await coro::sleep(10);
+            co_await arc::sleep(asp::Duration::fromSecs(10));
         }
     }
 
-    EvalTask CommentListener::evalComments() {
-        return EvalTask::runWithCallback([this](auto finish, auto prog, auto isCancelled) {
-            std::string params = "levelID=" + std::to_string(this->m_levelID) + "&page=0&secret=" + CMUtils::SECRET;
+    // ListenerTask CommentListener::startListener() {
+    //     while (true) {
+    //         auto mentions = co_await evalComments();
 
-            auto req = web::WebRequest();
-            req.userAgent("");
-            req.timeout(std::chrono::seconds(10));
-            req.bodyString(params);
+    //         if (!mentions.empty()) {
+    //             for (auto mention : mentions) {
+    //                 auto commentDecodedRes = base64::decode(mention["commentStr"]["comment"], base64::Base64Variant::Url);
+    //                 if (commentDecodedRes.isErr()) {
+    //                     log::error("Could not decode comment '{}': {}", mention["commentStr"]["comment"], commentDecodedRes.unwrapErr());
+    //                     continue;
+    //                 }
 
-            req.post(CMUtils::BOOMLINGS + "getGJComments21.php")
-                .listen([this, finish](web::WebResponse *res) {
-                    if (res && res->ok() && res->string().isOk()) {
-                        auto comments = string::split(res->string().unwrap(), "|");
-                        std::vector<std::unordered_map<std::string, formatReq::StrMap>> foundComments;
+    //                 auto bytes = commentDecodedRes.unwrap();
+    //                 std::string commentDecoded(bytes.begin(), bytes.end());
 
-                        for (std::string comment : comments) {
-                            auto commentObj = formatReq::formatCommentObj(comment);
-                            if (this->containsMention(commentObj["commentStr"]["comment"])) {
-                                foundComments.push_back(commentObj);
-                            }
-                        }
+    //                 std::unordered_map<std::string, std::string> mentionData{
+    //                     { "comment", commentDecoded },
+    //                     { "messageID", mention["commentStr"]["messageID"] },
+    //                     { "authorUsername", mention["authorStr"]["username"] },
+    //                     { "authorAccID", mention["authorStr"]["accID"] },
+    //                     { "authorIcon", mention["authorStr"]["icon"] },
+    //                     { "authorColorA", mention["authorStr"]["colorA"] },
+    //                     { "authorColorB", mention["authorStr"]["colorB"] },
+    //                     { "authorIconType", mention["authorStr"]["iconType"] },
+    //                     { "authorGlow", mention["authorStr"]["glow"] }
+    //                 };
 
-                        finish(foundComments);
-                    } else {
-                        log::error("Could not fetch comments ({}, response: {})", res->code(), res->string().unwrapOr("..."));
-                        std::vector<std::unordered_map<std::string, formatReq::StrMap>> emptyLol;
-                        finish(emptyLol);
-                    }
-                });
-        }, "evalComments");
-    }
+    //                 onMention(mention["authorStr"]["username"], commentDecoded, mentionData);
+    //             }
+    //         }
 
-    bool CommentListener::containsMention(std::string str) {
-        std::vector<std::string> tags = getTags();
+    //         co_await coro::sleep(10);
+    //     }
+    // }
 
-        auto commentRes = base64::decode(str, base64::Base64Variant::Url);
-        if (commentRes.isErr()) {
-            log::error("Could not decode comment '{}': {}", str, commentRes.unwrapErr());
-            return false;
-        }
+    // EvalTask CommentListener::evalComments() {
+    //     return EvalTask::runWithCallback([this](auto finish, auto prog, auto isCancelled) {
+    //         std::string params = "levelID=" + std::to_string(this->m_levelID) + "&page=0&secret=" + CMUtils::SECRET;
 
-        auto bytes = commentRes.unwrap();
-        std::string comment(bytes.begin(), bytes.end());
+    //         auto req = web::WebRequest();
+    //         req.userAgent("");
+    //         req.timeout(std::chrono::seconds(10));
+    //         req.bodyString(params);
 
-        std::string commentLower = string::toLower(comment);
-        for (const auto& tag : tags) {
-            if (CMUtils::contains(commentLower, tag)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    //         req.post(CMUtils::BOOMLINGS + "getGJComments21.php")
+    //             .listen([this, finish](web::WebResponse *res) {
+    //                 if (res && res->ok() && res->string().isOk()) {
+    //                     auto comments = string::split(res->string().unwrap(), "|");
+    //                     std::vector<std::unordered_map<std::string, formatReq::StrMap>> foundComments;
 
-    std::vector<std::string> CommentListener::getTags() {
-        auto tags = Mod::get()->getSettingValue<std::string>("tags");
-        auto parts = string::split(tags, ",");
+    //                     for (std::string comment : comments) {
+    //                         auto commentObj = formatReq::formatCommentObj(comment);
+    //                         if (this->containsMention(commentObj["commentStr"]["comment"])) {
+    //                             foundComments.push_back(commentObj);
+    //                         }
+    //                     }
 
-        for (auto& part : parts) {
-            part = string::trim(part);
-        }
-        return parts;
-    }
+    //                     finish(foundComments);
+    //                 } else {
+    //                     log::error("Could not fetch comments ({}, response: {})", res->code(), res->string().unwrapOr("..."));
+    //                     std::vector<std::unordered_map<std::string, formatReq::StrMap>> emptyLol;
+    //                     finish(emptyLol);
+    //                 }
+    //             });
+    //     }, "evalComments");
+    // }
 
-    void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
-        if (history::mentionExists(data)) return;
-        history::updateHistory(data);
+    // bool CommentListener::containsMention(std::string str) {
+    //     std::vector<std::string> tags = getTags();
 
-	    log::info("Mention from @{}, '{}'", user, msg);
-        m_notifier.notify(
-            user + " mentioned you",
-            msg
-        );
-    }
+    //     auto commentRes = base64::decode(str, base64::Base64Variant::Url);
+    //     if (commentRes.isErr()) {
+    //         log::error("Could not decode comment '{}': {}", str, commentRes.unwrapErr());
+    //         return false;
+    //     }
+
+    //     auto bytes = commentRes.unwrap();
+    //     std::string comment(bytes.begin(), bytes.end());
+
+    //     std::string commentLower = string::toLower(comment);
+    //     for (const auto& tag : tags) {
+    //         if (CMUtils::contains(commentLower, tag)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
+
+    // std::vector<std::string> CommentListener::getTags() {
+    //     auto tags = Mod::get()->getSettingValue<std::string>("tags");
+    //     auto parts = string::split(tags, ",");
+
+    //     for (auto& part : parts) {
+    //         part = string::trim(part);
+    //     }
+    //     return parts;
+    // }
+
+    // void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
+    //     if (history::mentionExists(data)) return;
+    //     history::updateHistory(data);
+
+	//     log::info("Mention from @{}, '{}'", user, msg);
+    //     m_notifier.notify(
+    //         user + " mentioned you",
+    //         msg
+    //     );
+    // }
 }
