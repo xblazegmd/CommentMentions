@@ -4,7 +4,6 @@
 #include "Geode/loader/Log.hpp"
 #include <chrono>
 #include <core/comments/comments.hpp>
-#include <core/levelFetch/levelFetch.hpp>
 #include <core/utils.hpp>
 
 #include <Geode/Geode.hpp>
