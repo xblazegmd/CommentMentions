@@ -30,7 +30,8 @@ namespace comments {
     void CommentListener::start() {
         m_listener.spawn(
             "Comment Listener",
-            commentEval()
+            commentEval(),
+            [] {}
         );
     }
 
@@ -53,7 +54,7 @@ namespace comments {
                 for (const auto& comment : comments) {
                     auto obj = CMUtils::formatCommentObj(comment);
                     if (containsMention(obj.comment["comment"])) {
-                        foundComments.emplace_back(obj);
+                        foundComments.push_back(obj);
                     }
                 }
             } else {
@@ -64,7 +65,15 @@ namespace comments {
 
             if (!foundComments.empty()) {
                 for (const auto& comment : foundComments) {
-                    // TODO: stuff
+                    auto username = comment.author.find("userName");
+                    auto accountID = comment.author.find("accountID");
+                    auto msg = comment.author.find("comment");
+
+                    onMention(
+                        username != comment.author.end() ? username->second : "User",
+                        accountID != comment.author.end() ? accountID->second : "-1",
+                        msg != comment.comment.end() ? msg->second : "N/A"
+                    );
                 }
             }
 
@@ -79,6 +88,10 @@ namespace comments {
             if (string::contains(lower, tag)) return true;
         }
         return false;
+    }
+
+    void CommentListener::onMention(const std::string& user, const std::string accountID, const std::string& msg) {
+        log::info("Mention from @{}: '{}'", user, msg);
     }
 
     // ListenerTask CommentListener::startListener() {

@@ -28,7 +28,7 @@ namespace comments {
 
         arc::Future<> commentEval();
         bool containsMention(const std::string& str);
-        void onMention(const std::string& user, const std::string& msg, utils::StringMap<std::string> data);
+        void onMention(const std::string& user, const std::string accountID, const std::string& msg);
         // public:
         //     CommentListener(int levelID);
 
