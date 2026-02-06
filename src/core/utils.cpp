@@ -2,6 +2,7 @@
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/general.hpp>
+#include <Geode/utils/base64.hpp>
 #include <Geode/utils/string.hpp>
 #include <string>
 
@@ -58,6 +59,13 @@ namespace CMUtils {
             { "15", "glow" },
             { "16", "accountID" },
         });
+
+        // Decode comment
+        auto decoded = base64::decode(ret.comment["comment"], base64::Base64Variant::Url);
+        if (decoded.isOk()) {
+            auto bytes = decoded.unwrap();
+            ret.comment["comment"] = std::string(bytes.begin(), bytes.end());
+        } else log::error("Could not decode base64: {}", decoded.unwrapErr());
 
         return ret;
     }

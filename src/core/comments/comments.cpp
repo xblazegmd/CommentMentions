@@ -17,7 +17,6 @@
 #include <chrono>
 #include <string>
 #include <unordered_map>
-#include <utility>
 #include <vector>
 
 using namespace geode::prelude;
@@ -64,11 +63,22 @@ namespace comments {
             }
 
             if (!foundComments.empty()) {
-                // TODO: Match code
+                for (const auto& comment : foundComments) {
+                    // TODO: stuff
+                }
             }
 
             co_await arc::sleep(asp::Duration::fromSecs(10));
         }
+    }
+
+    bool CommentListener::containsMention(const std::string& str) {
+        std::vector<std::string> tags{ "xblazegmd", "xblaze", "blaze" }; // Hardcoded for testing
+        auto lower = string::toLower(str);
+        for (const auto& tag : tags) {
+            if (string::contains(lower, tag)) return true;
+        }
+        return false;
     }
 
     // ListenerTask CommentListener::startListener() {
