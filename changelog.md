@@ -1,5 +1,6 @@
-# v0.2-alpha.1
+# v1.0-alpha.1
 - Update to Geode v5
+- Fixed my code mess
 
 # v0.1-beta.1
 - Rewrote ALL of the notification logic
