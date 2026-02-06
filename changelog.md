@@ -1,3 +1,6 @@
+# v0.2-alpha.1
+- Update to Geode v5
+
 # v0.1-beta.1
 - Rewrote ALL of the notification logic
 - Changed the logic that checks for mentions
