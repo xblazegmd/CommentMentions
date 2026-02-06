@@ -1,4 +1,6 @@
 #include "comments.hpp"
+#include "Geode/loader/Log.hpp"
+#include "Geode/utils/StringMap.hpp"
 
 #include <arc/future/Future.hpp>
 #include <arc/time/Sleep.hpp>
@@ -41,14 +43,28 @@ namespace comments {
 
     arc::Future<> CommentListener::commentEval() {
         while (true) {
+            std::vector<utils::StringMap<std::string>> foundComments;
+
             auto req = web::WebRequest()
                 .userAgent("")
                 .timeout(std::chrono::seconds(10))
                 .bodyString("body");
+            auto res = co_await req.post(CMUtils::BOOMLINGS + "getGJComments21.php");
 
-            auto handle = async::spawn(req.post(CMUtils::BOOMLINGS + "getGJComments21.php"));
+            if (res.ok() && res.string().isOk()) {
+                auto comments = string::split(res.string().unwrap(), "|");
+                for (const auto& comment : comments) {
+                    // TODO:  Match finder & formatting
+                }
+            } else {
+                log::error("Failed to fetch comments for ID '{}'", m_levelID);
+                log::info("Status code: {}", res.code());
+                log::info("Response: '{}'", res.string().unwrapOr("N/A"));
+            }
 
-            // TODO: Basically everything lol
+            if (!foundComments.empty()) {
+                // TODO: Match code
+            }
 
             co_await arc::sleep(asp::Duration::fromSecs(10));
         }
