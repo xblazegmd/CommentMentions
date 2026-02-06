@@ -23,23 +23,23 @@ using namespace geode::prelude;
 using namespace geode::utils;
 
 namespace comments {
-    CommentListener::CommentListener(int levelID) :
+    CommentManager::CommentManager(int levelID) :
         m_levelID(levelID)
     {};
 
-    void CommentListener::start() {
+    void CommentManager::start() {
         m_listener.spawn(
-            "Comment Listener",
+            "CommentManager",
             commentEval(),
             [] {}
         );
     }
 
-    void CommentListener::stop() {
+    void CommentManager::stop() {
         m_listener.cancel();
     }
 
-    arc::Future<> CommentListener::commentEval() {
+    arc::Future<> CommentManager::commentEval() {
         while (true) {
             std::vector<CMUtils::CommentObject> foundComments;
 
@@ -81,7 +81,7 @@ namespace comments {
         }
     }
 
-    bool CommentListener::containsMention(const std::string& str) {
+    bool CommentManager::containsMention(const std::string& str) {
         std::vector<std::string> tags{ "xblazegmd", "xblaze", "blaze" }; // Hardcoded for testing
         auto lower = string::toLower(str);
         for (const auto& tag : tags) {
@@ -90,10 +90,9 @@ namespace comments {
         return false;
     }
 
-    void CommentListener::onMention(const std::string& user, const std::string accountID, const std::string& msg) {
+    void CommentManager::onMention(const std::string& user, const std::string accountID, const std::string& msg) {
         log::info("Mention from @{}: '{}'", user, msg);
     }
-
     // ListenerTask CommentListener::startListener() {
     //     while (true) {
     //         auto mentions = co_await evalComments();

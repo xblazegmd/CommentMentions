@@ -19,10 +19,10 @@
 
 using namespace geode::prelude;
 
-static std::shared_ptr<comments::CommentListener> g_commentListener;
+static std::shared_ptr<comments::CommentManager> g_commentListener;
 
 void startListener(int levelID) {
-	g_commentListener = std::make_shared<comments::CommentListener>(levelID);
+	g_commentListener = std::make_shared<comments::CommentManager>(levelID);
 	g_commentListener->start();
 }
 

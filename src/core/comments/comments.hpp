@@ -16,9 +16,9 @@ namespace comments {
     // using ListenerTask = Task<void>;
     // using EvalTask = Task<std::vector<std::unordered_map<std::string, formatReq::StrMap>>>;
 
-    class CommentListener {
+    class CommentManager {
     public:
-        CommentListener(int levelID);
+        CommentManager(int levelID);
 
         void start();
         void stop();
