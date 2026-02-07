@@ -1,6 +1,8 @@
 #include "comments.hpp"
 
+#include <algorithm>
 #include <arc/future/Future.hpp>
+#include <arc/sync/Mutex.hpp>
 #include <arc/time/Sleep.hpp>
 #include <asp/time/Duration.hpp>
 #include <core/utils.hpp>
@@ -31,18 +33,29 @@ namespace comments {
             commentEval(),
             [] {}
         );
+        m_running = true;
     }
 
     void CommentManager::stopAll() {
         m_listener.cancel();
+        m_running = false;
     }
 
-    void CommentManager::addLevelID(int id) {
+    Result<> CommentManager::addLevelID(int id) {
+        if (m_running)
+            return Err("You cannot modify the targets while running!");
         m_levelIDs.push_back(id);
+        return Ok();
     }
 
-    void CommentManager::removeLevelID(int id) {
-        // TODO: Safely remove ID without breaking everything
+    Result<> CommentManager::removeLevelID(int id) {
+        if (m_running)
+            return Err("You cannot modify the targets while running!");
+        m_levelIDs.erase(
+            std::remove(m_levelIDs.begin(), m_levelIDs.end(), id),
+            m_levelIDs.end()
+        );
+        return Ok();
     }
 
     arc::Future<> CommentManager::commentEval() {
