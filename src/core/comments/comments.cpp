@@ -159,6 +159,7 @@ namespace CommentMentions {
             if (msgIt == mention.end()) return false;
             if (msgIt->second == msg) return true;
         }
+        return false;
     }
 
     void CommentManager::saveHistory() {
