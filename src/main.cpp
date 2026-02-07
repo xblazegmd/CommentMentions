@@ -43,6 +43,7 @@ $on_game(Loaded) {
 		auto handle = async::spawn(CMUtils::getSpecialID("21"));
 		auto id = handle.blockOn();
 		if (id.isOk()) g_commentManager->addTargetID(id.unwrap());
+		else log::error("Error when fetching daily ID: {}", id.unwrapErr());
 	}
 
 	auto fixedID = mod->getSettingValue<int64_t>("level-id");

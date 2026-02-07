@@ -82,14 +82,12 @@ namespace CMUtils {
 		if (res.ok() && CMUtils::stringIsOk(res.string())) {
      		auto levels = string::split(res.string().unwrap(), "#");
      		auto levelsSplit = string::split(levels[0], "|");
-     		auto dailyLevel = string::split(levelsSplit[0], ":");
+            auto dailyLevel = formatReq(levelsSplit[0], ":", { { "1", "levelID" } });
 
-     		for (int i = 0; i < dailyLevel.size(); i += 2) {
-     		    if (dailyLevel[i] == "1") {
-     		        int dailyID = numFromString<int>(dailyLevel[i + 1]).unwrapOr(0); // TODO: Fallback to fixed ID
-                    co_return Ok(dailyID);
-     		    }
-     		}
+            auto idIt = dailyLevel.find("levelID");
+            if (idIt == dailyLevel.end()) co_return Err("How did this even happen?");
+            int dailyID = numFromString<int>(idIt->second).unwrapOr(0); // TODO: Fallback
+            co_return Ok(dailyID);
 		} else {
 			Notification::create(
 				"Could not fetch daily level ID",
