@@ -1,5 +1,7 @@
 #pragma once
 
+#include <arc/future/Future.hpp>
+#include <arc/sync/Notify.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/utils/Task.hpp>
 #include <functional>
@@ -8,10 +10,23 @@
 using namespace geode::prelude;
 
 namespace notifier {
-    // struct Notification {
-    //     std::string title;
-    //     std::string message;
-    // };
+    struct Notification {
+        std::string title;
+        std::string message;
+    };
+
+    class Notifier {
+    public:
+        Notifier();
+        void notify(std::string title, std::string message);
+    private:
+        std::vector<Notification> m_notifications;
+        arc::Notify m_notifySendAll;
+
+        arc::Future<> checkIfCanNotify();
+        arc::Future<> sendAllCheckerIdk();
+        void sendNotification(const std::string& title, const std::string& msg);
+    };
 
     // class NotificationEvent : public Event {
     //     protected:

@@ -1,14 +1,36 @@
 #include "notifier.hpp"
 
+#include <Geode/binding_arm/PlayLayer.hpp>
+#include <arc/future/Future.hpp>
+#include <arc/sync/Notify.hpp>
+#include <arc/time/Sleep.hpp>
 #include <Geode/Geode.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/utils/Task.hpp>
 #include <Geode/utils/coro.hpp>
+#include <asp/time/Duration.hpp>
 #include <functional>
 
 using namespace geode::prelude;
 
 namespace notifier {
+    arc::Future<> Notifier::checkIfCanNotify() {
+        while (true) {
+            if (!PlayLayer::get()) m_notifySendAll.notifyOne();
+            co_await arc::sleep(asp::Duration::fromMillis(200));
+        }
+    }
+
+    arc::Future<> Notifier::sendAllCheckerIdk() {
+        while (true) {
+            co_await m_notifySendAll.notified();
+            if (!m_notifications.empty()) {
+                for (const auto& notification : m_notifications) {
+                    sendNotification(notification.title, notification.message);
+                }
+            }
+        }
+    }
     // Notification NotificationEvent::getNotification() const {
     //     return m_notification;
     // }
