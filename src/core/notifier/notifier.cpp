@@ -1,35 +1,60 @@
 #include "notifier.hpp"
 
-#include <Geode/binding_arm/PlayLayer.hpp>
-#include <arc/future/Future.hpp>
-#include <arc/sync/Notify.hpp>
-#include <arc/time/Sleep.hpp>
+#include <arc/prelude.hpp>
 #include <Geode/Geode.hpp>
-#include <Geode/loader/Event.hpp>
-#include <Geode/utils/Task.hpp>
-#include <Geode/utils/coro.hpp>
+#include <Geode/utils/async.hpp>
 #include <asp/time/Duration.hpp>
-#include <functional>
 
 using namespace geode::prelude;
 
 namespace notifier {
+    Notifier::Notifier() {
+        auto handle = async::spawn([this]() -> arc::Future<> {
+            auto lock = co_await m_notifications.lock();
+            lock->reserve(500);
+        });
+        handle.blockOn();
+
+        async::spawn(checkIfCanNotify());
+        async::spawn(trySendAll());
+    }
+
+    void Notifier::notify(const std::string& title, const std::string& message) {
+        async::spawn([this, title, message]() -> arc::Future<> {
+            auto lock = co_await m_notifications.lock();
+            lock->emplace_back(Notification{ title, message });
+        });
+    }
+
     arc::Future<> Notifier::checkIfCanNotify() {
         while (true) {
-            if (!PlayLayer::get()) m_notifySendAll.notifyOne();
-            co_await arc::sleep(asp::Duration::fromMillis(200));
+            co_await async::waitForMainThread<void>([this]() {
+                if (!PlayLayer::get()) m_notifySendAll.notifyOne();
+            });
+            co_await arc::sleep(asp::Duration::fromMillis(300));
         }
     }
 
-    arc::Future<> Notifier::sendAllCheckerIdk() {
+    arc::Future<> Notifier::trySendAll() {
         while (true) {
-            co_await m_notifySendAll.notified();
-            if (!m_notifications.empty()) {
-                for (const auto& notification : m_notifications) {
+            co_await  m_notifySendAll.notified();
+            auto lock = co_await m_notifications.lock();
+            if (!lock->empty()) {
+                for (const auto& notification : *lock) {
                     sendNotification(notification.title, notification.message);
                 }
+                lock->clear();
             }
         }
+    }
+
+    void Notifier::sendNotification(const std::string& title, const std::string& msg) {
+        AchievementNotifier::sharedState()->notifyAchievement(
+            title.c_str(),
+            msg.c_str(),
+            "accountBtn_pendingRequest_001.png",
+            true
+        );
     }
     // Notification NotificationEvent::getNotification() const {
     //     return m_notification;

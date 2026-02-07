@@ -1,11 +1,12 @@
 #pragma once
 
 #include <arc/future/Future.hpp>
+#include <arc/sync/Mutex.hpp>
 #include <arc/sync/Notify.hpp>
 #include <Geode/loader/Event.hpp>
 #include <Geode/utils/Task.hpp>
-#include <functional>
 #include <string>
+#include <vector>
 
 using namespace geode::prelude;
 
@@ -18,13 +19,13 @@ namespace notifier {
     class Notifier {
     public:
         Notifier();
-        void notify(std::string title, std::string message);
+        void notify(const std::string& title, const std::string& message);
     private:
-        std::vector<Notification> m_notifications;
+        arc::Mutex<std::vector<Notification>> m_notifications;
         arc::Notify m_notifySendAll;
 
         arc::Future<> checkIfCanNotify();
-        arc::Future<> sendAllCheckerIdk();
+        arc::Future<> trySendAll();
         void sendNotification(const std::string& title, const std::string& msg);
     };
 
