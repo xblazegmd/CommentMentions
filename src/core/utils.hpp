@@ -7,7 +7,7 @@
 
 using namespace geode::prelude;
 
-namespace CMUtils {
+namespace CommentMentions {
     const std::string BOOMLINGS = "http://www.boomlings.com/database/";
     const std::string SECRET = "Wmfd2893gb7";
 

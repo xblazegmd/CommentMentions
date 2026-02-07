@@ -10,7 +10,7 @@
 
 using namespace geode::prelude;
 
-namespace notifier {
+namespace CommentMentions {
     struct Notification {
         std::string title;
         std::string message;

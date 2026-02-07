@@ -24,7 +24,7 @@
 using namespace geode::prelude;
 using namespace geode::utils;
 
-namespace comments {
+namespace CommentMentions {
     CommentManager::CommentManager() = default;
 
     void CommentManager::startAll() {
@@ -62,18 +62,18 @@ namespace comments {
         while (true) {
             auto lock = co_await m_targets.lock();
             for (const int& target : *lock) {
-                std::vector<CMUtils::CommentObject> foundComments;
+                std::vector<CommentMentions::CommentObject> foundComments;
 
                 auto req = web::WebRequest()
                     .userAgent("")
                     .timeout(std::chrono::seconds(10))
-                    .bodyString("levelID=" + utils::numToString(target) + "&page=0&secret=" + CMUtils::SECRET);
+                    .bodyString("levelID=" + utils::numToString(target) + "&page=0&secret=" + CommentMentions::SECRET);
 
-                auto res = co_await req.post(CMUtils::BOOMLINGS + "getGJComments21.php");
-                if (res.ok() && CMUtils::stringIsOk(res.string())) {
+                auto res = co_await req.post(CommentMentions::BOOMLINGS + "getGJComments21.php");
+                if (res.ok() && CommentMentions::stringIsOk(res.string())) {
                     auto comments = string::split(res.string().unwrap(), "|");
                     for (const auto& comment : comments) {
-                        auto obj = CMUtils::formatCommentObj(comment);
+                        auto obj = CommentMentions::formatCommentObj(comment);
                         if (containsMention(obj.comment["comment"])) {
                             foundComments.push_back(obj);
                         }

@@ -12,7 +12,7 @@
 
 using namespace geode::prelude;
 
-namespace CMUtils {
+namespace CommentMentions {
     utils::StringMap<std::string> formatReq(
         const std::string& str,
         const std::string& sep,
@@ -79,7 +79,7 @@ namespace CMUtils {
             .timeout(std::chrono::seconds(10))
             .bodyString("type=" + type + "&secret=" + SECRET);
         auto res = co_await req.post(BOOMLINGS + "getGJLevels21.php");
-		if (res.ok() && CMUtils::stringIsOk(res.string())) {
+		if (res.ok() && stringIsOk(res.string())) {
      		auto levels = string::split(res.string().unwrap(), "#");
      		auto levelsSplit = string::split(levels[0], "|");
             auto dailyLevel = formatReq(levelsSplit[0], ":", { { "1", "levelID" } });

@@ -7,7 +7,7 @@
 
 using namespace geode::prelude;
 
-namespace notifier {
+namespace CommentMentions {
     Notifier::Notifier() {
         auto handle = async::spawn([this]() -> arc::Future<> {
             auto lock = co_await m_notifications.lock();

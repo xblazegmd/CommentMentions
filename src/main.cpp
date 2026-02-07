@@ -18,7 +18,7 @@
 
 using namespace geode::prelude;
 
-static std::shared_ptr<comments::CommentManager> g_commentManager = nullptr;
+static std::shared_ptr<CommentMentions::CommentManager> g_commentManager = nullptr;
 
 $on_game(Loaded) {
 	auto mod = Mod::get();
@@ -31,11 +31,11 @@ $on_game(Loaded) {
 	// 	)->show();
 	// }
 
-	g_commentManager = std::make_shared<comments::CommentManager>();
+	g_commentManager = std::make_shared<CommentMentions::CommentManager>();
 
 	bool useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 	if (useDailyLvl) {
-		auto handle = async::spawn(CMUtils::getSpecialID("21"));
+		auto handle = async::spawn(CommentMentions::getSpecialID("21"));
 		auto id = handle.blockOn();
 		if (id.isOk()) g_commentManager->addTargetID(id.unwrap());
 		else log::error("Error when fetching daily ID: {}", id.unwrapErr());

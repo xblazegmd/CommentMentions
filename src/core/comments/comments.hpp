@@ -11,7 +11,7 @@
 
 using namespace geode;
 
-namespace comments {
+namespace CommentMentions {
     class CommentManager {
     public:
         CommentManager();
