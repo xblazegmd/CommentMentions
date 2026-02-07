@@ -8,8 +8,6 @@
 #include <arc/time/Sleep.hpp>
 #include <asp/time/Duration.hpp>
 #include <core/utils.hpp>
-#include <core/history/history.hpp>
-// #include <core/notifier/notifier.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
