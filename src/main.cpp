@@ -20,11 +20,6 @@ using namespace geode::prelude;
 
 static std::shared_ptr<comments::CommentManager> g_commentManager = nullptr;
 
-void startListener(int levelID) {
-	// g_commentManager = std::make_shared<comments::CommentManager>(levelID);
-	g_commentManager->startAll();
-}
-
 $on_game(Loaded) {
 	auto mod = Mod::get();
 	// Is this the users' first time using the mod?
