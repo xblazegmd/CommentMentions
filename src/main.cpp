@@ -26,7 +26,6 @@ void startListener(int levelID) {
 }
 
 $on_game(Loaded) {
-	g_commentManager = std::make_shared<comments::CommentManager>();
 	auto mod = Mod::get();
 	// Is this the users' first time using the mod?
 	// if (!mod->setSavedValue("shown-first-time-msg", true)) {
@@ -37,15 +36,17 @@ $on_game(Loaded) {
 	// 	)->show();
 	// }
 
+	g_commentManager = std::make_shared<comments::CommentManager>();
+
 	bool useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
 	if (useDailyLvl) {
 		auto handle = async::spawn(CMUtils::getSpecialID("21"));
 		auto id = handle.blockOn();
-		if (id.isOk()) g_commentManager->addLevelID(id.unwrap());
+		if (id.isOk()) g_commentManager->addTargetID(id.unwrap());
 	}
 
 	auto fixedID = mod->getSettingValue<int64_t>("level-id");
-	g_commentManager->addLevelID(fixedID);
+	g_commentManager->addTargetID(fixedID);
 
 	g_commentManager->startAll();
 }

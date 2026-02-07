@@ -13,7 +13,6 @@
 using namespace geode::prelude;
 
 namespace CMUtils {
-
     utils::StringMap<std::string> formatReq(
         const std::string& str,
         const std::string& sep,

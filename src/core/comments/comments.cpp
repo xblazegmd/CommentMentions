@@ -41,32 +41,33 @@ namespace comments {
         m_running = false;
     }
 
-    Result<> CommentManager::addLevelID(int id) {
-        if (m_running)
-            return Err("You cannot modify the targets while running!");
-        m_levelIDs.push_back(id);
-        return Ok();
+    void CommentManager::addTargetID(int id) {
+        async::spawn([this, id]() -> arc::Future<> {
+            auto lock = co_await m_targets.lock();
+            lock->push_back(id);
+        });
     }
 
-    Result<> CommentManager::removeLevelID(int id) {
-        if (m_running)
-            return Err("You cannot modify the targets while running!");
-        m_levelIDs.erase(
-            std::remove(m_levelIDs.begin(), m_levelIDs.end(), id),
-            m_levelIDs.end()
-        );
-        return Ok();
+    void CommentManager::removeTargetID(int id) {
+        async::spawn([this, id]() -> arc::Future<> {
+            auto lock = co_await m_targets.lock();
+            lock->erase(
+                std::remove(lock->begin(), lock->end(), id),
+                lock->end()
+            );
+        });
     }
 
     arc::Future<> CommentManager::commentEval() {
         while (true) {
-            for (const int& levelID : m_levelIDs) {
+            auto lock = co_await m_targets.lock();
+            for (const int& target : *lock) {
                 std::vector<CMUtils::CommentObject> foundComments;
 
                 auto req = web::WebRequest()
                     .userAgent("")
                     .timeout(std::chrono::seconds(10))
-                    .bodyString("levelID=" + utils::numToString(levelID) + "&page=0&secret=" + CMUtils::SECRET);
+                    .bodyString("levelID=" + utils::numToString(target) + "&page=0&secret=" + CMUtils::SECRET);
 
                 auto res = co_await req.post(CMUtils::BOOMLINGS + "getGJComments21.php");
                 if (res.ok() && CMUtils::stringIsOk(res.string())) {
@@ -78,7 +79,7 @@ namespace comments {
                         }
                     }
                 } else {
-                    log::error("Failed to fetch comments for ID '{}'", levelID);
+                    log::error("Failed to fetch comments for ID '{}'", target);
                     log::info("Status code: {}", res.code());
                     log::info("Response: '{}'", res.string().unwrapOr("N/A"));
                 }

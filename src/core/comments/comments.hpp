@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Geode/utils/StringMap.hpp"
+#include <arc/prelude.hpp>
 #include <Geode/Result.hpp>
-#include <arc/future/Future.hpp>
 // #include <core/notifier/notifier.hpp>
 
 #include <Geode/utils/async.hpp>
@@ -19,12 +18,11 @@ namespace comments {
 
         void startAll();
         void stopAll();
-        Result<> addLevelID(int id);
-        Result<> removeLevelID(int id);
+        void addTargetID(int id);
+        void removeTargetID(int id);
     private:
-        int m_levelID;
         bool m_running;
-        std::vector<int> m_levelIDs;
+        arc::Mutex<std::vector<int>> m_targets;
         async::TaskHolder<void> m_listener;
 
         arc::Future<> commentEval();
