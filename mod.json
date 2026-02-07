@@ -67,7 +67,7 @@
 			"min": 5,
 			"max": 60
 		},
-		"mention-history-maxsize": {
+		"history-maxsize": {
 			"type": "int",
 			"name": "Maximum History Size",
 			"description": "The maximum size for the <cy>internal mention history</c> (default: 20)",

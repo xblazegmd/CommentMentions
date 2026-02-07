@@ -1,4 +1,6 @@
 #include "comments.hpp"
+#include "Geode/utils/StringMap.hpp"
+#include "Geode/utils/general.hpp"
 
 #include <algorithm>
 #include <arc/future/Future.hpp>
@@ -25,7 +27,10 @@ using namespace geode::prelude;
 using namespace geode::utils;
 
 namespace CommentMentions {
-    CommentManager::CommentManager() = default;
+    CommentManager::~CommentManager() {
+        stopAll();
+        deinitHistory();
+    }
 
     void CommentManager::startAll() {
         m_listener.spawn(
@@ -33,12 +38,10 @@ namespace CommentMentions {
             commentEval(),
             [] {}
         );
-        m_running = true;
     }
 
     void CommentManager::stopAll() {
         m_listener.cancel();
-        m_running = false;
     }
 
     void CommentManager::addTargetID(int id) {
@@ -62,18 +65,18 @@ namespace CommentMentions {
         while (true) {
             auto lock = co_await m_targets.lock();
             for (const int& target : *lock) {
-                std::vector<CommentMentions::CommentObject> foundComments;
+                std::vector<CommentObject> foundComments;
 
                 auto req = web::WebRequest()
                     .userAgent("")
                     .timeout(std::chrono::seconds(10))
-                    .bodyString("levelID=" + utils::numToString(target) + "&page=0&secret=" + CommentMentions::SECRET);
+                    .bodyString("levelID=" + utils::numToString(target) + "&page=0&secret=" + SECRET);
 
-                auto res = co_await req.post(CommentMentions::BOOMLINGS + "getGJComments21.php");
-                if (res.ok() && CommentMentions::stringIsOk(res.string())) {
+                auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
+                if (res.ok() && stringIsOk(res.string())) {
                     auto comments = string::split(res.string().unwrap(), "|");
                     for (const auto& comment : comments) {
-                        auto obj = CommentMentions::formatCommentObj(comment);
+                        auto obj = formatCommentObj(comment);
                         if (containsMention(obj.comment["comment"])) {
                             foundComments.push_back(obj);
                         }
@@ -89,11 +92,13 @@ namespace CommentMentions {
                         auto username = comment.author.find("userName");
                         auto accountID = comment.author.find("accountID");
                         auto msg = comment.comment.find("comment");
+                        auto msgID = comment.comment.find("messageID");
 
                         onMention(
                             username != comment.author.end() ? username->second : "User",
                             accountID != comment.author.end() ? accountID->second : "-1",
-                            msg != comment.comment.end() ? msg->second : "N/A"
+                            msg != comment.comment.end() ? msg->second : "N/A",
+                            msgID != comment.comment.end() ? msgID->second : "-1"
                         );
                     }
                 }
@@ -112,7 +117,68 @@ namespace CommentMentions {
         return false;
     }
 
-    void CommentManager::onMention(const std::string& user, const std::string accountID, const std::string& msg) {
+    void CommentManager::onMention(
+        const std::string& user,
+        const std::string accountID,
+        const std::string& msg,
+        const std::string& msgID
+    ) {
+        if (isOnHistory(msgID)) return;
+        addToHistory(user, accountID, msg, msgID);
+        m_notifier.notify(user + " mentioned you", msg);
         log::info("Mention from @{}: '{}'", user, msg);
+    }
+
+    void CommentManager::initHistory() {
+        m_mentionHistory = Mod::get()->getSavedValue<History>("history");
+        handleHistoryMaxSize();
+        m_saveHistory.spawn(
+            "History Task",
+            saveHistoryTask(),
+            [] {}
+        );
+    }
+
+
+    void CommentManager::deinitHistory() {
+        saveHistory();
+        m_saveHistory.cancel();
+    }
+
+    void CommentManager::addToHistory(const std::string& user, const std::string accountID, const std::string& msg, const std::string& msgID) {
+        m_mentionHistory.push_back({
+            { "user", user },
+            { "accountID", accountID },
+            { "msg", msg },
+            { "msgID", msgID }
+        });
+        handleHistoryMaxSize();
+    }
+
+    bool CommentManager::isOnHistory(const std::string& msg) {
+        for (const auto& mention : m_mentionHistory) {
+            auto msgIt = mention.find("msgID");
+            if (msgIt == mention.end()) return false;
+            if (msgIt->second == msg) return true;
+        }
+    }
+
+    void CommentManager::saveHistory() {
+        handleHistoryMaxSize();
+        Mod::get()->setSavedValue<History>("history", m_mentionHistory);
+    }
+
+    arc::Future<> CommentManager::saveHistoryTask() {
+        while (true) {
+            co_await arc::sleep(asp::Duration::fromSecs(100));
+            saveHistory();
+        }
+    }
+
+    void CommentManager::handleHistoryMaxSize() {
+        auto maxsize = Mod::get()->getSettingValue<int64_t>("history-maxsize");
+        if (m_mentionHistory.size() > maxsize) {
+            m_mentionHistory.erase(m_mentionHistory.begin());
+        }
     }
 }
