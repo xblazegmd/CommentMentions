@@ -52,7 +52,7 @@ namespace CommentMentions {
         AchievementNotifier::sharedState()->notifyAchievement(
             title.c_str(),
             msg.c_str(),
-            "accountBtn_pendingRequest_001.png",
+            "currencyOrbIcon_001.png",
             true
         );
     }
