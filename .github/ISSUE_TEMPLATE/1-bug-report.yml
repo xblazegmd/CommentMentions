@@ -1,6 +1,6 @@
 name: Bug Report
-description: Found an issue? Report it here
-title: "bug: Lorem Ipsum Dolor"
+description: Found an issue?
+title: "bug: lorem ipsum dolor"
 labels: ["bug"]
 
 body:
@@ -13,7 +13,7 @@ body:
     id: description
     attributes:
       label: What issue are you encountering?
-      placeholder: The game rickrolls me everytime I get a new mention
+      placeholder: e.g. the game rickrolls me everytime I get a new mention
     validations:
       required: true
 
@@ -33,7 +33,7 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: What was the expected behavior?
+      label: Expected behavior
       placeholder: TO NOT GET RICKROLLED YOU DUMMY
     validations:
       required: true
@@ -41,15 +41,23 @@ body:
   - type: input
     id: version
     attributes:
-      label: In which version of CommentMentions are you on?
-      placeholder: v0.1-alpha.1
+      label: CommentMentions version
+      placeholder: v1.0-alpha.1
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Geode version
+      placeholder: v5.0.0-alpha.1
     validations:
       required: true
 
   - type: input
     id: os
     attributes:
-      label: What operating system are you on? In which version?
+      label: OS version
       placeholder: iOS 26.0.1
     validations:
       required: true
@@ -64,9 +72,9 @@ body:
   - type: checkboxes
     id: more-stuff
     attributes:
-      label: Just to be sure...
+      label: Verifications
       options:
         - label: I can confirm this issue is related specifically to CommentMentions, and not another Geode mod, or Geode itself
           required: true
-        - label: I have read the CONTRIBUTING.md guidelines and tips (I'm totally not lying I'm not a loser)
+        - label: I have read the CONTRIBUTING.md guidelines (I'm totally not lying I'm not a loser)
           required: true
