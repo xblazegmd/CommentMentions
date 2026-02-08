@@ -101,14 +101,18 @@ namespace CommentMentions {
                     }
                 }
 
-                co_await arc::sleep(asp::Duration::fromSecs(10));
+                co_await arc::sleep(asp::Duration::fromSecs(
+                    Mod::get()->getSettingValue<int64_t>("refresh-interval")
+                ));
             }
         }
     }
 
     bool CommentManager::containsMention(const std::string& str) {
-        std::vector<std::string> tags{ "xblazegmd", "xblaze", "blaze" }; // Hardcoded for testing
+        auto tagsStr = Mod::get()->getSettingValue<std::string>("tags");
+        std::vector<std::string> tags = string::split(string::trim(tagsStr), ",");
         auto lower = string::toLower(str);
+
         for (const auto& tag : tags) {
             if (string::contains(lower, tag)) return true;
         }

@@ -39,7 +39,7 @@ $on_game(Loaded) {
 			else log::error("Error when fetching daily ID: {}", id.unwrapErr());
 		}
 
-		auto fixedID = Mod::get()->getSettingValue<int64_t>("level-id");
+		auto fixedID = Mod::get()->getSettingValue<int64_t>("fixed-id");
 		g_commentManager->addTargetID(fixedID);
 
 		g_commentManager->startAll();
