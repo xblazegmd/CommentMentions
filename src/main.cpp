@@ -2,7 +2,6 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #include <arc/future/Future.hpp>
-#include <chrono>
 #include <core/comments/comments.hpp>
 #include <core/utils.hpp>
 #include <Geode/Geode.hpp>
@@ -21,7 +20,6 @@ using namespace geode::prelude;
 static std::shared_ptr<CommentMentions::CommentManager> g_commentManager = nullptr;
 
 $on_game(Loaded) {
-	auto mod = Mod::get();
 	// Is this the users' first time using the mod?
 	// if (!mod->setSavedValue("shown-first-time-msg", true)) {
 	// 	FLAlertLayer::create(
@@ -30,21 +28,22 @@ $on_game(Loaded) {
 	// 		"OK"
 	// 	)->show();
 	// }
+	async::spawn([] -> arc::Future<> {
+		g_commentManager = std::make_shared<CommentMentions::CommentManager>();
 
-	g_commentManager = std::make_shared<CommentMentions::CommentManager>();
+		bool useDailyLvl = Mod::get()->getSettingValue<bool>("use-daily-lvl");
+		if (useDailyLvl) {
+			auto handle = async::spawn(CommentMentions::getSpecialID("21"));
+			auto id = co_await CommentMentions::getSpecialID("21");
+			if (id.isOk()) g_commentManager->addTargetID(id.unwrap());
+			else log::error("Error when fetching daily ID: {}", id.unwrapErr());
+		}
 
-	bool useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
-	if (useDailyLvl) {
-		auto handle = async::spawn(CommentMentions::getSpecialID("21"));
-		auto id = handle.blockOn();
-		if (id.isOk()) g_commentManager->addTargetID(id.unwrap());
-		else log::error("Error when fetching daily ID: {}", id.unwrapErr());
-	}
+		auto fixedID = Mod::get()->getSettingValue<int64_t>("level-id");
+		g_commentManager->addTargetID(fixedID);
 
-	auto fixedID = mod->getSettingValue<int64_t>("level-id");
-	g_commentManager->addTargetID(fixedID);
-
-	g_commentManager->startAll();
+		g_commentManager->startAll();
+	});
 }
 
 $on_game(Exiting) {
