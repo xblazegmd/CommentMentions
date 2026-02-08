@@ -121,9 +121,9 @@ namespace CommentMentions {
         const std::string& msg,
         const std::string& msgID
     ) {
-        // if (isOnHistory(msgID)) return;
-        // addToHistory(user, accountID, msg, msgID);
-        // m_notifier.notify(user + " mentioned you", msg);
+        if (isOnHistory(msgID)) return;
+        addToHistory(user, accountID, msg, msgID);
+        m_notifier.notify(user + " mentioned you", msg);
         log::info("Mention from @{}: '{}'", user, msg);
     }
 

@@ -41,7 +41,9 @@ namespace CommentMentions {
             auto lock = co_await m_notifications.lock();
             if (!lock->empty()) {
                 for (const auto& notification : *lock) {
-                    sendNotification(notification.title, notification.message);
+                    co_await async::waitForMainThread<void>([this, notification]() {
+                        sendNotification(notification.title, notification.message);
+                    });
                 }
                 lock->clear();
             }
