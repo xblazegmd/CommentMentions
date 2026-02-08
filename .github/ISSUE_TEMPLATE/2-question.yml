@@ -18,19 +18,19 @@ body:
       required: true
   
   - type: input
-    id: version
+    id: mod-version
     attributes:
       label: CommentMentions version (optional)
       placeholder: v1.0-alpha.1
 
   - type: input
-    id: version
+    id: loader-version
     attributes:
       label: Geode version (optional)
       placeholder: v5.0.0-alpha.1
 
   - type: input
-    id: os
+    id: os-version
     attributes:
       label: OS version (optional)
       placeholder: iOS 26.0.1

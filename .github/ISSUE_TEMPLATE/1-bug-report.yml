@@ -39,7 +39,7 @@ body:
       required: true
 
   - type: input
-    id: version
+    id: mod-version
     attributes:
       label: CommentMentions version
       placeholder: v1.0-alpha.1
@@ -47,7 +47,7 @@ body:
       required: true
 
   - type: input
-    id: version
+    id: loader-version
     attributes:
       label: Geode version
       placeholder: v5.0.0-alpha.1
@@ -55,7 +55,7 @@ body:
       required: true
 
   - type: input
-    id: os
+    id: os-version
     attributes:
       label: OS version
       placeholder: iOS 26.0.1
