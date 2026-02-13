@@ -45,7 +45,3 @@ $on_game(Loaded) {
 		g_commentManager->startAll();
 	});
 }
-
-$on_game(Exiting) {
-	g_commentManager->stopAll();
-}

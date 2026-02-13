@@ -173,7 +173,7 @@ namespace CommentMentions {
 
     arc::Future<> CommentManager::saveHistoryTask() {
         while (true) {
-            co_await arc::sleep(asp::Duration::fromSecs(100));
+            co_await arc::sleep(asp::Duration::fromSecs(120));
             saveHistory();
         }
     }
