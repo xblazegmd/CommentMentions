@@ -25,9 +25,7 @@ namespace CommentMentions {
     arc::Future<Result<int>> getSpecialID(const std::string& type);
 
     bool stringIsOk(Result<std::string> str);
-
-    bool contains(std::string const& text, std::string const& contains);
-    std::string cleanNameString(std::string name);
+    bool containsWord(std::string const& text, std::string const& contains);
     std::string cleanString(std::string const& text);
     bool isAlnum(char c);
 }

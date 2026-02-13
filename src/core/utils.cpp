@@ -104,11 +104,11 @@ namespace CommentMentions {
         return num.isErr() || num.unwrap() > 0;
     }
 
-    bool contains(std::string const& text, std::string const& contains) {
+    bool containsWord(std::string const& text, std::string const& contains) {
         auto pieces = string::split(text, " ");
 
         for (const auto& piece : pieces) {
-            auto cleanPiece = cleanNameString(piece);
+            auto cleanPiece = cleanString(piece);
             if (string::toLower(cleanPiece) == contains) {
                 return true;
             }
@@ -116,23 +116,22 @@ namespace CommentMentions {
         return false;
     }
 
-    std::string cleanNameString(std::string name) {
-        const auto len = name.size();
-        if (len > 2 && string::endsWith(name, "'s")) {
-            name.erase(len - 2);
-        } else if (len > 1 && string::endsWith(name, "s'")) {
-            name.erase(len - 1);
+    std::string cleanString(std::string const& text) {
+        std::string cleanText = text;
+        if (Mod::get()->getSettingValue<bool>("possesive-cleanup")) {
+            const auto len = cleanText.size();
+            if (len > 2 && string::endsWith(cleanText, "'s")) {
+                cleanText.erase(len - 2);
+            } else if (len > 1 && string::endsWith(cleanText, "s'")) {
+                cleanText.erase(len - 1);
+            }
         }
 
-        return cleanString(name);
-    }
-
-    std::string cleanString(std::string const& text) {
         std::string res;
-        res.reserve(text.size());
+        res.reserve(cleanText.size());
 
-        for (unsigned char c : text) {
-            if (isAlnum(c)) {
+        for (unsigned char c : cleanText) {
+            if (isAlnum(c) || (Mod::get()->getSettingValue<bool>("require-at-symbol") && c == '@')) {
                 res.push_back(c);
             }
         }

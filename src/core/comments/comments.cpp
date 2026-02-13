@@ -113,9 +113,8 @@ namespace CommentMentions {
         std::vector<std::string> tags = string::split(string::trim(tagsStr), ",");
         auto lower = string::toLower(str);
 
-        for (const auto& tag : tags) {
-            if (string::contains(lower, tag)) return true;
-        }
+        for (const auto& tag : tags)
+            if (containsWord(lower, tag)) return true;
         return false;
     }
 

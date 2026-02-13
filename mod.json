@@ -48,6 +48,18 @@
 			"default": "yourusernamehere",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
 		},
+		"require-at-symbol": {
+			"type": "bool",
+			"name": "Require @ symbol",
+			"description": "If enabled, you'll only get notified if the comment explicitly mentions you with an @ sign (e.g. <cy>@</c>yourusernamehere)",
+			"default": true
+		},
+		"possesive-cleanup": {
+			"type": "bool",
+			"name": "Possesive \"'s\" Cleanup",
+			"description": "Handles the <cy>possesive 's</c> cases.\nFor example, with this setting on, if someone says \"<co>yourusernamehere's</c> car\" it'll get counted as a mention",
+			"default": true
+		},
 		"advanced-options": {
 			"type": "title",
 			"name": "Advanced"
