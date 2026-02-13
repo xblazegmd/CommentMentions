@@ -1,37 +1,31 @@
 #pragma once
 
-#include <Geode/Geode.hpp>
 #include <Geode/Result.hpp>
-#include <Geode/loader/Event.hpp>
-#include <Geode/utils/web.hpp>
+#include <Geode/utils/general.hpp>
+#include <arc/future/Future.hpp>
 #include <string>
 
-using namespace geode;
-using namespace geode::utils;
+using namespace geode::prelude;
 
-namespace CMUtils {
+namespace CommentMentions {
     const std::string BOOMLINGS = "http://www.boomlings.com/database/";
     const std::string SECRET = "Wmfd2893gb7";
 
-    /**
-     * Does "this that" have "that" in it?
-     *
-     * The logic in this function is made specifically for finding mentions in comments
-     */
-    bool contains(std::string const& text, std::string const& contains);
+    struct CommentObject {
+        utils::StringMap<std::string> comment;
+        utils::StringMap<std::string> author;
+    };
 
-    /**
-     * Basically `cleanString` but with proper cleanup for "'s" or "s'"
-     */
-    std::string cleanNameString(std::string name);
+    utils::StringMap<std::string> formatReq(
+        const std::string& str,
+        const std::string& sep,
+        const utils::StringMap<std::string>& formatMap
+    );
+    CommentObject formatCommentObj(const std::string& str);
+    arc::Future<Result<int>> getSpecialID(const std::string& type);
 
-    /**
-     * Removes all special characters from a string
-     */
+    bool stringIsOk(Result<std::string> str);
+    bool containsWord(std::string const& text, std::string const& contains);
     std::string cleanString(std::string const& text);
-
-    /**
-     * Why not std::isalnum instead? Idk
-     */
     bool isAlnum(char c);
 }

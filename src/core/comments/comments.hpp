@@ -1,44 +1,56 @@
 #pragma once
 
-#include <core/formatReq/formatReq.hpp>
+#include <arc/prelude.hpp>
+#include <core/utils.hpp>
+#include <Geode/Result.hpp>
 #include <core/notifier/notifier.hpp>
 
-#include <Geode/utils/Task.hpp>
+#include <Geode/utils/async.hpp>
 
-#include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 using namespace geode;
 
-namespace comments {
-    using ListenerTask = Task<void>;
-    using EvalTask = Task<std::vector<std::unordered_map<std::string, formatReq::StrMap>>>;
+namespace CommentMentions {
+    class CommentManager {
+    public:
+        CommentManager() = default;
+        ~CommentManager();
 
-    class CommentListener {
-        private:
-            int m_levelID;
-            ListenerTask m_listenerCoro;
-            bool m_running = false;
-            notifier::Notifier m_notifier;
+        void startAll();
+        void stopAll();
+        void addTargetID(int id);
+        void removeTargetID(int id);
+    private:
+        arc::Mutex<std::vector<int>> m_targets;
+        async::TaskHolder<void> m_listener;
+        Notifier m_notifier;
 
-            ListenerTask startListener();
-            EvalTask evalComments();
-            bool containsMention(std::string str);
-            std::vector<std::string> getNames();
-            void onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data);
-        public:
-            CommentListener(int levelID);
+        using History = std::vector<utils::StringMap<std::string>>;
+        History m_mentionHistory;
+        async::TaskHolder<void> m_saveHistory;
 
-            void start();
-            void stop();
+        arc::Future<> commentEval();
+        bool containsMention(const std::string& str);
+        void onMention(
+            const std::string& user,
+            const std::string accountID,
+            const std::string& msg,
+            const std::string& msgID
+        );
 
-            /**
-             * WARNING: If the comment listener was not initialized this will return nullptr
-             *
-             * Please make sure to initialize this beforehand and check for nullptr when interacting with this
-             */
-            static std::shared_ptr<CommentListener>& sharedState();
+        void initHistory();
+        void deinitHistory();
+        void addToHistory(
+            const std::string& user,
+            const std::string accountID,
+            const std::string& msg,
+            const std::string& msgID
+        );
+        bool isOnHistory(const std::string& msgID);
+        void saveHistory();
+        arc::Future<> saveHistoryTask();
+        void handleHistoryMaxSize();
     };
 }

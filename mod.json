@@ -1,14 +1,14 @@
 {
-	"geode": "4.10.0",
+	"geode": "5.0.0-alpha.2",
 	"gd": {
-		"win": "2.2074",
-		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
 	},
 	"id": "xblazegmd.commentmentions",
 	"name": "CommentMentions",
-	"version": "v0.1.0-beta.1",
+	"version": "v1.0.0-alpha.1",
 	"developer": "XblazeGMD",
 	"description": "Get notified everytime someone 'mentions' you",
 	"dependencies": {
@@ -19,7 +19,7 @@
 		"source": "https://github.com/xblazegmd/CommentMentions"
 	},
 	"settings": {
-		"options-title": {
+		"basic-options": {
 			"type": "title",
 			"name": "Basic Options"
 		},
@@ -29,12 +29,10 @@
 			"description": "Should the mod check for mentions in the <cj>current daily level?</c>",
 			"default": true
 		},
-		"level-id": {
+		"fixed-id": {
 			"type": "int",
-			"name": "Level ID",
-			"description": "The level id the mod will look for mentions at\n(<cg>'Use Daily Level'</c> must be <cr>off</c>)",
-			"enable-if": "!setting:use-daily-lvl",
-			"enable-if-description": "'Use Daily Level' must be off",
+			"name": "Fixed ID",
+			"description": "The level id the mod will look for mentions at",
 			"default": 68668045,
 			"min": 0,
 			"control": {
@@ -43,33 +41,38 @@
 				"slider": false
 			}
 		},
-		"names": {
-			"type": "string",
-			"name": "Names",
-			"description": "A comma separated <cy>string of names that</c>, if found in a comment, will be considered a mention.\n\nThis is so people don't have to type your exact username for you to get notified.\n\nPlease note that the @ sign is <cr>not needed</c> for a comment to count as a mention",
-			"default": "everyone, yourusernamehere",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
-		},
 		"tags": {
 			"type": "string",
-			"name": "Tags (deprecated)",
-			"description": "A comma separated string of tags the mod WILL look for in the comments.\n\n<co>DEPRECATED:</c> This setting was deprecated, and is currently not functional. Please use the \"Names\" setting instead.\nThis setting will be removed in <cj>v0.1-beta.3</c>",
-			"default": "everyone, yourusernamehere",
+			"name": "Mention tags",
+			"description": "A comma separated <cy>string of tags</c> that, if found in a comment, will be considered a mention.\nThis is so people don't have to type your exact username for you to get notified.\n\nPlease note that the @ sign is <cr>not needed</c> for a comment to count as a mention",
+			"default": "yourusernamehere",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
 		},
-		"advanced-options-title": {
+		"require-at-symbol": {
+			"type": "bool",
+			"name": "Require @ symbol",
+			"description": "If enabled, you'll only get notified if the comment explicitly mentions you with an @ sign (e.g. <cy>@</c>yourusernamehere)",
+			"default": true
+		},
+		"possesive-cleanup": {
+			"type": "bool",
+			"name": "Possesive \"'s\" Cleanup",
+			"description": "Handles the <cy>possesive 's</c> cases.\nFor example, with this setting on, if someone says \"<co>yourusernamehere's</c> car\" it'll get counted as a mention",
+			"default": true
+		},
+		"advanced-options": {
 			"type": "title",
 			"name": "Advanced"
 		},
 		"refresh-interval": {
 			"type": "int",
 			"name": "Refresh Interval",
-			"description": "The <cy>interval</c> (in seconds) in which the mod will check for new mentions (default: 5)",
-			"default": 5,
+			"description": "The <cy>interval</c> (in seconds) in which the mod will check for new mentions (default: 10).\n\nSetting this to a low enough value may cause you to get <cr>rate limited</c>, keep that in mind!",
+			"default": 10,
 			"min": 5,
 			"max": 60
 		},
-		"mention-history-maxsize": {
+		"history-maxsize": {
 			"type": "int",
 			"name": "Maximum History Size",
 			"description": "The maximum size for the <cy>internal mention history</c> (default: 20)",

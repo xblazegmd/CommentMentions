@@ -1,11 +1,6 @@
-# v0.1-beta.2
-### WARNING: This update contains a BREAKING CHANGE. Please read this changelog very carefully
-- Added "Refresh Interval" option in settings
-- Improved the mod's settings
-- Rebranded "Tags" as "Names"
-    * <cr>**BREAKING CHANGE**</c>: Due to the renaming of the setting, your existing tags under the old <cg>"Tags"</c> setting ***WILL BE RESET***
-    * The tags setting will keep existing so you can migrate your tags to the new names setting, under the name <cy>"Tags (deprecated)"</c>. However, the the <cy>"Tags (deprecated)"</c> setting *will not* be functional
-    * **THE TAGS SETTING WILL BE COMPLETELY REMOVED ON v0.1-BETA.3**
+# v1.0-alpha.1
+- Update to Geode v5
+- Fixed my code mess
 
 # v0.1-beta.1
 - Rewrote ALL of the notification logic

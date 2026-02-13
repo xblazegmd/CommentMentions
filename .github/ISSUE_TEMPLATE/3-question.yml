@@ -1,6 +1,6 @@
 name: Question
-description: How the heck do I do _____??
-title: "question: Lorem Ipsum Dolor"
+description: How the heck do I _____??
+title: "question: lorem ipsum dolor"
 labels: ["question"]
 
 body:
@@ -18,24 +18,27 @@ body:
       required: true
   
   - type: input
-    id: version
+    id: mod-version
     attributes:
-      label: In which version of CommentMentions are you on?
-      placeholder: v0.1-alpha.1
-    validations:
-      required: true
-  
+      label: CommentMentions version (optional)
+      placeholder: v1.0-alpha.1
+
   - type: input
-    id: applies-to
+    id: loader-version
     attributes:
-      label: What does this question apply to? (optional)
-      description: e.g. "Why does the listener do _____" would apply to "CommentListener"
-      placeholder: THE WHOLE MOD BABY
+      label: Geode version (optional)
+      placeholder: v5.0.0-alpha.1
+
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version (optional)
+      placeholder: iOS 26.0.1
   
   - type: checkboxes
     id: more-stuff
     attributes:
-      label: Just to be sure...
+      label: Validations
       options:
         - label: I can confirm I've searched for similar questions and haven't found an answer to mine
           required: true

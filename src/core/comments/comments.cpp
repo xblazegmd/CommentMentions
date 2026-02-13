@@ -1,19 +1,22 @@
 #include "comments.hpp"
+#include "Geode/utils/StringMap.hpp"
+#include "Geode/utils/general.hpp"
 
+#include <algorithm>
+#include <arc/future/Future.hpp>
+#include <arc/sync/Mutex.hpp>
+#include <arc/time/Sleep.hpp>
+#include <asp/time/Duration.hpp>
 #include <core/utils.hpp>
-#include <core/formatReq/formatReq.hpp>
-#include <core/history/history.hpp>
-#include <core/notifier/notifier.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
-#include <Geode/utils/coro.hpp>
+#include <Geode/utils/async.hpp>
 #include <Geode/utils/string.hpp>
 #include <Geode/utils/Task.hpp>
 #include <Geode/utils/web.hpp>
 
 #include <chrono>
-#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -21,134 +24,163 @@
 using namespace geode::prelude;
 using namespace geode::utils;
 
-namespace comments {
-    CommentListener::CommentListener(int levelID) :
-        m_levelID(levelID)
-    {};
-
-    void CommentListener::start() {
-        m_listenerCoro = std::get<0>(coro::spawn << startListener());
-        m_running = true;
+namespace CommentMentions {
+    CommentManager::~CommentManager() {
+        stopAll();
+        deinitHistory();
     }
 
-    void CommentListener::stop() {
-        if (m_running) {
-            m_listenerCoro.cancel();
-        }
+    void CommentManager::startAll() {
+        m_listener.spawn(
+            "CommentManager",
+            commentEval(),
+            [] {}
+        );
     }
 
-    std::shared_ptr<CommentListener>& CommentListener::sharedState() {
-        static std::shared_ptr<CommentListener> commentListener;
-        return commentListener;
+    void CommentManager::stopAll() {
+        m_listener.cancel();
     }
 
-    ListenerTask CommentListener::startListener() {
-        auto refreshInterval = Mod::get()->getSettingValue<int64_t>("refresh-interval");
+    void CommentManager::addTargetID(int id) {
+        async::spawn([this, id]() -> arc::Future<> {
+            auto lock = co_await m_targets.lock();
+            lock->push_back(id);
+        });
+    }
+
+    void CommentManager::removeTargetID(int id) {
+        async::spawn([this, id]() -> arc::Future<> {
+            auto lock = co_await m_targets.lock();
+            lock->erase(
+                std::remove(lock->begin(), lock->end(), id),
+                lock->end()
+            );
+        });
+    }
+
+    arc::Future<> CommentManager::commentEval() {
         while (true) {
-            auto mentions = co_await evalComments();
+            auto lock = co_await m_targets.lock();
+            for (const int& target : *lock) {
+                std::vector<CommentObject> foundComments;
 
-            if (!mentions.empty()) {
-                for (auto mention : mentions) {
-                    auto commentDecodedRes = base64::decode(mention["commentStr"]["comment"], base64::Base64Variant::Url);
-                    if (commentDecodedRes.isErr()) {
-                        log::error("Could not decode comment '{}': {}", mention["commentStr"]["comment"], commentDecodedRes.unwrapErr());
-                        continue;
-                    }
+                auto req = web::WebRequest()
+                    .userAgent("")
+                    .timeout(std::chrono::seconds(10))
+                    .bodyString("levelID=" + utils::numToString(target) + "&page=0&secret=" + SECRET);
 
-                    auto bytes = commentDecodedRes.unwrap();
-                    std::string commentDecoded(bytes.begin(), bytes.end());
-
-                    std::unordered_map<std::string, std::string> mentionData{
-                        { "comment", commentDecoded },
-                        { "messageID", mention["commentStr"]["messageID"] },
-                        { "authorUsername", mention["authorStr"]["username"] },
-                        { "authorAccID", mention["authorStr"]["accID"] },
-                        { "authorIcon", mention["authorStr"]["icon"] },
-                        { "authorColorA", mention["authorStr"]["colorA"] },
-                        { "authorColorB", mention["authorStr"]["colorB"] },
-                        { "authorIconType", mention["authorStr"]["iconType"] },
-                        { "authorGlow", mention["authorStr"]["glow"] }
-                    };
-
-                    onMention(mention["authorStr"]["username"], commentDecoded, mentionData);
-                }
-            }
-
-            co_await coro::sleep(refreshInterval);
-        }
-    }
-
-    EvalTask CommentListener::evalComments() {
-        return EvalTask::runWithCallback([this](auto finish, auto prog, auto isCancelled) {
-            std::string params = "levelID=" + std::to_string(this->m_levelID) + "&page=0&secret=" + CMUtils::SECRET;
-
-            auto req = web::WebRequest();
-            req.userAgent("");
-            req.timeout(std::chrono::seconds(10));
-            req.bodyString(params);
-
-            req.post(CMUtils::BOOMLINGS + "getGJComments21.php")
-                .listen([this, finish](web::WebResponse *res) {
-                    if (res && res->ok() && res->string().isOk()) {
-                        auto comments = string::split(res->string().unwrap(), "|");
-                        std::vector<std::unordered_map<std::string, formatReq::StrMap>> foundComments;
-
-                        for (std::string comment : comments) {
-                            auto commentObj = formatReq::formatCommentObj(comment);
-                            if (this->containsMention(commentObj["commentStr"]["comment"])) {
-                                foundComments.push_back(commentObj);
-                            }
+                auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
+                if (res.ok() && stringIsOk(res.string())) {
+                    auto comments = string::split(res.string().unwrap(), "|");
+                    for (const auto& comment : comments) {
+                        auto obj = formatCommentObj(comment);
+                        if (containsMention(obj.comment["comment"])) {
+                            foundComments.push_back(obj);
                         }
-
-                        finish(foundComments);
-                    } else {
-                        log::error("Could not fetch comments ({}, response: {})", res->code(), res->string().unwrapOr("..."));
-                        std::vector<std::unordered_map<std::string, formatReq::StrMap>> emptyLol;
-                        finish(emptyLol);
                     }
-                });
-        }, "evalComments");
+                } else {
+                    log::error("Failed to fetch comments for ID '{}'", target);
+                    log::info("Status code: {}", res.code());
+                    log::info("Response: '{}'", res.string().unwrapOr("N/A"));
+                }
+
+                if (!foundComments.empty()) {
+                    for (const auto& comment : foundComments) {
+                        auto username = comment.author.find("userName");
+                        auto accountID = comment.author.find("accountID");
+                        auto msg = comment.comment.find("comment");
+                        auto msgID = comment.comment.find("messageID");
+
+                        onMention(
+                            username != comment.author.end() ? username->second : "User",
+                            accountID != comment.author.end() ? accountID->second : "-1",
+                            msg != comment.comment.end() ? msg->second : "N/A",
+                            msgID != comment.comment.end() ? msgID->second : "-1"
+                        );
+                    }
+                }
+
+                co_await arc::sleep(asp::Duration::fromSecs(
+                    Mod::get()->getSettingValue<int64_t>("refresh-interval")
+                ));
+            }
+        }
     }
 
-    bool CommentListener::containsMention(std::string str) {
-        std::vector<std::string> names = getNames();
+    bool CommentManager::containsMention(const std::string& str) {
+        auto tagsStr = Mod::get()->getSettingValue<std::string>("tags");
+        std::vector<std::string> tags = string::split(string::trim(tagsStr), ",");
+        auto lower = string::toLower(str);
 
-        auto commentRes = base64::decode(str, base64::Base64Variant::Url);
-        if (commentRes.isErr()) {
-            log::error("Could not decode comment '{}': {}", str, commentRes.unwrapErr());
-            return false;
-        }
+        for (const auto& tag : tags)
+            if (containsWord(lower, tag)) return true;
+        return false;
+    }
 
-        auto bytes = commentRes.unwrap();
-        std::string comment(bytes.begin(), bytes.end());
+    void CommentManager::onMention(
+        const std::string& user,
+        const std::string accountID,
+        const std::string& msg,
+        const std::string& msgID
+    ) {
+        if (isOnHistory(msgID)) return;
+        addToHistory(user, accountID, msg, msgID);
+        m_notifier.notify(user + " mentioned you", msg);
+        log::info("Mention from @{}: '{}'", user, msg);
+    }
 
-        std::string commentLower = string::toLower(comment);
-        for (const auto& name : names) {
-            if (CMUtils::contains(commentLower, name)) {
-                return true;
-            }
+    void CommentManager::initHistory() {
+        m_mentionHistory = Mod::get()->getSavedValue<History>("history");
+        handleHistoryMaxSize();
+        m_saveHistory.spawn(
+            "History Task",
+            saveHistoryTask(),
+            [] {}
+        );
+    }
+
+
+    void CommentManager::deinitHistory() {
+        saveHistory();
+        m_saveHistory.cancel();
+    }
+
+    void CommentManager::addToHistory(const std::string& user, const std::string accountID, const std::string& msg, const std::string& msgID) {
+        m_mentionHistory.push_back({
+            { "user", user },
+            { "accountID", accountID },
+            { "msg", msg },
+            { "msgID", msgID }
+        });
+        handleHistoryMaxSize();
+    }
+
+    bool CommentManager::isOnHistory(const std::string& msg) {
+        for (const auto& mention : m_mentionHistory) {
+            auto msgIt = mention.find("msgID");
+            if (msgIt == mention.end()) return false;
+            if (msgIt->second == msg) return true;
         }
         return false;
     }
 
-    std::vector<std::string> CommentListener::getNames() {
-        auto names = Mod::get()->getSettingValue<std::string>("names");
-        auto parts = string::split(names, ",");
-
-        for (auto& part : parts) {
-            part = string::trim(part);
-        }
-        return parts;
+    void CommentManager::saveHistory() {
+        handleHistoryMaxSize();
+        Mod::get()->setSavedValue<History>("history", m_mentionHistory);
     }
 
-    void CommentListener::onMention(std::string user, std::string msg, std::unordered_map<std::string, std::string> data) {
-        if (history::mentionExists(data)) return;
-        history::updateHistory(data);
+    arc::Future<> CommentManager::saveHistoryTask() {
+        while (true) {
+            co_await arc::sleep(asp::Duration::fromSecs(120));
+            saveHistory();
+        }
+    }
 
-	    log::info("Mention from @{}, '{}'", user, msg);
-        m_notifier.notify(
-            user + " mentioned you",
-            msg
-        );
+    void CommentManager::handleHistoryMaxSize() {
+        auto maxsize = Mod::get()->getSettingValue<int64_t>("history-maxsize");
+        if (m_mentionHistory.size() > maxsize) {
+            m_mentionHistory.erase(m_mentionHistory.begin());
+        }
     }
 }

@@ -1,0 +1,41 @@
+name: Suggestions
+description: Suggest a change and/or feature
+title: "feat: lorem ipsum dolor"
+labels: ["suggestion", "feature"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in this form to help us get a better understanding of your suggestion
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Your problem
+      placeholder: e.g. this game doesn't have near enough rickrolls
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Your solution
+      placeholder: e.g. make the game rickroll the player every 0.1 seconds
+    validations:
+      required: true
+  
+  - type: textarea
+    id: how
+    attributes:
+      label: How do you think this feature can be implemented? (optional)
+      placeholder: e.g. just copy-paste the CommentManager class, but make it rickroll instead
+
+  - type: checkboxes
+    id: more-stufff
+    attributes:
+      label: Verifications
+      options:
+        - label: I have read the CONTRIBUTING.md guidelines (I'm totally not lying I'm not a loser)
+          required: true
+        - label: I want to develop this feature myself

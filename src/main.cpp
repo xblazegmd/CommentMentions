@@ -1,61 +1,47 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#include <arc/future/Future.hpp>
 #include <core/comments/comments.hpp>
-#include <core/levelFetch/levelFetch.hpp>
 #include <core/utils.hpp>
-
 #include <Geode/Geode.hpp>
 #include <Geode/Result.hpp>
 #include <Geode/loader/Mod.hpp>
 #include <Geode/loader/ModEvent.hpp>
 #include <Geode/loader/GameEvent.hpp>
 #include <Geode/ui/Notification.hpp>
-
+#include <Geode/utils/web.hpp>
+#include <Geode/utils/async.hpp>
+#include <Geode/utils/string.hpp>
 #include <memory>
 
 using namespace geode::prelude;
 
-void startListener(int levelID) {
-	comments::CommentListener::sharedState() = std::make_shared<comments::CommentListener>(levelID);
-	comments::CommentListener::sharedState()->start();
-}
+static std::shared_ptr<CommentMentions::CommentManager> g_commentManager = nullptr;
 
 $on_game(Loaded) {
-	auto mod = Mod::get();
 	// Is this the users' first time using the mod?
-	if (!mod->setSavedValue("shown-first-time-msg", true)) {
-		FLAlertLayer::create(
-			"CommentMentions",
-			"Thank you for using <co>CommentMentions!</c>. Make sure to change the <cj>names option</c> in the mod's settings",
-			"OK"
-		)->show();
-	} else if (!mod->setSavedValue("tags-to-names-migration-disc", true)) {
-		FLAlertLayer::create(
-			"WARNING",
-			"The <cg>Tags</c> setting in <co>CommentMentions</c> was deprecated, and is currently not functional. Please use the <cy>Names</c> setting instead.\n<cr>THE OLD TAGS SETTING WILL BE REMOVED IN v0.1-BETA.3</c>",
-			"OK"
-		)->show();
-	}
+	// if (!mod->setSavedValue("shown-first-time-msg", true)) {
+	// 	FLAlertLayer::create(
+	// 		"CommentMentions",
+	// 		"Thank you for using <co>CommentMentions!</c>. Make sure to change the <cj>tags option</c> in the mod's settings",
+	// 		"OK"
+	// 	)->show();
+	// }
+	async::spawn([] -> arc::Future<> {
+		g_commentManager = std::make_shared<CommentMentions::CommentManager>();
 
-	auto useDailyLvl = mod->getSettingValue<bool>("use-daily-lvl");
+		bool useDailyLvl = Mod::get()->getSettingValue<bool>("use-daily-lvl");
+		if (useDailyLvl) {
+			auto handle = async::spawn(CommentMentions::getSpecialID("21"));
+			auto id = co_await CommentMentions::getSpecialID("21");
+			if (id.isOk()) g_commentManager->addTargetID(id.unwrap());
+			else log::error("Error when fetching daily ID: {}", id.unwrapErr());
+		}
 
-	if (useDailyLvl) {
-		auto lvlFetch = std::make_shared<levelFetch::LevelFetch>(levelFetch::LevelFetchTarget::Daily);
-		lvlFetch->fetchID([lvlFetch](Result<int> dailyID) {
-			if (dailyID.isErr()) {
-				Notification::create(
-					"Could not fetch daily level ID",
-					NotificationIcon::Error,
-					2
-				)->show();
-				return;
-			}
+		auto fixedID = Mod::get()->getSettingValue<int64_t>("fixed-id");
+		g_commentManager->addTargetID(fixedID);
 
-			startListener(dailyID.unwrap());
-		});
-	} else {
-		auto levelID = mod->getSettingValue<int64_t>("level-id");
-		startListener(levelID);
-	}
+		g_commentManager->startAll();
+	});
 }
