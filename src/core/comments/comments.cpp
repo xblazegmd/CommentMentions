@@ -71,8 +71,9 @@ namespace CommentMentions {
                     .bodyString("levelID=" + utils::numToString(target) + "&page=0&secret=" + SECRET);
 
                 auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
-                if (res.ok() && stringIsOk(res.string())) {
+                if (res.ok() && responseStringIsOk(res.string())) {
                     auto comments = string::split(res.string().unwrap(), "|");
+
                     for (const auto& comment : comments) {
                         auto obj = formatCommentObj(comment);
                         if (containsMention(obj.comment["comment"])) {

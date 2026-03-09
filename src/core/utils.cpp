@@ -79,7 +79,7 @@ namespace CommentMentions {
             .timeout(std::chrono::seconds(10))
             .bodyString("type=" + type + "&secret=" + SECRET);
         auto res = co_await req.post(BOOMLINGS + "getGJLevels21.php");
-		if (res.ok() && stringIsOk(res.string())) {
+		if (res.ok() && responseStringIsOk(res.string())) {
      		auto levels = string::split(res.string().unwrap(), "#");
      		auto levelsSplit = string::split(levels[0], "|");
             auto dailyLevel = formatReq(levelsSplit[0], ":", { { "1", "levelID" } });
@@ -98,7 +98,7 @@ namespace CommentMentions {
 		}
     }
 
-    bool stringIsOk(Result<std::string> str) {
+    bool responseStringIsOk(Result<std::string> str) {
         if (str.isErr()) return false;
         auto num = utils::numFromString<int>(str.unwrap());
         return num.isErr() || num.unwrap() > 0;
