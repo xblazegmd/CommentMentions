@@ -1,27 +1,28 @@
-# v1.0.0
+# Comment Mentions
+## v1.0.0
 - <cg>Update</c> to Geode v5
 - <co>Rewrote</c> ENTIRE mod
 
-# v0.1.0-beta.1
+## v0.1.0-beta.1
 - <co>Rewrote</c> ALL of the <cl>notification logic</c>
 - <cy>Changed</c> the logic that checks for mentions
 - <cg>Updated</c> the icon that appears on the notifications
 
-# v0.1.0-alpha.4
+## v0.1.0-alpha.4
 - <cr>Removed</c> useless button in the profile page - that was for a <co>scrapped feature</c>
     - *<c-a6a6a6>hey, it's xblaze from the future, it's not scrapped anymore yay</c>*
 - <cg>Added</c> <cl>mention queue</c> - now you shouldn't get notified while playing levels
 
-# v0.1.0-alpha.3
+## v0.1.0-alpha.3
 - <cg>Fixed</c> bug impeding the mention history to be properly initialized on <co>Windows</c>
     - *<c-a6a6a6>if you look at the commit that fixed that you'll wonder what was wrong with me ;-;</c>*
 
-# v0.1.0-alpha.2
+## v0.1.0-alpha.2
 - <cr>Removed</c> useless button in <co>main menu</c>
 - <cy>Changed</c> history.json to the mod's save directory instead of the mod's config directory
 - <cg>Fixed</c> issue preventing users to write multiple values on the "Tags" option in settings
 - <cg>Added</c> message for when loading the mod for the first time
 - <cg>Added</c> proper sprite to button on the profile page
 
-# v0.1.0-alpha.1
+## v0.1.0-alpha.1
 - First public release
