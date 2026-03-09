@@ -57,6 +57,7 @@ private:
         utils::StringMap<std::string> author;
     };
 
+    std::vector<CommentObject> m_mentions;
     std::vector<CommentObject> m_previousMentions;
 
     arc::Future<> commentListener() {
@@ -101,12 +102,21 @@ private:
                 if (containsMention(string)) {
                     if (isPrevious(obj)) continue;
                     obj.comment["comment"] = std::move(string);
-                    log::info("Mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
-                    m_previousMentions.push_back(obj);
-                    geode::queueInMainThread([this, obj] {
-                        onMention(obj);
+                    log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
+                    storePrevious(obj);
+                    m_mentions.push_back(obj);
+                }
+            }
+
+            if (PlayLayer::get()) continue; // Skip if playing
+
+            if (!m_mentions.empty()) {
+                for (const auto& mention : m_mentions) {
+                    geode::queueInMainThread([this, mention] {
+                        onMention(mention);
                     });
                 }
+                m_mentions.clear();
             }
         }
     }
@@ -139,6 +149,13 @@ private:
             }
         }
         return false;
+    }
+
+    void storePrevious(CommentObject obj) {
+        m_previousMentions.push_back(obj);
+        if (m_previousMentions.size() > 20) {
+            m_previousMentions.erase(m_previousMentions.begin()); // Pop front
+        }
     }
 
     CommentObject formatCommentObj(const std::string& str) {
