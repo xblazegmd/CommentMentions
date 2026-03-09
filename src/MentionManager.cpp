@@ -40,16 +40,15 @@ arc::Future<> MentionManager::commentListener() {
         auto resStrNum = utils::numFromString<int>(resStr);
 
         if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
-            log::error("Reqest failed: {}", resStr);
+            log::error("Request failed: {}", resStr);
             continue;
         }
 
-        log::debug("{}", resStr);
         auto comments = string::split(resStr, "|");
         for (const auto& comment : comments) {
             auto obj = formatCommentObj(comment);
 
-            log::debug("{}", obj.comment["comment"]);
+            log::debug("Encoded: {}", obj.comment["comment"]);
             auto s = base64::decode(obj.comment["comment"], base64::Base64Variant::Url);
             if (s.isErr()) {
                 log::error("Could not decode comment: {}", s.unwrapErr());
@@ -57,7 +56,7 @@ arc::Future<> MentionManager::commentListener() {
             }
             std::string string(s.unwrap().begin(), s.unwrap().end());
 
-            log::debug("{}", string);
+            log::debug("Decoded: {}", string);
 
             if (containsMention(string)) {
                 if (isPrevious(obj)) continue;
@@ -93,7 +92,6 @@ void MentionManager::onMention(CommentObject obj) {
 bool MentionManager::containsMention(const std::string& str) {
     for (const auto& tag : m_tags)
         if (string::contains(string::toLower(str), tag)) { 
-            log::debug("contains");
             return true; 
         }
     return false;
@@ -104,7 +102,7 @@ bool MentionManager::isPrevious(CommentObject obj) {
         auto messageID = mention.comment.find("messageID");
         if (messageID == mention.comment.end()) return false;
         if (messageID->second == obj.comment["messageID"]) { 
-            log::debug("is previous");
+            log::debug("Mention under messageID {} was previously detected, skipping", obj.comment["messageID"]);
             return true; 
         }
     }
@@ -120,8 +118,9 @@ void MentionManager::storePrevious(CommentObject obj) {
 
 MentionManager::CommentObject MentionManager::formatCommentObj(const std::string& str) {
     auto split = string::split(str, ":");
-    log::debug("{}", split[0]);
-    log::debug("{}", split[1]);
+    // Commented out in case I need them again
+    // log::debug("{}", split[0]);
+    // log::debug("{}", split[1]);
 
     CommentObject ret;
     ret.comment = formatKV(split[0], {
