@@ -1,5 +1,5 @@
 {
-	"geode": "5.0.0-alpha.2",
+	"geode": "5.3.0",
 	"gd": {
 		"win": "2.2081",
 		"android": "2.2081",
@@ -14,71 +14,8 @@
 	"dependencies": {
 		"geode.node-ids": ">=v1.20.0"
 	},
-	"tags": [ "online", "enhancement" ],
+	"tags": ["online", "enhancement"],
 	"links": {
 		"source": "https://github.com/xblazegmd/CommentMentions"
-	},
-	"settings": {
-		"basic-options": {
-			"type": "title",
-			"name": "Basic Options"
-		},
-		"use-daily-lvl": {
-			"type": "bool",
-			"name": "Use Daily Level",
-			"description": "Should the mod check for mentions in the <cj>current daily level?</c>",
-			"default": true
-		},
-		"fixed-id": {
-			"type": "int",
-			"name": "Fixed ID",
-			"description": "The level id the mod will look for mentions at",
-			"default": 68668045,
-			"min": 0,
-			"control": {
-				"arrows": false,
-				"big-arrows": false,
-				"slider": false
-			}
-		},
-		"tags": {
-			"type": "string",
-			"name": "Mention tags",
-			"description": "A comma separated <cy>string of tags</c> that, if found in a comment, will be considered a mention.\nThis is so people don't have to type your exact username for you to get notified.\n\nPlease note that the @ sign is <cr>not needed</c> for a comment to count as a mention",
-			"default": "yourusernamehere",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
-		},
-		"require-at-symbol": {
-			"type": "bool",
-			"name": "Require @ symbol",
-			"description": "If enabled, you'll only get notified if the comment explicitly mentions you with an @ sign (e.g. <cy>@</c>yourusernamehere)",
-			"default": true
-		},
-		"possesive-cleanup": {
-			"type": "bool",
-			"name": "Possesive \"'s\" Cleanup",
-			"description": "Handles the <cy>possesive 's</c> cases.\nFor example, with this setting on, if someone says \"<co>yourusernamehere's</c> car\" it'll get counted as a mention",
-			"default": true
-		},
-		"advanced-options": {
-			"type": "title",
-			"name": "Advanced"
-		},
-		"refresh-interval": {
-			"type": "int",
-			"name": "Refresh Interval",
-			"description": "The <cy>interval</c> (in seconds) in which the mod will check for new mentions (default: 10).\n\nSetting this to a low enough value may cause you to get <cr>rate limited</c>, keep that in mind!",
-			"default": 10,
-			"min": 5,
-			"max": 60
-		},
-		"history-maxsize": {
-			"type": "int",
-			"name": "Maximum History Size",
-			"description": "The maximum size for the <cy>internal mention history</c> (default: 20)",
-			"default": 20,
-			"min": 1,
-			"max": 100
-		}
 	}
 }
