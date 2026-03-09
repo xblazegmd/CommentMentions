@@ -1,47 +1,51 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at https://mozilla.org/MPL/2.0/.
-#include <arc/future/Future.hpp>
-#include <core/comments/comments.hpp>
-#include <core/utils.hpp>
+#include <arc/prelude.hpp>
+#include <MentionManager.hpp>
+#include <utils.hpp>
 #include <Geode/Geode.hpp>
-#include <Geode/Result.hpp>
-#include <Geode/loader/Mod.hpp>
-#include <Geode/loader/ModEvent.hpp>
-#include <Geode/loader/GameEvent.hpp>
-#include <Geode/ui/Notification.hpp>
 #include <Geode/utils/web.hpp>
-#include <Geode/utils/async.hpp>
 #include <Geode/utils/string.hpp>
+#include <chrono>
 #include <memory>
+#include <string>
 
 using namespace geode::prelude;
 
-static std::shared_ptr<CommentMentions::CommentManager> g_commentManager = nullptr;
+static std::shared_ptr<MentionManager> g_mentionManager;
 
 $on_game(Loaded) {
-	// Is this the users' first time using the mod?
-	// if (!mod->setSavedValue("shown-first-time-msg", true)) {
-	// 	FLAlertLayer::create(
-	// 		"CommentMentions",
-	// 		"Thank you for using <co>CommentMentions!</c>. Make sure to change the <cj>tags option</c> in the mod's settings",
-	// 		"OK"
-	// 	)->show();
-	// }
-	async::spawn([] -> arc::Future<> {
-		g_commentManager = std::make_shared<CommentMentions::CommentManager>();
+    async::spawn([] -> arc::Future<> {
+        // Get daily level
+        auto req = web::WebRequest()
+            .userAgent("")
+            .bodyString("type=21&secret=" + SECRET)
+            .timeout(std::chrono::seconds(10));
 
-		bool useDailyLvl = Mod::get()->getSettingValue<bool>("use-daily-lvl");
-		if (useDailyLvl) {
-			auto handle = async::spawn(CommentMentions::getSpecialID("21"));
-			auto id = co_await CommentMentions::getSpecialID("21");
-			if (id.isOk()) g_commentManager->addTargetID(id.unwrap());
-			else log::error("Error when fetching daily ID: {}", id.unwrapErr());
-		}
+        auto res = co_await req.post(BOOMLINGS + "getGJLevels21.php");
+        if (!res.ok() || res.string().isErr()) {
+            log::error("Request failed: (status code: {})", res.code());
+            Notification::create(fmt::format("Error: {}", res.code()), NotificationIcon::Error)->show();
+            co_return;
+        }
 
-		auto fixedID = Mod::get()->getSettingValue<int64_t>("fixed-id");
-		g_commentManager->addTargetID(fixedID);
+        std::string resStr = res.string().unwrap();
+        auto resStrNum = utils::numFromString<int>(resStr);
 
-		g_commentManager->startAll();
-	});
+        if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
+            log::error("Reqest failed: {}", resStr);
+            Notification::create(fmt::format("Error: {}", resStr), NotificationIcon::Error)->show();
+            co_return;
+        }
+
+        auto daily = string::split(string::split(resStr, "#")[0], "|")[0];
+        auto dailyID = formatKV(daily, {{"1", "daily"}})["daily"];
+        auto intDailyID = utils::numFromString<int>(dailyID);
+
+        if (intDailyID.isErr()) {
+            Notification::create(fmt::format("Error: {}", intDailyID.unwrapErr()), NotificationIcon::Error)->show();
+            co_return;
+        }
+
+        g_mentionManager = std::make_shared<MentionManager>(intDailyID.unwrap());
+        g_mentionManager->startListening();
+    });
 }

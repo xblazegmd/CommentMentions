@@ -1,0 +1,151 @@
+#include "MentionManager.hpp"
+
+#include <arc/prelude.hpp>
+#include <utils.hpp>
+#include <Geode/Geode.hpp>
+#include <Geode/utils/base64.hpp>
+#include <Geode/utils/web.hpp>
+#include <Geode/utils/string.hpp>
+#include <chrono>
+#include <string>
+#include <vector>
+
+using namespace geode::prelude;
+
+void MentionManager::startListening() {
+    m_listenerTask.spawn(
+        "MentionManager::listener",
+        commentListener(),
+        [] {}
+    );
+}
+
+arc::Future<> MentionManager::commentListener() {
+    while (true) {
+        co_await arc::sleep(asp::Duration::fromSecs(10));
+
+        auto req = web::WebRequest()
+            .userAgent("")
+            .timeout(std::chrono::seconds(10))
+            .bodyString("levelID=" + utils::numToString(m_levelID) + "&page=0&secret=" + SECRET);
+
+        auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
+
+        if (!res.ok() || res.string().isErr()) {
+            log::error("Request failed: (status code: {})", res.code());
+            continue;
+        }
+
+        std::string resStr = res.string().unwrap();
+        auto resStrNum = utils::numFromString<int>(resStr);
+
+        if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
+            log::error("Request failed: {}", resStr);
+            continue;
+        }
+
+        auto comments = string::split(resStr, "|");
+        for (const auto& comment : comments) {
+            auto obj = formatCommentObj(comment);
+
+            log::debug("Encoded: {}", obj.comment["comment"]);
+            auto s = base64::decode(obj.comment["comment"], base64::Base64Variant::Url);
+            if (s.isErr()) {
+                log::error("Could not decode comment: {}", s.unwrapErr());
+                continue;
+            }
+            std::string string(s.unwrap().begin(), s.unwrap().end());
+
+            log::debug("Decoded: {}", string);
+
+            if (containsMention(string)) {
+                if (isPrevious(obj)) continue;
+                obj.comment["comment"] = std::move(string);
+                log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
+                storePrevious(obj);
+                m_mentions.push_back(obj);
+            }
+        }
+
+        if (PlayLayer::get()) continue; // Skip if playing
+
+        if (!m_mentions.empty()) {
+            for (const auto& mention : m_mentions) {
+                geode::queueInMainThread([this, mention] {
+                    onMention(mention);
+                });
+            }
+            m_mentions.clear();
+        }
+    }
+}
+
+void MentionManager::onMention(CommentObject obj) {
+    AchievementNotifier::sharedState()->notifyAchievement(
+        fmt::format("{} mentioned you", obj.author["userName"]).c_str(),
+        obj.comment["comment"].c_str(),
+        "accountBtn_pendingRequest_001.png",
+        true
+    );
+}
+
+bool MentionManager::containsMention(const std::string& str) {
+    for (const auto& tag : m_tags)
+        if (string::contains(string::toLower(str), tag)) { 
+            return true; 
+        }
+    return false;
+}
+
+bool MentionManager::isPrevious(CommentObject obj) {
+    for (const auto& mention : m_previousMentions) {
+        auto messageID = mention.comment.find("messageID");
+        if (messageID == mention.comment.end()) return false;
+        if (messageID->second == obj.comment["messageID"]) { 
+            log::debug("Mention under messageID {} was previously detected, skipping", obj.comment["messageID"]);
+            return true; 
+        }
+    }
+    return false;
+}
+
+void MentionManager::storePrevious(CommentObject obj) {
+    m_previousMentions.push_back(obj);
+    if (m_previousMentions.size() > 20) {
+        m_previousMentions.erase(m_previousMentions.begin()); // Pop front
+    }
+}
+
+MentionManager::CommentObject MentionManager::formatCommentObj(const std::string& str) {
+    auto split = string::split(str, ":");
+    // Commented out in case I need them again
+    // log::debug("{}", split[0]);
+    // log::debug("{}", split[1]);
+
+    CommentObject ret;
+    ret.comment = formatKV(split[0], {
+        { "1", "levelID" },
+        { "2", "comment" },
+        { "3", "authorPlayerID" },
+        { "4", "likes" },
+        { "5", "dislikes" },
+        { "6", "messageID" },
+        { "7", "spam" },
+        { "8", "authorAccountID" },
+        { "9", "age" },
+        { "10", "percent" },
+        { "11", "modBadge" },
+        { "12", "moderatorChatColor" },
+    }, "~");
+    ret.author = formatKV(split[1], {
+        { "1", "userName" },
+        { "9", "icon" },
+        { "10", "playerColor" },
+        { "11", "playerColor2" },
+        { "14", "iconType" },
+        { "15", "glow" },
+        { "16", "accountID" },
+    }, "~");
+
+    return ret;
+}
