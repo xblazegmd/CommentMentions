@@ -17,5 +17,38 @@
 	"tags": ["online", "enhancement", "interface"],
 	"links": {
 		"source": "https://github.com/xblazegmd/CommentMentions"
+	},
+	"settings": {
+		"level-list": {
+			"type": "title",
+			"name": "Level List",
+			"description": "<cg>Levels</c> which the mod will look for <cl>mentions</c> at"
+		},
+		"daily-lvl": {
+			"type": "bool",
+			"name": "Check Daily Level",
+			"description": "yw dcers",
+			"default": true
+		},
+		"weekly-demon": {
+			"type": "bool",
+			"name": "Check Weekly Demon",
+			"default": true
+		},
+		"use-fixed-ids": {
+			"type": "bool",
+			"name": "Use Fixed IDs",
+			"description": "Check for any levels other than the daily and weekly",
+			"default": false
+		},
+		"fixed-ids": {
+			"type": "string",
+			"enable-if": "use-fixed-ids",
+			"enable-if-description": "Fixed IDs are disabled!",
+			"name": "Fixed IDs",
+			"description": "A comma separated <cl>list of level IDs</c> that will be checked for",
+			"default": "68668045",
+			"filter": "1234567890, "
+		}
 	}
 }

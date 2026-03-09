@@ -22,60 +22,62 @@ void MentionManager::startListening() {
 
 arc::Future<> MentionManager::commentListener() {
     while (true) {
-        co_await arc::sleep(asp::Duration::fromSecs(10));
+        for (const auto& levelID : m_targets) {
+            co_await arc::sleep(asp::Duration::fromSecs(10));
 
-        auto req = web::WebRequest()
-            .userAgent("")
-            .timeout(std::chrono::seconds(10))
-            .bodyString("levelID=" + utils::numToString(m_levelID) + "&page=0&secret=" + SECRET);
+            auto req = web::WebRequest()
+                .userAgent("")
+                .timeout(std::chrono::seconds(10))
+                .bodyString("levelID=" + utils::numToString(levelID) + "&page=0&secret=" + SECRET);
 
-        auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
+            auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
 
-        if (!res.ok() || res.string().isErr()) {
-            log::error("Request failed: (status code: {})", res.code());
-            continue;
-        }
-
-        std::string resStr = res.string().unwrap();
-        auto resStrNum = utils::numFromString<int>(resStr);
-
-        if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
-            log::error("Request failed: {}", resStr);
-            continue;
-        }
-
-        auto comments = string::split(resStr, "|");
-        for (const auto& comment : comments) {
-            auto obj = formatCommentObj(comment);
-
-            log::debug("Encoded: {}", obj.comment["comment"]);
-            auto s = base64::decode(obj.comment["comment"], base64::Base64Variant::Url);
-            if (s.isErr()) {
-                log::error("Could not decode comment: {}", s.unwrapErr());
+            if (!res.ok() || res.string().isErr()) {
+                log::error("Request failed: (status code: {})", res.code());
                 continue;
             }
-            std::string string(s.unwrap().begin(), s.unwrap().end());
 
-            log::debug("Decoded: {}", string);
+            std::string resStr = res.string().unwrap();
+            auto resStrNum = utils::numFromString<int>(resStr);
 
-            if (containsMention(string)) {
-                if (isPrevious(obj)) continue;
-                obj.comment["comment"] = std::move(string);
-                log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
-                storePrevious(obj);
-                m_mentions.push_back(obj);
+            if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
+                log::error("Request failed: {}", resStr);
+                continue;
             }
-        }
 
-        if (PlayLayer::get()) continue; // Skip if playing
+            auto comments = string::split(resStr, "|");
+            for (const auto& comment : comments) {
+                auto obj = formatCommentObj(comment);
 
-        if (!m_mentions.empty()) {
-            for (const auto& mention : m_mentions) {
-                geode::queueInMainThread([this, mention] {
-                    onMention(mention);
-                });
+                log::debug("Encoded: {}", obj.comment["comment"]);
+                auto s = base64::decode(obj.comment["comment"], base64::Base64Variant::Url);
+                if (s.isErr()) {
+                    log::error("Could not decode comment: {}", s.unwrapErr());
+                    continue;
+                }
+                std::string string(s.unwrap().begin(), s.unwrap().end());
+
+                log::debug("Decoded: {}", string);
+
+                if (containsMention(string)) {
+                    if (isPrevious(obj)) continue;
+                    obj.comment["comment"] = std::move(string);
+                    log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
+                    storePrevious(obj);
+                    m_mentions.push_back(obj);
+                }
             }
-            m_mentions.clear();
+
+            if (PlayLayer::get()) continue; // Skip if playing
+
+            if (!m_mentions.empty()) {
+                for (const auto& mention : m_mentions) {
+                    geode::queueInMainThread([this, mention] {
+                        onMention(mention);
+                    });
+                }
+                m_mentions.clear();
+            }
         }
     }
 }

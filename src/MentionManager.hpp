@@ -7,12 +7,12 @@
 
 class MentionManager {
 public:
-    MentionManager(int levelID) : m_levelID(levelID) {};
+    MentionManager(std::vector<int> targets) : m_targets(targets) {};
     ~MentionManager() = default;
 
     void startListening();
 private:
-    int m_levelID;
+    std::vector<int> m_targets;
     std::vector<std::string> m_tags{ "xblazegmd", "xblaze", "blaze"};
     geode::async::TaskHolder<> m_listenerTask;
 
