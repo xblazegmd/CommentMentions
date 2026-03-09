@@ -7,13 +7,13 @@
 
 class MentionManager {
 public:
-    MentionManager(std::vector<int> targets) : m_targets(targets) {};
+    MentionManager(std::vector<int> targets);
     ~MentionManager() = default;
 
     void startListening();
 private:
     std::vector<int> m_targets;
-    std::vector<std::string> m_tags{ "xblazegmd", "xblaze", "blaze"};
+    std::vector<std::string> m_tags;
     geode::async::TaskHolder<> m_listenerTask;
 
     struct CommentObject {

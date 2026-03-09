@@ -19,10 +19,16 @@
 		"source": "https://github.com/xblazegmd/CommentMentions"
 	},
 	"settings": {
-		"level-list": {
+		"basic-settings": {
 			"type": "title",
-			"name": "Level List",
-			"description": "<cg>Levels</c> which the mod will look for <cl>mentions</c> at"
+			"name": "Basic Settings"
+		},
+		"tags": {
+			"type": "string",
+			"name": "tags",
+			"description": "A comma separated <cl>list of tags</c> that will be looked for in comments",
+			"default": "everyone",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"daily-lvl": {
 			"type": "bool",
