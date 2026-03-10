@@ -32,17 +32,20 @@
 		},
 		"daily-lvl": {
 			"type": "bool",
+			"requires-restart": true,
 			"name": "Track Daily Level",
 			"description": "yw dcers",
 			"default": true
 		},
 		"weekly-demon": {
 			"type": "bool",
+			"requires-restart": true,
 			"name": "Track Weekly Demon",
 			"default": true
 		},
 		"use-custom-ids": {
 			"type": "bool",
+			"requires-restart": true,
 			"name": "Track Custom Levels",
 			"description": "Track mentions on any level of your choice",
 			"default": false
@@ -51,6 +54,7 @@
 			"type": "string",
 			"enable-if": "use-custom-ids",
 			"enable-if-description": "Custom IDs are disabled!",
+			"requires-restart": true,
 			"name": "Custom Levels",
 			"description": "A comma separated <cg>list of level IDs</c> that will be checked for",
 			"default": "68668045",
