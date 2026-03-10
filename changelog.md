@@ -1,5 +1,5 @@
 # Comment Mentions
-## v1.0.0
+## v1.0.0 (RC)
 - <cg>Update</c> to Geode v5
 - <co>Rewrote</c> ENTIRE mod
 - <cg>Added</c> <cl>Weekly Demon</c> mention tracking

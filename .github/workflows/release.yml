@@ -22,7 +22,7 @@ jobs:
         with:
           name: build-out
           path: build/
-      
+
       - name: Create Release
         if: "!contains(github.ref_name, '-')"
         uses: softprops/action-gh-release@v2
@@ -33,7 +33,7 @@ jobs:
           name: ${{ github.ref_name }}
           prerelease: false
           files: build/*
-      
+
       - name: Create Pre-Release
         if: contains(github.ref_name, '-')
         uses: softprops/action-gh-release@v2
