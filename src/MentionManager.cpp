@@ -31,7 +31,9 @@ void MentionManager::startListening() {
 arc::Future<> MentionManager::commentListener() {
     while (true) {
         for (const auto& levelID : m_targets) {
-            co_await arc::sleep(asp::Duration::fromSecs(10));
+            co_await arc::sleep(asp::Duration::fromSecs(
+                Mod::get()->getSettingValue<int64_t>("refresh-rate")
+            ));
 
             auto req = web::WebRequest()
                 .userAgent("")

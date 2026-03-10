@@ -21,7 +21,7 @@
 	"settings": {
 		"basic-settings": {
 			"type": "title",
-			"name": "Basic Settings"
+			"name": "Basic Options"
 		},
 		"aliases": {
 			"type": "string",
@@ -55,6 +55,27 @@
 			"description": "A comma separated <cg>list of level IDs</c> that will be checked for",
 			"default": "68668045",
 			"filter": "0123456789, "
+		},
+		"advanced": {
+			"type": "title",
+			"name": "Advanced Options"
+		},
+		"refresh-rate": {
+			"type": "int",
+			"name": "Refresh Rate",
+			"description": "The rate in which the mod will request the GD servers (in seconds).\n\n<cr>A low enough refresh rate may cause you to get rate limited, be careful!</c>",
+			"default": 10,
+			"min": 5,
+			"max": 300,
+			"control": {
+				"slider": true
+			}
+		},
+		"ignore-self": {
+			"type": "bool",
+			"name": "Ignore Self Mentions",
+			"description": "Ignore mentions when you're the one that mentioned yourself",
+			"default": true
 		}
 	}
 }
