@@ -1,14 +1,7 @@
 <img src="logo.png" width="80" height=auto alt="A beautiful logo that should be in a museum imo" />
 
 # Comment Mentions
-
-Basically [I Have Been Summoned](https://github.com/xblazegmd/ihavebeensummoned) as a Geode mod
-
-<div align="center">
-</div>
-
-## DISCLAIMER
-This mod is still in development. Bugs are to be expected.
+Basically [I Have Been Summoned](https://github.com/xblazegmd/ihavebeensummoned) as a Geode mod lol
 
 ## License
 This mod is licensed under the **Mozilla Public License 2.0**.

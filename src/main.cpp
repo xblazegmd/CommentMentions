@@ -61,7 +61,7 @@ $on_game(Loaded) {
         auto check = co_await checkReq.get("https://www.google.com");
         if (!check.ok()) {
             log::error("No internet connection!");
-            showErrorNotification("No internet connection!");
+            showErrorNotification("CommentMentions: No internet connection!");
             co_return;
         }
 
@@ -71,7 +71,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
             auto dailyID = co_await getSpecialID("1");
             if (dailyID.isErr()) {
-                showErrorNotification(fmt::format("Could not get daily level ID: {}", dailyID.unwrapErr()));
+                showErrorNotification(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
                 targets.push_back(std::move(dailyID).unwrap());
             }
@@ -81,16 +81,16 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
             auto weeklyID = co_await getSpecialID("2");
             if (weeklyID.isErr()) {
-                showErrorNotification(fmt::format("Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
+                showErrorNotification(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
                 targets.push_back(std::move(weeklyID).unwrap());
             }
         }
 
-        // Get fixed IDs
-        if (Mod::get()->getSettingValue<bool>("use-fixed-ids")) {
-            auto fixedIDs = Mod::get()->getSettingValue<std::string>("fixed-ids");
-            auto ids = string::split(fixedIDs, ",");
+        // Get custom IDs
+        if (Mod::get()->getSettingValue<bool>("use-custom-ids")) {
+            auto customIDs = Mod::get()->getSettingValue<std::string>("fixed-ids");
+            auto ids = string::split(customIDs, ",");
 
             for (const auto& id : ids) {
                 auto idNum = utils::numFromString<int>(string::trim(id));
@@ -105,7 +105,7 @@ $on_game(Loaded) {
 
         // Check if there's even any IDs
         if (targets.empty()) {
-            showErrorNotification("No IDs were given");
+            showErrorNotification("CommentMentions: No IDs were given");
             co_return;
         }
 

@@ -23,38 +23,38 @@
 			"type": "title",
 			"name": "Basic Settings"
 		},
-		"tags": {
+		"aliases": {
 			"type": "string",
-			"name": "tags",
-			"description": "A comma separated <cl>list of tags</c> that will be looked for in comments",
+			"name": "Aliases",
+			"description": "A comma separated <cl>list of aliases</c> to watch for in the comments",
 			"default": "everyone",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"daily-lvl": {
 			"type": "bool",
-			"name": "Check Daily Level",
+			"name": "Track Daily Level",
 			"description": "yw dcers",
 			"default": true
 		},
 		"weekly-demon": {
 			"type": "bool",
-			"name": "Check Weekly Demon",
+			"name": "Track Weekly Demon",
 			"default": true
 		},
-		"use-fixed-ids": {
+		"use-custom-ids": {
 			"type": "bool",
-			"name": "Use Fixed IDs",
-			"description": "Check for any levels other than the daily and weekly",
+			"name": "Use Custom IDs",
+			"description": "Track mentions on any level of your choice",
 			"default": false
 		},
-		"fixed-ids": {
+		"custom-ids": {
 			"type": "string",
-			"enable-if": "use-fixed-ids",
-			"enable-if-description": "Fixed IDs are disabled!",
-			"name": "Fixed IDs",
+			"enable-if": "use-custom-ids",
+			"enable-if-description": "Custom IDs are disabled!",
+			"name": "Custom IDs",
 			"description": "A comma separated <cl>list of level IDs</c> that will be checked for",
 			"default": "68668045",
-			"filter": "1234567890, "
+			"filter": "0123456789, "
 		}
 	}
 }

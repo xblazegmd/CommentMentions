@@ -13,7 +13,7 @@ public:
     void startListening();
 private:
     std::vector<int> m_targets;
-    std::vector<std::string> m_tags;
+    std::vector<std::string> m_aliases;
     geode::async::TaskHolder<> m_listenerTask;
 
     struct CommentObject {

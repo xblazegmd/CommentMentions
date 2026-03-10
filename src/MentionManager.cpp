@@ -13,10 +13,10 @@
 using namespace geode::prelude;
 
 MentionManager::MentionManager(std::vector<int> targets) : m_targets(targets) {
-    auto tags = Mod::get()->getSettingValue<std::string>("tags");
-    auto tagsSplit = string::split(tags, ",");
-    for (const auto& tag : tagsSplit) {
-        m_tags.push_back(string::trim(tag));
+    auto aliases = Mod::get()->getSettingValue<std::string>("aliases");
+    auto aliasesSplit = string::split(aliases, ",");
+    for (const auto& tag : aliasesSplit) {
+        m_aliases.push_back(string::trim(tag));
     }
 };
 
@@ -100,7 +100,7 @@ void MentionManager::onMention(CommentObject obj) {
 }
 
 bool MentionManager::containsMention(const std::string& str) {
-    for (const auto& tag : m_tags)
+    for (const auto& tag : m_aliases)
         if (string::contains(string::toLower(str), tag)) { 
             return true; 
         }
