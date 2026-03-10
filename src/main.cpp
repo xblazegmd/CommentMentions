@@ -45,6 +45,12 @@ arc::Future<Result<int>> getSpecialID(const std::string& type) {
     co_return Ok(intDailyID.unwrap());
 }
 
+void showErrorNotification(const std::string& msg) {
+    geode::queueInMainThread([msg] {
+        Notification::create(msg, NotificationIcon::Error)->show();
+    });
+}
+
 $on_game(Loaded) {
     async::spawn([] -> arc::Future<> {
         // Internet check
@@ -55,7 +61,7 @@ $on_game(Loaded) {
         auto check = co_await checkReq.get("https://www.google.com");
         if (!check.ok()) {
             log::error("No internet connection!");
-            Notification::create("No internet connection!", NotificationIcon::Error)->show();
+            showErrorNotification("No internet connection!");
             co_return;
         }
 
@@ -65,10 +71,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
             auto dailyID = co_await getSpecialID("1");
             if (dailyID.isErr()) {
-                Notification::create(
-                    fmt::format("Could not get daily level ID: {}", dailyID.unwrapErr()),
-                    NotificationIcon::Error
-                )->show();
+                showErrorNotification(fmt::format("Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
                 targets.push_back(std::move(dailyID).unwrap());
             }
@@ -78,10 +81,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
             auto weeklyID = co_await getSpecialID("2");
             if (weeklyID.isErr()) {
-                Notification::create(
-                    fmt::format("Could not get weekly demon ID: {}", weeklyID.unwrapErr()),
-                    NotificationIcon::Error
-                )->show();
+                showErrorNotification(fmt::format("Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
                 targets.push_back(std::move(weeklyID).unwrap());
             }
@@ -105,10 +105,7 @@ $on_game(Loaded) {
 
         // Check if there's even any IDs
         if (targets.empty()) {
-            Notification::create(
-                "No IDs were given",
-                NotificationIcon::Error
-            )->show();
+            showErrorNotification("No IDs were given");
             co_return;
         }
 
