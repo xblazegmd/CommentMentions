@@ -25,12 +25,12 @@ private:
     std::vector<CommentObject> m_previousMentions;
 
     arc::Future<> commentListener();
-    void onMention(CommentObject obj);
+    void onMention(const CommentObject& obj);
     bool containsMention(const std::string& str);
     bool isSelfMention(const std::string& str);
 
-    bool isPrevious(CommentObject obj);
-    void storePrevious(CommentObject obj);
+    bool isPrevious(const CommentObject& obj);
+    void storePrevious(const CommentObject& obj);
 
     CommentObject formatCommentObj(const std::string& str);
 };

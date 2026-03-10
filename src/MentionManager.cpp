@@ -95,10 +95,23 @@ arc::Future<> MentionManager::commentListener() {
     }
 }
 
-void MentionManager::onMention(CommentObject obj) {
+void MentionManager::onMention(const CommentObject& obj) {
+    auto username = obj.author.find("userName");
+    if (username == obj.author.end()) {
+        log::error("Could not find 'userName' in object (THIS SHOULD BE UNREACHABLE)");
+        log::info("PLEASE REPORT THIS BUG");
+        return;
+    }
+    auto comment = obj.comment.find("comment");
+    if (comment == obj.author.end()) {
+        log::error("Could not find 'comment' in object (THIS SHOULD BE UNREACHABLE)");
+        log::info("PLEASE REPORT THIS BUG");
+        return;
+    }
+
     AchievementNotifier::sharedState()->notifyAchievement(
-        fmt::format("{} mentioned you", obj.author["userName"]).c_str(),
-        obj.comment["comment"].c_str(),
+        fmt::format("{} mentioned you", username->second).c_str(),
+        comment->second.c_str(),
         "accountBtn_pendingRequest_001.png",
         true
     );
@@ -122,19 +135,30 @@ bool MentionManager::isSelfMention(const std::string& str) {
     return ownAccID == otherAccID.unwrap();
 }
 
-bool MentionManager::isPrevious(CommentObject obj) {
+bool MentionManager::isPrevious(const CommentObject& obj) {
+    auto ownMessageID = obj.comment.find("messageID");
+    if (ownMessageID == obj.comment.end()) {
+        log::error("Could not find 'messageID' in mention (THIS SHOULD BE UNREACHABLE)");
+        log::info("PLEASE REPORT THIS BUG");
+        return false;
+    }
+
     for (const auto& mention : m_previousMentions) {
         auto messageID = mention.comment.find("messageID");
-        if (messageID == mention.comment.end()) return false;
-        if (messageID->second == obj.comment["messageID"]) { 
-            log::debug("Mention under messageID {} was previously detected, skipping", obj.comment["messageID"]);
+        if (messageID == mention.comment.end()) {
+            log::error("Could not find 'messageID' in previous mention (THIS SHOULD BE UNREACHABLE)");
+            log::info("PLEASE REPORT THIS BUG");
+            return false;
+        }
+        if (messageID->second == ownMessageID->second) { 
+            log::debug("Mention under messageID {} was previously detected, skipping", ownMessageID->second);
             return true; 
         }
     }
     return false;
 }
 
-void MentionManager::storePrevious(CommentObject obj) {
+void MentionManager::storePrevious(const CommentObject& obj) {
     m_previousMentions.push_back(obj);
     if (m_previousMentions.size() > 20) {
         m_previousMentions.erase(m_previousMentions.begin()); // Pop front
