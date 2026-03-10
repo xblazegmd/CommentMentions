@@ -71,6 +71,9 @@ arc::Future<> MentionManager::commentListener() {
 
                 if (containsMention(string)) {
                     if (isPrevious(obj)) continue;
+                    if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.author["accountID"]))
+                        continue;
+
                     obj.comment["comment"] = std::move(string);
                     log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
                     storePrevious(obj);
@@ -107,6 +110,16 @@ bool MentionManager::containsMention(const std::string& str) {
             return true; 
         }
     return false;
+}
+
+bool MentionManager::isSelfMention(const std::string& str) {
+    int ownAccID = GJAccountManager::sharedState()->m_accountID;
+    auto otherAccID = utils::numFromString<int>(str);
+    if (otherAccID.isErr()) {
+        log::debug("Could not convert {} to int", str);
+        return false;
+    }
+    return ownAccID == otherAccID.unwrap();
 }
 
 bool MentionManager::isPrevious(CommentObject obj) {

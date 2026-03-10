@@ -27,6 +27,7 @@ private:
     arc::Future<> commentListener();
     void onMention(CommentObject obj);
     bool containsMention(const std::string& str);
+    bool isSelfMention(const std::string& str);
 
     bool isPrevious(CommentObject obj);
     void storePrevious(CommentObject obj);
