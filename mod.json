@@ -60,6 +60,20 @@
 			"default": "68668045",
 			"filter": "0123456789, "
 		},
+		"notifications": {
+			"type": "title",
+			"name": "Notifications"
+		},
+		"show-while-playing": {
+			"type": "bool",
+			"name": "Show when playing",
+			"default": false
+		},
+		"show-on-editor": {
+			"type": "bool",
+			"name": "Show while on editor",
+			"default": true
+		},
 		"advanced": {
 			"type": "title",
 			"name": "Advanced Options"

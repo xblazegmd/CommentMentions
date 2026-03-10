@@ -75,7 +75,9 @@ arc::Future<> MentionManager::commentWatcher() {
                 }
             }
 
-            if (PlayLayer::get()) continue; // Skip if playing
+            // Skip if playing/on editor
+            if (!Mod::get()->getSettingValue<bool>("show-while-playing") && PlayLayer::get()) continue;
+            if (!Mod::get()->getSettingValue<bool>("show-on-editor") && LevelEditorLayer::get()) continue;
 
             if (!m_mentions.empty()) {
                 for (const auto& mention : m_mentions) {
