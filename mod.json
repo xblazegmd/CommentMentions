@@ -43,7 +43,7 @@
 		},
 		"use-custom-ids": {
 			"type": "bool",
-			"name": "Use Custom IDs",
+			"name": "Track Custom Levels",
 			"description": "Track mentions on any level of your choice",
 			"default": false
 		},
@@ -51,7 +51,7 @@
 			"type": "string",
 			"enable-if": "use-custom-ids",
 			"enable-if-description": "Custom IDs are disabled!",
-			"name": "Custom IDs",
+			"name": "Custom Levels",
 			"description": "A comma separated <cg>list of level IDs</c> that will be checked for",
 			"default": "68668045",
 			"filter": "0123456789, "
