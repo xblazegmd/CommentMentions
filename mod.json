@@ -1,57 +1,99 @@
 {
-	"geode": "4.10.0",
+	"geode": "5.3.0",
 	"gd": {
-		"win": "2.2074",
-		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
 	},
 	"id": "xblazegmd.commentmentions",
 	"name": "CommentMentions",
-	"version": "v0.1.0-beta.1",
+	"version": "v1.0.0-beta.1",
 	"developer": "XblazeGMD",
 	"description": "Get notified everytime someone 'mentions' you",
 	"dependencies": {
 		"geode.node-ids": ">=v1.20.0"
 	},
-	"tags": [ "online", "enhancement" ],
+	"tags": ["online", "enhancement", "interface"],
 	"links": {
 		"source": "https://github.com/xblazegmd/CommentMentions"
 	},
 	"settings": {
-		"use-daily-lvl": {
+		"basic-settings": {
+			"type": "title",
+			"name": "Basic Options"
+		},
+		"aliases": {
+			"type": "string",
+			"name": "Aliases",
+			"description": "A comma separated <cg>list of aliases</c> to watch for in the comments",
+			"default": "everyone",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
+		},
+		"daily-lvl": {
 			"type": "bool",
-			"name": "Use Daily Level",
-			"description": "Should the listener listen to the current daily level?",
+			"requires-restart": true,
+			"name": "Track Daily Level",
+			"description": "yw dcers",
 			"default": true
 		},
-		"level-id": {
+		"weekly-demon": {
+			"type": "bool",
+			"requires-restart": true,
+			"name": "Track Weekly Demon",
+			"default": true
+		},
+		"use-custom-ids": {
+			"type": "bool",
+			"requires-restart": true,
+			"name": "Track Custom Levels",
+			"description": "Track mentions on any level of your choice",
+			"default": false
+		},
+		"custom-ids": {
+			"type": "string",
+			"enable-if": "use-custom-ids",
+			"enable-if-description": "Custom IDs are disabled!",
+			"requires-restart": true,
+			"name": "Custom Levels",
+			"description": "A comma separated <cg>list of level IDs</c> that will be checked for",
+			"default": "68668045",
+			"filter": "0123456789, "
+		},
+		"notifications": {
+			"type": "title",
+			"name": "Notifications"
+		},
+		"show-while-playing": {
+			"type": "bool",
+			"name": "Show when playing",
+			"default": false
+		},
+		"show-on-editor": {
+			"type": "bool",
+			"name": "Show while on editor",
+			"default": true
+		},
+		"advanced": {
+			"type": "title",
+			"name": "Advanced Options"
+		},
+		"refresh-rate": {
 			"type": "int",
-			"name": "Level ID",
-			"description": "The level id the listener will listen at ('Use Daily Level' must be off)",
-			"enable-if": "!setting:use-daily-lvl",
-			"default": 68668045,
-			"min": 0,
+			"name": "Refresh Rate",
+			"description": "The rate in which the mod will request the GD servers (in seconds).\n\n<cr>A low enough refresh rate may cause you to get rate limited, be careful!</c>",
+			"default": 10,
+			"min": 5,
+			"max": 300,
 			"control": {
-				"arrows": false,
-				"big-arrows": false,
-				"slider": false
+				"slider": true
 			}
 		},
-		"tags": {
-			"type": "string",
-			"name": "Tags",
-			"description": "A comma separated string of tags the mod WILL look for in the comments",
-			"default": "everyone, yourusernamehere",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ, "
-		},
-		"mention-history-maxsize": {
-			"type": "int",
-			"name": "Maximum Mention History Size",
-			"description": "The maximum size the comment mention history (default: 20)",
-			"default": 20,
-			"min": 1,
-			"max": 100
+		"ignore-self": {
+			"type": "bool",
+			"name": "Ignore Self Mentions",
+			"description": "Ignore mentions when you're the one that mentioned yourself",
+			"default": true
 		}
 	}
 }
