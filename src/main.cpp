@@ -109,8 +109,8 @@ $on_game(Loaded) {
             co_return;
         }
 
-        // Start listener
+        // Start tracking for mentions
         g_mentionManager = std::make_shared<MentionManager>(std::move(targets));
-        g_mentionManager->startListening();
+        g_mentionManager->start();
     });
 }

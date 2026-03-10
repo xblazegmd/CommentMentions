@@ -14,15 +14,15 @@ using namespace geode::prelude;
 
 MentionManager::MentionManager(std::vector<int> targets) : m_targets(targets) {};
 
-void MentionManager::startListening() {
-    m_listenerTask.spawn(
-        "MentionManager::listener",
-        commentListener(),
+void MentionManager::start() {
+    m_watcher.spawn(
+        "MentionManager::mentionTracker",
+        commentWatcher(),
         [] {}
     );
 }
 
-arc::Future<> MentionManager::commentListener() {
+arc::Future<> MentionManager::commentWatcher() {
     while (true) {
         for (const auto& levelID : m_targets) {
             co_await arc::sleep(asp::Duration::fromSecs(

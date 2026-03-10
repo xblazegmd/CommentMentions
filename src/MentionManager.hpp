@@ -10,10 +10,10 @@ public:
     MentionManager(std::vector<int> targets);
     ~MentionManager() = default;
 
-    void startListening();
+    void start();
 private:
     std::vector<int> m_targets;
-    geode::async::TaskHolder<> m_listenerTask;
+    geode::async::TaskHolder<> m_watcher;
 
     struct CommentObject {
         geode::utils::StringMap<std::string> comment;
@@ -23,7 +23,7 @@ private:
     std::vector<CommentObject> m_mentions;
     std::vector<CommentObject> m_previousMentions;
 
-    arc::Future<> commentListener();
+    arc::Future<> commentWatcher();
     void onMention(const CommentObject& obj);
     bool containsMention(const std::string& str);
     bool isSelfMention(const std::string& str);
