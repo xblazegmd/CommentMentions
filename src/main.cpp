@@ -47,6 +47,18 @@ arc::Future<Result<int>> getSpecialID(const std::string& type) {
 
 $on_game(Loaded) {
     async::spawn([] -> arc::Future<> {
+        // Internet check
+        auto checkReq = web::WebRequest()
+            .userAgent("Geometry Dash! (internet check)")
+            .timeout(std::chrono::seconds(10));
+
+        auto check = co_await checkReq.get("https://www.google.com");
+        if (!check.ok()) {
+            log::error("No internet connection!");
+            Notification::create("No internet connection!", NotificationIcon::Error)->show();
+            co_return;
+        }
+
         std::vector<int> targets{};
 
         // Get daily level
