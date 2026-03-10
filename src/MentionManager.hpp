@@ -13,7 +13,6 @@ public:
     void startListening();
 private:
     std::vector<int> m_targets;
-    std::vector<std::string> m_aliases;
     geode::async::TaskHolder<> m_listenerTask;
 
     struct CommentObject {
@@ -31,6 +30,8 @@ private:
 
     bool isPrevious(const CommentObject& obj);
     void storePrevious(const CommentObject& obj);
+
+    std::vector<std::string> getAliases();
 
     CommentObject formatCommentObj(const std::string& str);
 };

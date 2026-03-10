@@ -12,13 +12,7 @@
 
 using namespace geode::prelude;
 
-MentionManager::MentionManager(std::vector<int> targets) : m_targets(targets) {
-    auto aliases = Mod::get()->getSettingValue<std::string>("aliases");
-    auto aliasesSplit = string::split(aliases, ",");
-    for (const auto& tag : aliasesSplit) {
-        m_aliases.push_back(string::trim(tag));
-    }
-};
+MentionManager::MentionManager(std::vector<int> targets) : m_targets(targets) {};
 
 void MentionManager::startListening() {
     m_listenerTask.spawn(
@@ -118,7 +112,8 @@ void MentionManager::onMention(const CommentObject& obj) {
 }
 
 bool MentionManager::containsMention(const std::string& str) {
-    for (const auto& tag : m_aliases)
+    auto aliases = getAliases();
+    for (const auto& tag : aliases)
         if (string::contains(string::toLower(str), tag)) { 
             return true; 
         }
@@ -163,6 +158,16 @@ void MentionManager::storePrevious(const CommentObject& obj) {
     if (m_previousMentions.size() > 20) {
         m_previousMentions.erase(m_previousMentions.begin()); // Pop front
     }
+}
+
+std::vector<std::string> MentionManager::getAliases() {
+    auto aliases = Mod::get()->getSettingValue<std::string>("aliases");
+    auto aliasesSplit = string::split(aliases, ",");
+    std::vector<std::string> ret;
+    for (const auto& alias : aliasesSplit) {
+        ret.push_back(string::trim(alias));
+    }
+    return ret;
 }
 
 MentionManager::CommentObject MentionManager::formatCommentObj(const std::string& str) {
