@@ -2,6 +2,10 @@
 ## v1.0.0
 - <cg>Update</c> to Geode v5
 - <co>Rewrote</c> ENTIRE mod
+- <cg>Added</c> <cl>Weekly Demon<cl> mention tracking
+- <cg>Added</c> <cl>Custom levels</c> mention tracking
+- <cg>Added</c> support for tracking mentions on multiple levels at once
+- <cg>Added</c> basic internet check
 
 ## v0.1.0-beta.1
 - <co>Rewrote</c> ALL of the <cl>notification logic</c>
