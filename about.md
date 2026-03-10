@@ -1,13 +1,13 @@
 # Comment Mentions
-Have you ever wanted to get notified every time someone mentioned you in a comment section? (like, your username?). No? Well too bad, since I made it into a Geode mod.
+A daily chatter's favorite mod :)
 
-Now, everytime someone mentions you in the level specified in settings (defaults to current daily, for the daily chatters 🙂), you get a notification for it!
-
-## DISCLAIMER
-This mod is still in development. Bugs are to be expected.
+## Features
+- Get notified every time someone mentions you
+- Ability to track Daily, Weekly, and Custom levels <c-a6a6a6>(Event level support *may* be added in the future)</c>
+- Custom aliases
 
 ## License
 This mod is licensed under the **Mozilla Public License 2.0**
 
 ## Credits
-- GuineaPG for the mod idea (long story on how)
+- [GuineaPG](user:16495137) for the mod idea (long story on how)

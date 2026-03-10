@@ -2,7 +2,7 @@
 ## v1.0.0
 - <cg>Update</c> to Geode v5
 - <co>Rewrote</c> ENTIRE mod
-- <cg>Added</c> <cl>Weekly Demon<cl> mention tracking
+- <cg>Added</c> <cl>Weekly Demon</c> mention tracking
 - <cg>Added</c> <cl>Custom levels</c> mention tracking
 - <cg>Added</c> support for tracking mentions on multiple levels at once
 - <cg>Added</c> basic internet check
@@ -16,7 +16,7 @@
 
 ## v0.1.0-alpha.4
 - <cr>Removed</c> useless button in the profile page - that was for a <co>scrapped feature</c>
-    - *<c-a6a6a6>hey, it's xblaze from the future, it's not scrapped anymore yay</c>*
+    - *<c-a6a6a6>hey, it's xblaze from the future, it's not scrapped anymore yay. It'll hopefully come out in a future update</c>*
 - <cg>Added</c> <cl>mention queue</c> - now you shouldn't get notified while playing levels
 
 ## v0.1.0-alpha.3
