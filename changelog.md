@@ -6,6 +6,7 @@
 - <cg>Added</c> <cl>Custom levels</c> mention tracking
 - <cg>Added</c> support for tracking mentions on multiple levels at once
 - <cg>Added</c> basic internet check
+- <cy>Polished</c> the mod a lot
 
 ## v0.1.0-beta.1
 - <co>Rewrote</c> ALL of the <cl>notification logic</c>
