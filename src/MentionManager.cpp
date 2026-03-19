@@ -12,7 +12,15 @@
 
 using namespace geode::prelude;
 
-MentionManager::MentionManager(std::vector<int> targets) : m_targets(targets) {};
+MentionManager* MentionManager::sharedState() {
+    static MentionManager* instance = new MentionManager();
+    return instance;
+}
+
+arc::Future<> MentionManager::setLevelIDs(std::vector<int> levelIDs) {
+    auto lock = co_await m_levelIDs.lock();
+    *lock = std::move(levelIDs);
+}
 
 void MentionManager::start() {
     m_watcher.spawn(
@@ -22,9 +30,14 @@ void MentionManager::start() {
     );
 }
 
+void MentionManager::stop() {
+    m_watcher.cancel();
+}
+
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
-        for (const auto& levelID : m_targets) {
+        auto lock = co_await m_levelIDs.lock();
+        for (const auto& levelID : *lock) {
             co_await arc::sleep(asp::Duration::fromSecs(
                 Mod::get()->getSettingValue<int64_t>("refresh-rate")
             ));

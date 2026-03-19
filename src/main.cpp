@@ -5,12 +5,9 @@
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
 #include <chrono>
-#include <memory>
 #include <string>
 
 using namespace geode::prelude;
-
-static std::shared_ptr<MentionManager> g_mentionManager;
 
 /// 1: Daily level, 2: Weekly demon
 arc::Future<Result<int>> getSpecialID(const std::string& type) {
@@ -114,8 +111,9 @@ $on_game(Loaded) {
             co_return;
         }
 
-        // Start tracking for mentions
-        g_mentionManager = std::make_shared<MentionManager>(std::move(targets));
-        g_mentionManager->start();
+        // Start tracking
+        auto mentionManager = MentionManager::sharedState();
+        co_await mentionManager->setLevelIDs(std::move(targets));
+        mentionManager->start();
     });
 }

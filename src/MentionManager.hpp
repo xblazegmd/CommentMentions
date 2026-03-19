@@ -1,5 +1,7 @@
 #pragma once
 
+#include <arc/future/Future.hpp>
+#include <arc/sync/Mutex.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
 #include <string>
@@ -7,12 +9,16 @@
 
 class MentionManager {
 public:
-    MentionManager(std::vector<int> targets);
+    MentionManager() {}
     ~MentionManager() = default;
 
+    static MentionManager* sharedState();
+    arc::Future<> setLevelIDs(std::vector<int> levelIDs);
+
     void start();
+    void stop();
 private:
-    std::vector<int> m_targets;
+    arc::Mutex<std::vector<int>> m_levelIDs;
     geode::async::TaskHolder<> m_watcher;
 
     struct CommentObject {
