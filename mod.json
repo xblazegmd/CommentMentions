@@ -26,9 +26,9 @@
 		"aliases": {
 			"type": "string",
 			"name": "Aliases",
-			"description": "A comma separated <cg>list of aliases</c> to watch for in the comments",
-			"default": "everyone",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
+			"description": "A comma separated <cg>list of aliases</c> to watch for in the comments\n\nUsing the @ sign makes it so you explicitly only get notified when someone mentions you with the @ sign (duh)",
+			"default": "@everyone",
+			"filter": "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"daily-lvl": {
 			"type": "bool",

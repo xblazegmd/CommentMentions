@@ -1,4 +1,7 @@
 # Comment Mentions
+## v1.0.0-beta.2
+- <cl>Aliases</c> now contain your current username by default
+
 ## v1.0.0-beta.1
 - <cg>Update</c> to Geode v5
 - <co>Rewrote</c> ENTIRE mod
