@@ -17,7 +17,6 @@ public:
 
     void start();
     void restart();
-    void stop();
 private:
     arc::Mutex<std::vector<int>> m_levelIDs;
     geode::async::TaskHolder<> m_watcher;
