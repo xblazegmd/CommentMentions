@@ -16,6 +16,7 @@ public:
     arc::Future<> setLevelIDs(std::vector<int> levelIDs);
 
     void start();
+    void restart();
     void stop();
 private:
     arc::Mutex<std::vector<int>> m_levelIDs;

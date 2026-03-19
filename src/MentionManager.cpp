@@ -30,8 +30,9 @@ void MentionManager::start() {
     );
 }
 
-void MentionManager::stop() {
+void MentionManager::restart() {
     m_watcher.cancel();
+    this->start(); // "this->" just feels better for this case, idk why
 }
 
 arc::Future<> MentionManager::commentWatcher() {
