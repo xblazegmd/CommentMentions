@@ -1,3 +1,4 @@
+#include "Geode/ui/Notification.hpp"
 #include <arc/prelude.hpp>
 #include <MentionManager.hpp>
 #include <utils.hpp>
@@ -48,12 +49,6 @@ void showErrorNotification(const std::string& msg) {
 }
 
 $on_game(Loaded) {
-    if (!Mod::get()->setSavedValue("setup", true)) {
-        auto aliases = Mod::get()->getSettingValue<std::string>("aliases");
-        auto username = GJAccountManager::sharedState()->m_username;
-        Mod::get()->setSettingValue("aliases", aliases + ", " + string::toLower(username));
-    }
-
     async::spawn([] -> arc::Future<> {
         // Internet check
         auto checkReq = web::WebRequest()
