@@ -36,7 +36,7 @@ arc::Future<Result<int>> getSpecialID(const std::string& type) {
 }
 
 $execute {
-    if (Mod::get()->setSavedValue("loaded-before", true)) {
+    if (!Mod::get()->setSavedValue("loaded-before", true)) {
         auto username = GJAccountManager::get()->m_username;
         Mod::get()->setSettingValue("aliases", "@everyone, " + string::toLower(username));
     }
