@@ -1,7 +1,6 @@
 #include "MentionManager.hpp"
 
 #include <arc/prelude.hpp>
-#include <chrono>
 #include <cstdint>
 #include <utils.hpp>
 
@@ -41,15 +40,16 @@ arc::Future<> MentionManager::commentWatcher() {
         for (const auto& levelID : *lock) {
             co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
 
-            auto now = std::chrono::steady_clock::now();
-            if (now >= m_nextInternetCheck) {
-                m_doWeHaveInternet = co_await doWeHaveInternet();
-                if (!m_doWeHaveInternet) notifyError("CommentMentions: No internet connection!");
-                m_nextInternetCheck = now + std::chrono::seconds(120);
-            }
+            auto doWeHaveInternet = co_await doWeTrulyHaveInternet();
 
-            if (!m_doWeHaveInternet) {
+            if (!doWeHaveInternet) {
+                if (m_didWeHaveInternet) {
+                    notifyError("CommentMentions: No internet connection!");
+                    m_didWeHaveInternet = false;
+                }
                 continue;
+            } else {
+                m_didWeHaveInternet = true;
             }
 
             auto req = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
@@ -231,12 +231,4 @@ MentionManager::CommentObject MentionManager::formatCommentObj(const std::string
     }, "~");
 
     return ret;
-}
-
-arc::Future<bool> MentionManager::doWeHaveInternet() {
-    auto res = co_await web::WebRequest()
-        .userAgent("GeometryDash/2.2081 CommentMentions/1.0.0-beta.2")
-        .timeout(std::chrono::seconds(10))
-        .get("http://connectivitycheck.gstatic.com/generate_204");
-    co_return res.ok();
 }

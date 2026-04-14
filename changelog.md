@@ -3,8 +3,7 @@
 - <cl>Aliases</c> now contain your current username by default
 - <cg>Add</c> Patreon links
 - Use <co>Xblaze's Geode API</c>
-- <cg>Update</c> internet checking logic to run every 2 minutes
-    - *<c-a6a6a6>it also now uses `connectivitycheck.gstatic.com`</c>*
+- <cs>Refactor</c> internet checking logic
 
 ## v1.0.0-beta.1
 - <cg>Update</c> to Geode v5

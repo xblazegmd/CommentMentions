@@ -10,3 +10,5 @@ geode::utils::StringMap<std::string> formatKV(
 );
 
 void notifyError(const std::string& msg);
+
+arc::Future<bool> doWeTrulyHaveInternet();

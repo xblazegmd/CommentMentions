@@ -44,6 +44,13 @@ $execute {
 
 $on_game(Loaded) {
     async::spawn([] -> arc::Future<> {
+        auto doWeHaveInternet = co_await doWeTrulyHaveInternet();
+        if (!doWeHaveInternet) {
+            notifyError("CommentMentions: No internet connection!");
+            notifyError("Please check your internet connection and restart the game");
+            co_return; // We inmediatly abort any comment tracking (that's why we tell the user to restart their game)
+        }
+
         std::vector<int> levels{};
 
         // Get daily level

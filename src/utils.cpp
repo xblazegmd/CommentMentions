@@ -28,3 +28,11 @@ void notifyError(const std::string& msg) {
     if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
     xblazeapi::quickErrorNotificationTS(msg);
 }
+
+arc::Future<bool> doWeTrulyHaveInternet() {
+    auto res = co_await web::WebRequest()
+        .userAgent("GeometryDash/2.2081 CommentMentions/1.0.0-beta.2")
+        .timeout(std::chrono::seconds(10))
+        .get("http://connectivitycheck.gstatic.com/generate_204");
+    co_return res.ok();
+}
