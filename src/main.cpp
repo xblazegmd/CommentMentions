@@ -1,64 +1,53 @@
-#include "Geode/ui/Notification.hpp"
+#include "Geode/utils/general.hpp"
 #include <arc/prelude.hpp>
 #include <MentionManager.hpp>
 #include <utils.hpp>
+
 #include <Geode/Geode.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
+
 #include <chrono>
 #include <string>
+
+#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
 
 using namespace geode::prelude;
 
 /// 1: Daily level, 2: Weekly demon
 arc::Future<Result<int>> getSpecialID(const std::string& type) {
-    auto req = web::WebRequest()
-        .userAgent("")
-        .bodyString("type=2" + type + "&secret=" + SECRET)
-        .timeout(std::chrono::seconds(10));
+    auto req = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
+        "type=2{}&secret={}",
+        type, xblazeapi::SECRET
+    ));
 
-    auto res = co_await req.post(BOOMLINGS + "getGJLevels21.php");
-    if (!res.ok() || res.string().isErr()) {
-        log::error("Request failed (status code {})", res.code());
-        co_return Err("Request failed (status code {})", res.code());
+    if (req.isErr()) {
+        log::error("{}", req.unwrapErr());
+        co_return Err("{}", req.unwrap());
     }
 
-    std::string resStr = res.string().unwrap();
-    auto resStrNum = utils::numFromString<int>(resStr);
+    auto res = req.unwrap();
+    auto num = utils::numFromString<int>(res);
 
-    if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
-        log::error("Request to GD servers failed (error code {})", resStr);
-        co_return Err("Request failed (error code {})", resStr);
+    if (num.isErr()) {
+        log::error("{}", num.unwrapErr());
+        co_return Err(num.unwrapErr());
     }
 
-    auto daily = string::split(string::split(resStr, "#")[0], "|")[0];
-    auto dailyID = formatKV(daily, {{"1", "daily"}})["daily"];
-    auto intDailyID = utils::numFromString<int>(dailyID);
-
-    if (intDailyID.isErr()) {
-        co_return Err(intDailyID.unwrapErr());
-    }
-
-    co_return Ok(intDailyID.unwrap());
-}
-
-void showErrorNotification(const std::string& msg) {
-    geode::queueInMainThread([msg] {
-        Notification::create(msg, NotificationIcon::Error)->show();
-    });
+    co_return Ok(num.unwrap());
 }
 
 $on_game(Loaded) {
     async::spawn([] -> arc::Future<> {
         // Internet check
         auto checkReq = web::WebRequest()
-            .userAgent("Geometry Dash! (internet check)")
+            .userAgent("GeometryDash/2.2081 CommentMentions/v1.0.0-beta.2")
             .timeout(std::chrono::seconds(10));
 
         auto check = co_await checkReq.get("https://www.google.com");
         if (!check.ok()) {
             log::error("No internet connection!");
-            showErrorNotification("CommentMentions: No internet connection!");
+            xblazeapi::quickErrorNotificationTS("CommentMentions: No internet connection!");
             co_return;
         }
 
@@ -68,7 +57,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
             auto dailyID = co_await getSpecialID("1");
             if (dailyID.isErr()) {
-                showErrorNotification(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
+                xblazeapi::quickErrorNotificationTS(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
                 targets.push_back(std::move(dailyID).unwrap());
             }
@@ -78,7 +67,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
             auto weeklyID = co_await getSpecialID("2");
             if (weeklyID.isErr()) {
-                showErrorNotification(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
+                xblazeapi::quickErrorNotificationTS(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
                 targets.push_back(std::move(weeklyID).unwrap());
             }
@@ -102,7 +91,7 @@ $on_game(Loaded) {
 
         // Check if there's even any IDs
         if (targets.empty()) {
-            showErrorNotification("CommentMentions: No IDs were given");
+            xblazeapi::quickErrorNotificationTS("CommentMentions: No IDs were given");
             co_return;
         }
 

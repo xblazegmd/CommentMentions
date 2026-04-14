@@ -1,14 +1,18 @@
 #include "MentionManager.hpp"
 
 #include <arc/prelude.hpp>
+#include <cstdint>
 #include <utils.hpp>
+
 #include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
-#include <chrono>
+
 #include <string>
 #include <vector>
+
+#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
 
 using namespace geode::prelude;
 
@@ -39,31 +43,20 @@ arc::Future<> MentionManager::commentWatcher() {
     while (true) {
         auto lock = co_await m_levelIDs.lock();
         for (const auto& levelID : *lock) {
-            co_await arc::sleep(asp::Duration::fromSecs(
-                Mod::get()->getSettingValue<int64_t>("refresh-rate")
+            co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
+
+            auto req = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
+                "levelID={}&page=0&secret={}",
+                levelID, xblazeapi::SECRET
             ));
 
-            auto req = web::WebRequest()
-                .userAgent("")
-                .timeout(std::chrono::seconds(10))
-                .bodyString("levelID=" + utils::numToString(levelID) + "&page=0&secret=" + SECRET);
-
-            auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
-
-            if (!res.ok() || res.string().isErr()) {
-                log::error("Request failed: (status code: {})", res.code());
+            if (req.isErr()) {
+                log::error("Failed to request endpoint 'getGJComments21.php': {}", req.unwrapErr());
                 continue;
             }
 
-            std::string resStr = res.string().unwrap();
-            auto resStrNum = utils::numFromString<int>(resStr);
-
-            if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
-                log::error("Request failed: {}", resStr);
-                continue;
-            }
-
-            auto comments = string::split(resStr, "|");
+            auto res = req.unwrap();
+            auto comments = string::split(res, "|");
             for (const auto& comment : comments) {
                 auto obj = formatCommentObj(comment);
 

@@ -3,6 +3,8 @@
 #include <Geode/Geode.hpp>
 #include <string>
 
+#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
+
 using namespace geode::prelude;
 
 utils::StringMap<std::string> formatKV(
@@ -10,12 +12,7 @@ utils::StringMap<std::string> formatKV(
     geode::utils::StringMap<std::string> map,
     const std::string& sep
 ) {
-    auto parts = string::split(str, sep);
-
-    utils::StringMap<std::string> kv;
-    for (int i = 0; i + 1 < parts.size(); i += 2) {
-        kv[parts[i]] = parts[i + 1];
-    }
+    auto kv = xblazeapi::formatResponse(str);
 
     utils::StringMap<std::string> ret;
     for (const auto& [k, v] : kv) {
