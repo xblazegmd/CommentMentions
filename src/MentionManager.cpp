@@ -34,11 +34,6 @@ void MentionManager::start() {
     );
 }
 
-void MentionManager::restart() {
-    m_watcher.cancel();
-    this->start(); // "this->" just feels better for this case, idk why
-}
-
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
         auto lock = co_await m_levelIDs.lock();
