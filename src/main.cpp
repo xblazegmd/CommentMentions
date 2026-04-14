@@ -38,20 +38,13 @@ arc::Future<Result<int>> getSpecialID(const std::string& type) {
 }
 
 $on_game(Loaded) {
+    if (!GameToolbox::doWeHaveInternet()) {
+        xblazeapi::quickErrorNotificationTS("CommentMentions: No internet connection!");
+        return;
+    }
+
     async::spawn([] -> arc::Future<> {
-        // Internet check
-        auto checkReq = web::WebRequest()
-            .userAgent("GeometryDash/2.2081 CommentMentions/v1.0.0-beta.2")
-            .timeout(std::chrono::seconds(10));
-
-        auto check = co_await checkReq.get("https://www.google.com");
-        if (!check.ok()) {
-            log::error("No internet connection!");
-            xblazeapi::quickErrorNotificationTS("CommentMentions: No internet connection!");
-            co_return;
-        }
-
-        std::vector<int> targets{};
+        std::vector<int> levels{};
 
         // Get daily level
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
@@ -59,7 +52,7 @@ $on_game(Loaded) {
             if (dailyID.isErr()) {
                 xblazeapi::quickErrorNotificationTS(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
-                targets.push_back(std::move(dailyID).unwrap());
+                levels.push_back(std::move(dailyID).unwrap());
             }
         }
 
@@ -69,7 +62,7 @@ $on_game(Loaded) {
             if (weeklyID.isErr()) {
                 xblazeapi::quickErrorNotificationTS(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
-                targets.push_back(std::move(weeklyID).unwrap());
+                levels.push_back(std::move(weeklyID).unwrap());
             }
         }
 
@@ -85,19 +78,19 @@ $on_game(Loaded) {
                     continue;
                 }
 
-                targets.push_back(std::move(idNum).unwrap());
+                levels.push_back(std::move(idNum).unwrap());
             }
         }
 
         // Check if there's even any IDs
-        if (targets.empty()) {
+        if (levels.empty()) {
             xblazeapi::quickErrorNotificationTS("CommentMentions: No IDs were given");
             co_return;
         }
 
         // Start tracking
         auto mentionManager = MentionManager::get();
-        co_await mentionManager->setLevelIDs(std::move(targets));
+        co_await mentionManager->setLevelIDs(std::move(levels));
         mentionManager->start();
     });
 }
