@@ -1,3 +1,4 @@
+#include "Geode/DefaultInclude.hpp"
 #include "Geode/utils/general.hpp"
 #include <arc/prelude.hpp>
 #include <MentionManager.hpp>
@@ -7,7 +8,6 @@
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
 
-#include <chrono>
 #include <string>
 
 #include <xblazegmd.geode-api/include/XblazeAPI.hpp>
@@ -35,6 +35,13 @@ arc::Future<Result<int>> getSpecialID(const std::string& type) {
     }
 
     co_return Ok(num.unwrap());
+}
+
+$execute {
+    if (Mod::get()->setSavedValue("loaded-before", true)) {
+        auto username = GJAccountManager::get()->m_username;
+        Mod::get()->setSettingValue("aliases", "everyone, " + string::toLower(username));
+    }
 }
 
 $on_game(Loaded) {
