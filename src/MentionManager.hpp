@@ -12,7 +12,7 @@ public:
     MentionManager() {}
     ~MentionManager() = default;
 
-    static MentionManager* sharedState();
+    static MentionManager* get();
     arc::Future<> setLevelIDs(std::vector<int> levelIDs);
 
     void start();

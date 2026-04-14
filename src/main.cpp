@@ -107,7 +107,7 @@ $on_game(Loaded) {
         }
 
         // Start tracking
-        auto mentionManager = MentionManager::sharedState();
+        auto mentionManager = MentionManager::get();
         co_await mentionManager->setLevelIDs(std::move(targets));
         mentionManager->start();
     });

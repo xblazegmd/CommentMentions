@@ -12,7 +12,7 @@
 
 using namespace geode::prelude;
 
-MentionManager* MentionManager::sharedState() {
+MentionManager* MentionManager::get() {
     static MentionManager* instance = new MentionManager();
     return instance;
 }
