@@ -1,5 +1,3 @@
-#include "Geode/DefaultInclude.hpp"
-#include "Geode/utils/general.hpp"
 #include <arc/prelude.hpp>
 #include <MentionManager.hpp>
 #include <utils.hpp>
@@ -46,7 +44,7 @@ $execute {
 
 $on_game(Loaded) {
     if (!GameToolbox::doWeHaveInternet()) {
-        xblazeapi::quickErrorNotificationTS("CommentMentions: No internet connection!");
+        notifyError("CommentMentions: No internet connection!");
         return;
     }
 
@@ -57,7 +55,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
             auto dailyID = co_await getSpecialID("1");
             if (dailyID.isErr()) {
-                xblazeapi::quickErrorNotificationTS(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
+                notifyError(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
                 levels.push_back(std::move(dailyID).unwrap());
             }
@@ -67,7 +65,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
             auto weeklyID = co_await getSpecialID("2");
             if (weeklyID.isErr()) {
-                xblazeapi::quickErrorNotificationTS(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
+                notifyError(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
                 levels.push_back(std::move(weeklyID).unwrap());
             }
@@ -91,7 +89,7 @@ $on_game(Loaded) {
 
         // Check if there's even any IDs
         if (levels.empty()) {
-            xblazeapi::quickErrorNotificationTS("CommentMentions: No IDs were given");
+            notifyError("CommentMentions: No IDs were given");
             co_return;
         }
 

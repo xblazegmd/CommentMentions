@@ -47,6 +47,7 @@ arc::Future<> MentionManager::commentWatcher() {
 
             if (req.isErr()) {
                 log::error("Failed to request endpoint 'getGJComments21.php': {}", req.unwrapErr());
+                notifyError(fmt::format("CommentMentions: Failed to fetch comments: {}", req.unwrapErr()));
                 continue;
             }
 
@@ -96,12 +97,18 @@ arc::Future<> MentionManager::commentWatcher() {
 void MentionManager::onMention(const CommentObject& obj) {
     auto username = obj.author.find("userName");
     if (username == obj.author.end()) {
+        notifyError("CommentMention: An unexpected issue occurred");
+        notifyError("Please report this issue to the developer (include the game logs)");
+
         log::error("Could not find 'userName' in object (THIS SHOULD BE UNREACHABLE)");
         log::info("PLEASE REPORT THIS BUG");
         return;
     }
     auto comment = obj.comment.find("comment");
     if (comment == obj.author.end()) {
+        notifyError("CommentMention: An unexpected issue occurred");
+        notifyError("Please report this issue to the developer (include the game logs)");
+
         log::error("Could not find 'comment' in object (THIS SHOULD BE UNREACHABLE)");
         log::info("PLEASE REPORT THIS BUG");
         return;
@@ -137,6 +144,9 @@ bool MentionManager::isSelfMention(const std::string& str) {
 bool MentionManager::isPrevious(const CommentObject& obj) {
     auto ownMessageID = obj.comment.find("messageID");
     if (ownMessageID == obj.comment.end()) {
+        notifyError("CommentMention: An unexpected issue occurred");
+        notifyError("Please report this issue to the developer (include the game logs)");
+
         log::error("Could not find 'messageID' in mention (THIS SHOULD BE UNREACHABLE)");
         log::info("PLEASE REPORT THIS BUG");
         return false;
@@ -145,6 +155,9 @@ bool MentionManager::isPrevious(const CommentObject& obj) {
     for (const auto& mention : m_previousMentions) {
         auto messageID = mention.comment.find("messageID");
         if (messageID == mention.comment.end()) {
+            notifyError("CommentMention: An unexpected issue occurred");
+            notifyError("Please report this issue to the developer (include the game logs)");
+
             log::error("Could not find 'messageID' in previous mention (THIS SHOULD BE UNREACHABLE)");
             log::info("PLEASE REPORT THIS BUG");
             return false;

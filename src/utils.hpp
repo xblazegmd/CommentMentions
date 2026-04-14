@@ -8,3 +8,5 @@ geode::utils::StringMap<std::string> formatKV(
     geode::utils::StringMap<std::string> map,
     const std::string& sep = ":"
 );
+
+void notifyError(const std::string& msg);

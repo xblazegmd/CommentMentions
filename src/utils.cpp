@@ -23,3 +23,8 @@ utils::StringMap<std::string> formatKV(
 
     return ret;
 }
+
+void notifyError(const std::string& msg) {
+    if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
+    xblazeapi::quickErrorNotificationTS(msg);
+}
