@@ -4,6 +4,8 @@
 #include <arc/sync/Mutex.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
+
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -39,4 +41,9 @@ private:
     std::vector<std::string> getAliases();
 
     CommentObject formatCommentObj(const std::string& str);
+
+    bool m_doWeHaveInternet = true;
+    std::chrono::steady_clock::time_point m_nextInternetCheck =
+        std::chrono::steady_clock::now();
+    arc::Future<bool> doWeHaveInternet();
 };

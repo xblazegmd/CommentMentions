@@ -43,11 +43,6 @@ $execute {
 }
 
 $on_game(Loaded) {
-    if (!GameToolbox::doWeHaveInternet()) {
-        notifyError("CommentMentions: No internet connection!");
-        return;
-    }
-
     async::spawn([] -> arc::Future<> {
         std::vector<int> levels{};
 
