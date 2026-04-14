@@ -1,6 +1,9 @@
 # Comment Mentions
 ## v1.0.0-beta.2
 - <cl>Aliases</c> now contain your current username by default
+- <cg>Add</c> Patreon links
+- Use <co>Xblaze's Geode API</c>
+- <cy>Switch</c> to using `GameToolbox::doWeHaveInternet` to check for internet connection
 
 ## v1.0.0-beta.1
 - <cg>Update</c> to Geode v5
