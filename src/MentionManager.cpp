@@ -28,7 +28,7 @@ arc::Future<> MentionManager::setLevelIDs(std::vector<int> levelIDs) {
 
 void MentionManager::start() {
     m_watcher.spawn(
-        "MentionManager::mentionTracker",
+        "commentWatcher",
         commentWatcher(),
         [] {}
     );
