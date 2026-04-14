@@ -1,6 +1,7 @@
 # Comment Mentions
 ## v1.0.0-beta.2
-- <cl>Aliases</c> now contain your current username by default
+- <cl>Aliases</c> now contain your current username by default (unless you reset the setting to default)
+- <cg>Add</c> exclusive <cy>@</c> support <c-a6a6a6>(only get notified if mention starts with @)</c>
 - <cg>Add</c> Patreon links
 - Use <co>Xblaze's Geode API</c>
 - <cs>Refactor</c> internet checking logic
