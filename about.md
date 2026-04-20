@@ -1,4 +1,4 @@
-# Comment Mentions
+# CommentMentions
 A daily chatter's favorite mod :)
 
 ## Features
