@@ -15,6 +15,13 @@ using namespace geode::prelude;
 
 static std::shared_ptr<MentionManager> g_mentionManager;
 
+$execute {
+    if (!Mod::get()->setSavedValue("loaded-before", true)) {
+        auto username = GJAccountManager::get()->m_username;
+        Mod::get()->setSettingValue("aliases", "@everyone, " + string::toLower(username));
+    }
+}
+
 /// 1: Daily level, 2: Weekly demon
 arc::Future<Result<int>> getSpecialID(const std::string& type) {
     auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(

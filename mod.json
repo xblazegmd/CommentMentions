@@ -28,9 +28,9 @@
 		"aliases": {
 			"type": "string",
 			"name": "Aliases",
-			"description": "A comma separated <cg>list of aliases</c> to watch for in the comments",
+			"description": "A comma separated <cg>list of aliases</c> to watch for in the comments\n\nWriting an <cy>*@*</c> at the beginning of an alias will make it so you'll only get notified if someone writes a <cl>literal *'@'*</c> at the beginning of the mention",
 			"default": "everyone",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
+			"filter": "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"daily-lvl": {
 			"type": "bool",
