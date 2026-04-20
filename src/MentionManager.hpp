@@ -7,12 +7,12 @@
 
 class MentionManager {
 public:
-    MentionManager(std::vector<int> targets);
+    MentionManager(std::vector<int> levelIDs);
     ~MentionManager() = default;
 
     void start();
 private:
-    std::vector<int> m_targets;
+    std::vector<int> m_levelIDs;
     geode::async::TaskHolder<> m_watcher;
 
     struct CommentObject {

@@ -15,7 +15,7 @@
 
 using namespace geode::prelude;
 
-MentionManager::MentionManager(std::vector<int> targets) : m_targets(targets) {};
+MentionManager::MentionManager(std::vector<int> levelIDs) : m_levelIDs(levelIDs) {};
 
 void MentionManager::start() {
     m_watcher.spawn(
@@ -27,7 +27,7 @@ void MentionManager::start() {
 
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
-        for (const auto& levelID : m_targets) {
+        for (const auto& levelID : m_levelIDs) {
             co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
 
             auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
