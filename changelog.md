@@ -3,6 +3,7 @@
 - <co>Rewrote</c> previous update <c-a6a6a6>(based on code from </c>*<cl>v1.0.0-beta.1</c>*<c-a6a6a6>)</c>
 - <cg>Fixed</c> mod not working <c-a6a6a6>(thanks to the rewrite)</c>
 - <cr>Remove</c> better internet check <c-a6a6a6>(too lazy to reimplement :P)</c>
+- <cg>Add</c> fallback if the username and/or comment could be loaded
 
 ## v1.0.0-beta.2
 - <cl>Aliases</c> now contain your current username by default (unless you reset the setting to default)

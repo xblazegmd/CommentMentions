@@ -42,11 +42,13 @@ arc::Future<> MentionManager::commentWatcher() {
             }
             log::debug("{}", res.unwrap());
 
+            // Split comment objects
             auto comments = string::split(res.unwrap(), "|");
             for (const auto& comment : comments) {
-                auto obj = formatCommentObj(comment);
+                auto obj = formatCommentObj(comment); // Format object
 
                 log::debug("Encoded: {}", obj.comment["comment"]);
+
                 auto s = base64::decode(obj.comment["comment"], base64::Base64Variant::Url);
                 if (s.isErr()) {
                     log::error("Could not decode comment: {}", s.unwrapErr());
@@ -85,26 +87,27 @@ arc::Future<> MentionManager::commentWatcher() {
 }
 
 void MentionManager::onMention(const CommentObject& obj) {
-    auto username = obj.author.find("userName");
-    if (username == obj.author.end()) {
-        notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
+    auto usrIt = obj.author.find("userName");
 
-        log::error("Could not find 'userName' in object (THIS SHOULD BE UNREACHABLE)");
-        log::info("PLEASE REPORT THIS BUG");
-        return;
+    std::string username;
+    if (usrIt == obj.author.end()) {
+        username = "Someone";
+    } else {
+        username = usrIt->second;
     }
-    auto comment = obj.comment.find("comment");
-    if (comment == obj.author.end()) {
-        notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
 
-        log::error("Could not find 'comment' in object (THIS SHOULD BE UNREACHABLE)");
-        log::info("PLEASE REPORT THIS BUG");
-        return;
+    auto commentIt = obj.comment.find("comment");
+
+    std::string comment;
+    if (commentIt == obj.author.end()) {
+        comment = "";
+    } else {
+        comment = commentIt->second;
     }
 
     AchievementNotifier::sharedState()->notifyAchievement(
-        fmt::format("{} mentioned you", username->second).c_str(),
-        comment->second.c_str(),
+        fmt::format("{} mentioned you", username).c_str(),
+        comment.c_str(),
         "accountBtn_pendingRequest_001.png",
         true
     );
