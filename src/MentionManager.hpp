@@ -1,24 +1,18 @@
 #pragma once
 
-#include <arc/future/Future.hpp>
-#include <arc/sync/Mutex.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
-
 #include <string>
 #include <vector>
 
 class MentionManager {
 public:
-    MentionManager() {}
+    MentionManager(std::vector<int> targets);
     ~MentionManager() = default;
-
-    static MentionManager* get();
-    arc::Future<> setLevelIDs(std::vector<int> levelIDs);
 
     void start();
 private:
-    arc::Mutex<std::vector<int>> m_levelIDs;
+    std::vector<int> m_targets;
     geode::async::TaskHolder<> m_watcher;
 
     struct CommentObject {
@@ -40,6 +34,4 @@ private:
     std::vector<std::string> getAliases();
 
     CommentObject formatCommentObj(const std::string& str);
-
-    bool m_didWeHaveInternet = true;
 };

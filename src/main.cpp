@@ -1,39 +1,19 @@
-#include <arc/prelude.hpp>
 #include <MentionManager.hpp>
+#include <arc/prelude.hpp>
 #include <utils.hpp>
-
 #include <Geode/Geode.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
 
+#include <chrono>
+#include <memory>
 #include <string>
 
 #include <xblazegmd.geode-api/include/XblazeAPI.hpp>
 
 using namespace geode::prelude;
 
-/// 1: Daily level, 2: Weekly demon
-arc::Future<Result<int>> getSpecialID(const std::string& type) {
-    auto req = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
-        "type=2{}&secret={}",
-        type, xblazeapi::SECRET
-    ));
-
-    if (req.isErr()) {
-        log::error("{}", req.unwrapErr());
-        co_return Err("{}", req.unwrap());
-    }
-
-    auto res = req.unwrap();
-    auto num = utils::numFromString<int>(res);
-
-    if (num.isErr()) {
-        log::error("{}", num.unwrapErr());
-        co_return Err(num.unwrapErr());
-    }
-
-    co_return Ok(num.unwrap());
-}
+static std::shared_ptr<MentionManager> g_mentionManager;
 
 $execute {
     if (!Mod::get()->setSavedValue("loaded-before", true)) {
@@ -42,16 +22,44 @@ $execute {
     }
 }
 
+/// 1: Daily level, 2: Weekly demon
+arc::Future<Result<int>> getSpecialID(const std::string& type) {
+    auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
+        "type=2{}&secret={}",
+        type, xblazeapi::SECRET
+    ));
+    if (res.isErr()) {
+        log::error("{}", res.unwrapErr());
+        co_return Err("{}", res.unwrapErr());
+    }
+
+    auto daily = string::split(string::split(res.unwrap(), "#")[0], "|")[0];
+    auto dailyID = formatKV(daily, {{"1", "daily"}})["daily"];
+    auto intDailyID = utils::numFromString<int>(dailyID);
+
+    if (intDailyID.isErr()) {
+        co_return Err(intDailyID.unwrapErr());
+    }
+
+    co_return Ok(intDailyID.unwrap());
+}
+
+
 $on_game(Loaded) {
     async::spawn([] -> arc::Future<> {
-        auto doWeHaveInternet = co_await doWeTrulyHaveInternet();
-        if (!doWeHaveInternet) {
-            notifyError("CommentMentions: No internet connection!");
-            notifyError("Please check your internet connection and restart the game");
-            co_return; // We inmediatly abort any comment tracking (that's why we tell the user to restart their game)
+        // Internet check
+        auto check = co_await web::WebRequest()
+            .userAgent("Geometry Dash! (internet check)")
+            .timeout(std::chrono::seconds(10))
+            .get("http://connectivitycheck.gstatic.com/generate_204");
+
+        if (!check.ok()) {
+            log::error("No internet connection!");
+            notifyError("CommentMentions: No internet connection!\nPlease check your internet connection and restart the game");
+            co_return;
         }
 
-        std::vector<int> levels{};
+        std::vector<int> levelIDs{};
 
         // Get daily level
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
@@ -59,7 +67,7 @@ $on_game(Loaded) {
             if (dailyID.isErr()) {
                 notifyError(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
-                levels.push_back(std::move(dailyID).unwrap());
+                levelIDs.push_back(std::move(dailyID).unwrap());
             }
         }
 
@@ -69,7 +77,7 @@ $on_game(Loaded) {
             if (weeklyID.isErr()) {
                 notifyError(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
-                levels.push_back(std::move(weeklyID).unwrap());
+                levelIDs.push_back(std::move(weeklyID).unwrap());
             }
         }
 
@@ -85,19 +93,18 @@ $on_game(Loaded) {
                     continue;
                 }
 
-                levels.push_back(std::move(idNum).unwrap());
+                levelIDs.push_back(std::move(idNum).unwrap());
             }
         }
 
         // Check if there's even any IDs
-        if (levels.empty()) {
+        if (levelIDs.empty()) {
             notifyError("CommentMentions: No IDs were given");
             co_return;
         }
 
-        // Start tracking
-        auto mentionManager = MentionManager::get();
-        co_await mentionManager->setLevelIDs(std::move(levels));
-        mentionManager->start();
+        // Start tracking for mentions
+        g_mentionManager = std::make_shared<MentionManager>(std::move(levelIDs));
+        g_mentionManager->start();
     });
 }

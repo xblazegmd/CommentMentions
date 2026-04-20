@@ -12,7 +12,7 @@ utils::StringMap<std::string> formatKV(
     geode::utils::StringMap<std::string> map,
     const std::string& sep
 ) {
-    auto kv = xblazeapi::formatResponse(str);
+    auto kv = xblazeapi::formatResponse(str, sep);
 
     utils::StringMap<std::string> ret;
     for (const auto& [k, v] : kv) {
@@ -27,12 +27,4 @@ utils::StringMap<std::string> formatKV(
 void notifyError(const std::string& msg) {
     if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
     xblazeapi::quickErrorNotificationTS(msg);
-}
-
-arc::Future<bool> doWeTrulyHaveInternet() {
-    auto res = co_await web::WebRequest()
-        .userAgent("GeometryDash/2.2081 CommentMentions/1.0.0-beta.2")
-        .timeout(std::chrono::seconds(10))
-        .get("http://connectivitycheck.gstatic.com/generate_204");
-    co_return res.ok();
 }

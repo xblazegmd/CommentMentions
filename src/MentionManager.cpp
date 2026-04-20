@@ -1,7 +1,6 @@
 #include "MentionManager.hpp"
 
 #include <arc/prelude.hpp>
-#include <cstdint>
 #include <utils.hpp>
 
 #include <Geode/Geode.hpp>
@@ -16,19 +15,11 @@
 
 using namespace geode::prelude;
 
-MentionManager* MentionManager::get() {
-    static MentionManager* instance = new MentionManager();
-    return instance;
-}
-
-arc::Future<> MentionManager::setLevelIDs(std::vector<int> levelIDs) {
-    auto lock = co_await m_levelIDs.lock();
-    *lock = std::move(levelIDs);
-}
+MentionManager::MentionManager(std::vector<int> targets) : m_targets(targets) {};
 
 void MentionManager::start() {
     m_watcher.spawn(
-        "commentWatcher",
+        "MentionManager::mentionTracker",
         commentWatcher(),
         [] {}
     );
@@ -36,35 +27,22 @@ void MentionManager::start() {
 
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
-        auto lock = co_await m_levelIDs.lock();
-        for (const auto& levelID : *lock) {
+        for (const auto& levelID : m_targets) {
             co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
 
-            auto doWeHaveInternet = co_await doWeTrulyHaveInternet();
-
-            if (!doWeHaveInternet) {
-                if (m_didWeHaveInternet) {
-                    notifyError("CommentMentions: No internet connection!");
-                    m_didWeHaveInternet = false;
-                }
-                continue;
-            } else {
-                m_didWeHaveInternet = true;
-            }
-
-            auto req = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
+            auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
                 "levelID={}&page=0&secret={}",
                 levelID, xblazeapi::SECRET
             ));
-
-            if (req.isErr()) {
-                log::error("Failed to request endpoint 'getGJComments21.php': {}", req.unwrapErr());
-                notifyError(fmt::format("CommentMentions: Failed to fetch comments: {}", req.unwrapErr()));
+            if (res.isErr()) {
+                std::string msg = fmt::format("CommentMentions: Failed to fetch comments: {}", res.unwrapErr());
+                log::error("{}", msg);
+                notifyError(msg);
                 continue;
             }
+            log::debug("{}", res.unwrap());
 
-            auto res = req.unwrap();
-            auto comments = string::split(res, "|");
+            auto comments = string::split(res.unwrap(), "|");
             for (const auto& comment : comments) {
                 auto obj = formatCommentObj(comment);
 
@@ -109,8 +87,7 @@ arc::Future<> MentionManager::commentWatcher() {
 void MentionManager::onMention(const CommentObject& obj) {
     auto username = obj.author.find("userName");
     if (username == obj.author.end()) {
-        notifyError("CommentMention: An unexpected issue occurred");
-        notifyError("Please report this issue to the developer (include the game logs)");
+        notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
 
         log::error("Could not find 'userName' in object (THIS SHOULD BE UNREACHABLE)");
         log::info("PLEASE REPORT THIS BUG");
@@ -118,8 +95,7 @@ void MentionManager::onMention(const CommentObject& obj) {
     }
     auto comment = obj.comment.find("comment");
     if (comment == obj.author.end()) {
-        notifyError("CommentMention: An unexpected issue occurred");
-        notifyError("Please report this issue to the developer (include the game logs)");
+        notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
 
         log::error("Could not find 'comment' in object (THIS SHOULD BE UNREACHABLE)");
         log::info("PLEASE REPORT THIS BUG");
@@ -156,8 +132,7 @@ bool MentionManager::isSelfMention(const std::string& str) {
 bool MentionManager::isPrevious(const CommentObject& obj) {
     auto ownMessageID = obj.comment.find("messageID");
     if (ownMessageID == obj.comment.end()) {
-        notifyError("CommentMention: An unexpected issue occurred");
-        notifyError("Please report this issue to the developer (include the game logs)");
+        notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
 
         log::error("Could not find 'messageID' in mention (THIS SHOULD BE UNREACHABLE)");
         log::info("PLEASE REPORT THIS BUG");
@@ -167,8 +142,7 @@ bool MentionManager::isPrevious(const CommentObject& obj) {
     for (const auto& mention : m_previousMentions) {
         auto messageID = mention.comment.find("messageID");
         if (messageID == mention.comment.end()) {
-            notifyError("CommentMention: An unexpected issue occurred");
-            notifyError("Please report this issue to the developer (include the game logs)");
+            notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
 
             log::error("Could not find 'messageID' in previous mention (THIS SHOULD BE UNREACHABLE)");
             log::info("PLEASE REPORT THIS BUG");
