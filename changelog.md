@@ -1,4 +1,8 @@
 # CommentMentions
+## v1.0.0-beta.3
+- <co>Rewrote</c> previous update <c-a6a6a6>(based on code from </c><cl>v1.0.0-beta.1</c><c-a6a6a6>)</c>
+- <cg>Fixed</c> mod not working <c-a6a6a6>(thanks to the rewrite)</c>
+
 ## v1.0.0-beta.2
 - <cl>Aliases</c> now contain your current username by default (unless you reset the setting to default)
 - <cg>Add</c> exclusive <cy>@</c> support <c-a6a6a6>(only get notified if mention starts with @)</c>
