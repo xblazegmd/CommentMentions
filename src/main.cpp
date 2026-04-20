@@ -59,7 +59,7 @@ $on_game(Loaded) {
 
         if (!check.ok()) {
             log::error("No internet connection!");
-            showErrorNotification("CommentMentions: No internet connection!\nPlease verify your internet connection and restart the game");
+            showErrorNotification("CommentMentions: No internet connection!\nPlease check your internet connection and restart the game");
             co_return;
         }
 
