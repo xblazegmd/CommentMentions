@@ -96,6 +96,12 @@
 			"name": "Ignore Self Mentions",
 			"description": "Ignore mentions when you're the one that mentioned yourself",
 			"default": true
+		},
+		"show-errors": {
+			"type": "bool",
+			"name": "Show Error Notifications",
+			"description": "In the case a <cr>request fails</c> or any other <co>error</c> occurs, a <cl>notification</c> will appear notifying the error\n\nUseful for catching errors but can be annoying",
+			"default": true
 		}
 	}
 }

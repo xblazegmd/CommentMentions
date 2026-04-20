@@ -44,10 +44,6 @@ arc::Future<Result<int>> getSpecialID(const std::string& type) {
     co_return Ok(intDailyID.unwrap());
 }
 
-void showErrorNotification(const std::string& msg) {
-    if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
-    xblazeapi::quickErrorNotificationTS(msg);
-}
 
 $on_game(Loaded) {
     async::spawn([] -> arc::Future<> {
@@ -59,7 +55,7 @@ $on_game(Loaded) {
 
         if (!check.ok()) {
             log::error("No internet connection!");
-            showErrorNotification("CommentMentions: No internet connection!\nPlease check your internet connection and restart the game");
+            notifyError("CommentMentions: No internet connection!\nPlease check your internet connection and restart the game");
             co_return;
         }
 
@@ -69,7 +65,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
             auto dailyID = co_await getSpecialID("1");
             if (dailyID.isErr()) {
-                showErrorNotification(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
+                notifyError(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
                 levelIDs.push_back(std::move(dailyID).unwrap());
             }
@@ -79,7 +75,7 @@ $on_game(Loaded) {
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
             auto weeklyID = co_await getSpecialID("2");
             if (weeklyID.isErr()) {
-                showErrorNotification(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
+                notifyError(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
                 levelIDs.push_back(std::move(weeklyID).unwrap());
             }
@@ -103,7 +99,7 @@ $on_game(Loaded) {
 
         // Check if there's even any IDs
         if (levelIDs.empty()) {
-            showErrorNotification("CommentMentions: No IDs were given");
+            notifyError("CommentMentions: No IDs were given");
             co_return;
         }
 
