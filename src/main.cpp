@@ -1,13 +1,15 @@
-#include "Geode/ui/Notification.hpp"
-#include <arc/prelude.hpp>
 #include <MentionManager.hpp>
+#include <arc/prelude.hpp>
 #include <utils.hpp>
 #include <Geode/Geode.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
+
 #include <chrono>
 #include <memory>
 #include <string>
+
+#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
 
 using namespace geode::prelude;
 
@@ -15,26 +17,16 @@ static std::shared_ptr<MentionManager> g_mentionManager;
 
 /// 1: Daily level, 2: Weekly demon
 arc::Future<Result<int>> getSpecialID(const std::string& type) {
-    auto req = web::WebRequest()
-        .userAgent("")
-        .bodyString("type=2" + type + "&secret=" + SECRET)
-        .timeout(std::chrono::seconds(10));
-
-    auto res = co_await req.post(BOOMLINGS + "getGJLevels21.php");
-    if (!res.ok() || res.string().isErr()) {
-        log::error("Request failed (status code {})", res.code());
-        co_return Err("Request failed (status code {})", res.code());
+    auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
+        "type=2{}&secret={}",
+        type, xblazeapi::SECRET
+    ));
+    if (res.isErr()) {
+        log::error("{}", res.unwrapErr());
+        co_return Err("{}", res.unwrapErr());
     }
 
-    std::string resStr = res.string().unwrap();
-    auto resStrNum = utils::numFromString<int>(resStr);
-
-    if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
-        log::error("Request to GD servers failed (error code {})", resStr);
-        co_return Err("Request failed (error code {})", resStr);
-    }
-
-    auto daily = string::split(string::split(resStr, "#")[0], "|")[0];
+    auto daily = string::split(string::split(res.unwrap(), "#")[0], "|")[0];
     auto dailyID = formatKV(daily, {{"1", "daily"}})["daily"];
     auto intDailyID = utils::numFromString<int>(dailyID);
 
@@ -46,26 +38,25 @@ arc::Future<Result<int>> getSpecialID(const std::string& type) {
 }
 
 void showErrorNotification(const std::string& msg) {
-    geode::queueInMainThread([msg] {
-        Notification::create(msg, NotificationIcon::Error)->show();
-    });
+    if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
+    xblazeapi::quickErrorNotificationTS(msg);
 }
 
 $on_game(Loaded) {
     async::spawn([] -> arc::Future<> {
         // Internet check
-        auto checkReq = web::WebRequest()
+        auto check = co_await web::WebRequest()
             .userAgent("Geometry Dash! (internet check)")
-            .timeout(std::chrono::seconds(10));
+            .timeout(std::chrono::seconds(10))
+            .get("http://connectivitycheck.gstatic.com/generate_204");
 
-        auto check = co_await checkReq.get("https://www.google.com");
         if (!check.ok()) {
             log::error("No internet connection!");
-            showErrorNotification("CommentMentions: No internet connection!");
+            showErrorNotification("CommentMentions: No internet connection!\nPlease verify your internet connection and restart the game");
             co_return;
         }
 
-        std::vector<int> targets{};
+        std::vector<int> levelIDs{};
 
         // Get daily level
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
@@ -73,7 +64,7 @@ $on_game(Loaded) {
             if (dailyID.isErr()) {
                 showErrorNotification(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
-                targets.push_back(std::move(dailyID).unwrap());
+                levelIDs.push_back(std::move(dailyID).unwrap());
             }
         }
 
@@ -83,7 +74,7 @@ $on_game(Loaded) {
             if (weeklyID.isErr()) {
                 showErrorNotification(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
-                targets.push_back(std::move(weeklyID).unwrap());
+                levelIDs.push_back(std::move(weeklyID).unwrap());
             }
         }
 
@@ -99,18 +90,18 @@ $on_game(Loaded) {
                     continue;
                 }
 
-                targets.push_back(std::move(idNum).unwrap());
+                levelIDs.push_back(std::move(idNum).unwrap());
             }
         }
 
         // Check if there's even any IDs
-        if (targets.empty()) {
+        if (levelIDs.empty()) {
             showErrorNotification("CommentMentions: No IDs were given");
             co_return;
         }
 
         // Start tracking for mentions
-        g_mentionManager = std::make_shared<MentionManager>(std::move(targets));
+        g_mentionManager = std::make_shared<MentionManager>(std::move(levelIDs));
         g_mentionManager->start();
     });
 }

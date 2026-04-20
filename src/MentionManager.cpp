@@ -2,13 +2,16 @@
 
 #include <arc/prelude.hpp>
 #include <utils.hpp>
+
 #include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
-#include <chrono>
+
 #include <string>
 #include <vector>
+
+#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
 
 using namespace geode::prelude;
 
@@ -25,31 +28,19 @@ void MentionManager::start() {
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
         for (const auto& levelID : m_targets) {
-            co_await arc::sleep(asp::Duration::fromSecs(
-                Mod::get()->getSettingValue<int64_t>("refresh-rate")
+            co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
+
+            auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
+                "levelID={}&page=0&secret={}",
+                levelID, xblazeapi::SECRET
             ));
-
-            auto req = web::WebRequest()
-                .userAgent("")
-                .timeout(std::chrono::seconds(10))
-                .bodyString("levelID=" + utils::numToString(levelID) + "&page=0&secret=" + SECRET);
-
-            auto res = co_await req.post(BOOMLINGS + "getGJComments21.php");
-
-            if (!res.ok() || res.string().isErr()) {
-                log::error("Request failed: (status code: {})", res.code());
+            if (res.isErr()) {
+                log::error("{}", res.unwrapErr());
                 continue;
             }
+            log::debug("{}", res.unwrap());
 
-            std::string resStr = res.string().unwrap();
-            auto resStrNum = utils::numFromString<int>(resStr);
-
-            if (resStrNum.isOk() && resStrNum.unwrap() < 0) {
-                log::error("Request failed: {}", resStr);
-                continue;
-            }
-
-            auto comments = string::split(resStr, "|");
+            auto comments = string::split(res.unwrap(), "|");
             for (const auto& comment : comments) {
                 auto obj = formatCommentObj(comment);
 
