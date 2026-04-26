@@ -5,71 +5,78 @@
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/string.hpp>
 
-#include <cerrno>
-#include <cstring>
-#include <fstream>
 #include <regex>
 #include <string>
 #include <vector>
 
 using namespace geode::prelude;
 
+std::regex mkRegex(const std::string& text) {
+    // Geode's split doesn't work here for my use case
+    std::vector<std::string> split;
+    split.reserve(text.size());
+    for (const char& c : text) {
+        split.push_back(std::string(1, c));
+    }
+    return std::regex(fmt::format("\\b(?:{}|{})\\b", text, string::join(split, "\\s+")), std::regex::icase | std::regex::optimize);
+}
+
 // INAPROPRIATE WORDS IN 5...
 // INAPROPRIATE WORDS IN 4...
 // INAPROPRIATE WORDS IN 3...
 // INAPROPRIATE WORDS IN 2...
 // INAPROPRIATE WORDS IN 1...
-const std::vector<std::string> blacklist = {
-    "ass",
-    "anus",
-    "anal",
-    "boob",
-    "boobs",
-    "cock",
-    "cum",
-    "dick",
-    "ejaculation",
-    "erect",
-    "erection",
-    "fag",
-    "faggot",
-    "fuck",
-    "fuckwithme",
-    "fack",
-    "heigui",
-    "jiggaboo",
-    "jiggerboo",
-    "kys",
-    "killyourself",
-    "masturbate",
-    "masturbation",
-    "nig",
-    "nigg",
-    "nigr",
-    "niger",
-    "nigga",
-    "niggah",
-    "niggas",
-    "niggga",
-    "nigger",
-    "niggger",
-    "niggers",
-    "niglet",
-    "orgasm",
-    "retard",
-    "retarded",
-    "sex",
-    "sexual",
-    "sexting",
-    "suck",
-    "suckmyass",
-    "suckmydick",
-    "suckme",
-    "suckdick",
-    "suckmytit",
-    "unfuckable",
-    "wigga",
-    "wigger",
+const std::vector<std::regex> blacklist = {
+    mkRegex("ass"),
+    mkRegex("anus"),
+    mkRegex("anal"),
+    mkRegex("boob"),
+    mkRegex("boobs"),
+    mkRegex("cock"),
+    mkRegex("cum"),
+    mkRegex("dick"),
+    mkRegex("ejaculation"),
+    mkRegex("erect"),
+    mkRegex("erection"),
+    mkRegex("fag"),
+    mkRegex("faggot"),
+    mkRegex("fuck"),
+    mkRegex("fuckwithme"),
+    mkRegex("fack"),
+    mkRegex("heigui"),
+    mkRegex("jiggaboo"),
+    mkRegex("jiggerboo"),
+    mkRegex("kys"),
+    mkRegex("killyourself"),
+    mkRegex("masturbate"),
+    mkRegex("masturbation"),
+    mkRegex("nig"),
+    mkRegex("nigg"),
+    mkRegex("nigr"),
+    mkRegex("niger"),
+    mkRegex("nigga"),
+    mkRegex("niggah"),
+    mkRegex("niggas"),
+    mkRegex("niggga"),
+    mkRegex("nigger"),
+    mkRegex("niggger"),
+    mkRegex("niggers"),
+    mkRegex("niglet"),
+    mkRegex("orgasm"),
+    mkRegex("retard"),
+    mkRegex("retarded"),
+    mkRegex("sex"),
+    mkRegex("sexual"),
+    mkRegex("sexting"),
+    mkRegex("suck"),
+    mkRegex("suckmyass"),
+    mkRegex("suckmydick"),
+    mkRegex("suckme"),
+    mkRegex("suckdick"),
+    mkRegex("suckmytit"),
+    mkRegex("unfuckable"),
+    mkRegex("wigga"),
+    mkRegex("wigger"),
 };
 
 const utils::StringMap<std::string> replacementMap = {
@@ -107,7 +114,7 @@ void removeUselessWhitespace(std::string& text) {
 }
 
 std::string normalizeComment(const std::string& comment) {
-    std::string res = comment;
+    std::string res = std::regex_replace(comment, std::regex(R"(^@\w+)"), "");
     string::toLowerIP(res);
     for (const auto& [k, v] : replacementMap) {
         string::replaceIP(res, k, v);
@@ -116,52 +123,13 @@ std::string normalizeComment(const std::string& comment) {
     return res;
 }
 
-Result<std::vector<std::string>> loadStrictBlacklist() {
-    std::vector<std::string> ret;
-
-    auto path = Mod::get()->getResourcesDir() / "blacklist.txt";
-    std::ifstream file(path);
-    if (!file.is_open()) {
-        return Err("Failed to open blacklist file: {}", std::strerror(errno));
-    }
-
-    std::string str;
-    while (std::getline(file, str)) {
-        if (str.starts_with("#") || str.empty()) continue;
-        ret.push_back(str);
-    }
-
-    file.close();
-    return Ok(std::move(ret));
-}
-
-Result<std::regex> strictBlacklistRegex() {
-    static auto strictBlacklist = loadStrictBlacklist();
-    if (strictBlacklist.isErr()) {
-        return Err("{}", strictBlacklist.unwrapErr());
-    }
-    return Ok(std::regex("\\b(?:" + string::join(strictBlacklist.unwrap(), "|") + ")\\b", std::regex::icase | std::regex::optimize));
-}
-
-bool isInapropriateImpl(std::regex regex, const std::string& comment) {
+bool isInapropriate(const std::string& comment) {
     auto normalized = normalizeComment(comment);
-    std::smatch match;
-    if (std::regex_search(normalized, match, regex)) {
-        return true;
+    for (auto& r : blacklist) {
+        std::smatch match;
+        if (std::regex_search(normalized, match, r)) {
+            return true;
+        }
     }
     return false;
-}
-
-bool isInapropriate(const std::string& comment) {
-    static std::regex r = std::regex("\\b(?:" + string::join(blacklist, "|") + ")\\b", std::regex::icase | std::regex::optimize);
-    return isInapropriateImpl(r, comment);
-}
-
-bool isInapropriateStrict(const std::string &comment) {
-    static auto r = strictBlacklistRegex();
-    if (r.isErr()) {
-        log::error("Failed to load strict blacklist: {}", r.unwrapErr());
-        return false;
-    }
-    return isInapropriateImpl(r.unwrap(), comment);
 }

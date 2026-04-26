@@ -1,7 +1,7 @@
 # CommentMentions
 ## v1.0.0-beta.4
-- <cg>Add</c> comment filtering
-    - <ca6a6a6>my first mistake was trusting dc with this mod</c>
+- <cg>Add</c> a very awful <cl>comment filtering system</c>
+    - <c-a6a6a6>my first mistake was trusting dc with this mod</c>
 - <cg>Fix</c> custom ids
 
 ## v1.0.0-beta.3

@@ -2,4 +2,3 @@
 #pragma once
 
 bool isInapropriate(const std::string& comment);
-bool isInapropriateStrict(const std::string& comment);
