@@ -21,16 +21,11 @@ using namespace geode::prelude;
 // INAPROPRIATE WORDS IN 1...
 const std::vector<std::string> blacklist = {
     "ass",
-    "abbie",
-    "abe",
-    "abie",
-    "abeed",
     "anus",
     "anal",
     "boob",
     "boobs",
     "cock",
-    "cracker",
     "cum",
     "dick",
     "ejaculation",
