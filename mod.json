@@ -20,6 +20,9 @@
 		"homepage": "https://xblazegmd.vercel.app",
 		"source": "https://github.com/xblazegmd/CommentMentions"
 	},
+	"resources": {
+		"files": ["resources/blacklist.txt"]
+	},
 	"settings": {
 		"basic-settings": {
 			"type": "title",
@@ -102,6 +105,20 @@
 			"name": "Show Error Notifications",
 			"description": "In the case a <cr>request fails</c> or any other <co>error</c> occurs, a <cl>notification</c> will appear notifying the error\n\nUseful for catching errors but can be annoying",
 			"default": true
+		},
+		"hide-inapropriate-comments": {
+			"type": "bool",
+			"name": "Hide Inapropriate Comments",
+			"description": "Filter out any comments that contain possibly inapropriate words (e.g. n word with hard r)\n\ntysm dc now I'm having to add this cuz of you",
+			"default": true
+		},
+		"strict-filtering": {
+			"enable-if": "hide-innapropriate-comments",
+			"enable-if-description": "Hide Inapropriate Comments is disabled!",
+			"type": "bool",
+			"name": "Strict Filtering",
+			"description": "Filter through a more extensive inapropriate words blacklist instead of the basic one\n\n<co>This may cause a lot more false-positive cases</c>",
+			"default": false
 		}
 	}
 }

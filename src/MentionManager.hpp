@@ -31,6 +31,8 @@ private:
     bool isPrevious(const CommentObject& obj);
     void storePrevious(const CommentObject& obj);
 
+    bool isInappropriate(const std::string& comment);
+
     std::vector<std::string> getAliases();
 
     CommentObject formatCommentObj(const std::string& str);

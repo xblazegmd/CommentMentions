@@ -2,6 +2,7 @@
 
 #include <arc/prelude.hpp>
 #include <utils.hpp>
+#include <filtering.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
@@ -62,6 +63,11 @@ arc::Future<> MentionManager::commentWatcher() {
                     if (isPrevious(obj)) continue;
                     if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.author["accountID"]))
                         continue;
+
+                    if (isInappropriate(string)) {
+                        log::info("Inappropriate comment: {}", string);
+                        continue;
+                    }
 
                     obj.comment["comment"] = std::move(string);
                     log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
@@ -163,6 +169,16 @@ void MentionManager::storePrevious(const CommentObject& obj) {
     m_previousMentions.push_back(obj);
     if (m_previousMentions.size() > 20) {
         m_previousMentions.erase(m_previousMentions.begin()); // Pop front
+    }
+}
+
+bool MentionManager::isInappropriate(const std::string& comment) {
+    if (Mod::get()->getSettingValue<bool>("hide-inapropriate-comments")) return false;
+
+    if (Mod::get()->getSettingValue<bool>("strict-filtering")) {
+        return isInapropriateStrict(comment);
+    } else {
+        return isInappropriate(comment);
     }
 }
 
