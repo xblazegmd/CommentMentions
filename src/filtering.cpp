@@ -92,12 +92,30 @@ const utils::StringMap<std::string> replacementMap = {
     {"@", "a"}
 };
 
+void removeUselessWhitespace(std::string& text) {
+    auto chars = string::split(text, " ");
+    std::string ret;
+    ret.reserve(text.length());
+
+    for (const auto& ch : chars) {
+        if (ch.empty()) continue;
+        if (ch.length() <= 1 || ret.empty()) {
+            ret += ch;
+        } else {
+            ret += " " + ch;
+        }
+    }
+    log::debug("{}", ret);
+    text = std::move(ret);
+}
+
 std::string normalizeComment(const std::string& comment) {
     std::string res = comment;
     string::toLowerIP(res);
     for (const auto& [k, v] : replacementMap) {
         string::replaceIP(res, k, v);
     }
+    removeUselessWhitespace(res);
     return res;
 }
 
