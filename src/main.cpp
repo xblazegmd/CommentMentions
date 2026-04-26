@@ -83,7 +83,7 @@ $on_game(Loaded) {
 
         // Get custom IDs
         if (Mod::get()->getSettingValue<bool>("use-custom-ids")) {
-            auto customIDs = Mod::get()->getSettingValue<std::string>("fixed-ids");
+            auto customIDs = Mod::get()->getSettingValue<std::string>("custom-ids");
             auto ids = string::split(customIDs, ",");
 
             for (const auto& id : ids) {
