@@ -113,7 +113,7 @@
 			"default": true
 		},
 		"strict-filtering": {
-			"enable-if": "hide-innapropriate-comments",
+			"enable-if": "hide-inapropriate-comments",
 			"enable-if-description": "Hide Inapropriate Comments is disabled!",
 			"type": "bool",
 			"name": "Strict Filtering",
