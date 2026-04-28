@@ -38,7 +38,5 @@ private:
     std::vector<std::string> getAliases();
     std::vector<std::string> getBlacklistedAccounts();
 
-    std::vector<std::string> getListSetting(const std::string& setting);
-
     CommentObject formatCommentObj(const std::string& str);
 };

@@ -197,17 +197,6 @@ std::vector<std::string> MentionManager::getBlacklistedAccounts() {
     return getListSetting("blacklist");
 }
 
-std::vector<std::string> MentionManager::getListSetting(const std::string& setting) {
-    auto value = Mod::get()->getSettingValue<std::string>(setting);
-    auto split = string::split(value, ",");
-
-    std::vector<std::string> ret;
-    for (const auto& item : split) {
-        ret.push_back(string::trim(item));
-    }
-    return ret;
-}
-
 MentionManager::CommentObject MentionManager::formatCommentObj(const std::string& str) {
     auto split = string::split(str, ":");
     // Commented out in case I need them again

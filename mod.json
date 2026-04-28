@@ -99,6 +99,14 @@
 			"description": "Filter out any comments that contain possibly inapropriate words (e.g. n word with hard r)\n\ntysm dc now I'm having to add this cuz of you",
 			"default": true
 		},
+		"whitelist": {
+			"type": "string",
+			"enable-if": "hide-inapropriate-comments",
+			"enable-if-description": "Hide Inappropriate Comments is disabled!",
+			"name": "Word Whitelist",
+			"description": "A comma separated <cg>list of words</c> that <cr>will not be counted as inappropriate</c> (if they are even counted as inappropriate)",
+			"default": ""
+		},
 		"advanced": {
 			"type": "title",
 			"name": "Advanced Options"

@@ -28,3 +28,14 @@ void notifyError(const std::string& msg) {
     if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
     xblazeapi::quickErrorNotificationTS(msg);
 }
+
+std::vector<std::string> getListSetting(const std::string& setting) {
+    auto value = Mod::get()->getSettingValue<std::string>(setting);
+    auto split = string::split(value, ",");
+
+    std::vector<std::string> ret;
+    for (const auto& item : split) {
+        ret.push_back(string::trim(item));
+    }
+    return ret;
+}

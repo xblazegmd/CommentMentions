@@ -1,5 +1,6 @@
 #include "filtering.hpp"
 
+#include <utils.hpp>
 #include <Geode/Result.hpp>
 #include <Geode/loader/Mod.hpp>
 #include <Geode/utils/StringMap.hpp>
@@ -106,11 +107,24 @@ std::string normalizeComment(const std::string& comment) {
     return res;
 }
 
+bool isWhitelisted(const std::string& word) {
+    auto w = string::replace(word, " ", ""); // Normalize
+    auto whitelist = getListSetting("whitelist");
+    for (const auto& whitelistedWord : whitelist) {
+        if (w == whitelistedWord) {
+            log::info("Found innapropriate word '{}', however, it'll be ignored as it is whitelisted", w);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool isInapropriate(const std::string& comment) {
     auto normalized = normalizeComment(comment);
     for (auto& r : blacklist) {
         std::smatch match;
         if (std::regex_search(normalized, match, r)) {
+            if (isWhitelisted(match.str())) continue;
             return true;
         }
     }
