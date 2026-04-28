@@ -1,4 +1,4 @@
-name: Release Mod (GitHub)
+name: Make Release
 
 on:
   push:
@@ -24,23 +24,16 @@ jobs:
           path: build/
 
       - name: Create Release
-        if: "!contains(github.ref_name, '-')"
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
-          prerelease: false
+          draft: true
           files: build/*
+          body: |
+            > *"God"
+            > Bible 1:23 NKJV*
 
-      - name: Create Pre-Release
-        if: contains(github.ref_name, '-')
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          prerelease: true
-          files: build/*
+            Cool changelog here :)
