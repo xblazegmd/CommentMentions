@@ -55,6 +55,14 @@ arc::Future<Result<int>> getSpecialID(LevelType type) {
 
 
 $on_game(Loaded) {
+    if (!Mod::get()->setSavedValue("unset-everyone-popup", true)) {
+        FLAlertLayer::create(
+            "CommentMentions",
+            "Tired of lots of <cl>@everyone</c> notifications? You can remove the <cl>@everyone</c> alias by going to the <co>mod's settings</c>\n<cy>However, I think it's more fun keeping it on /Xblaze</c>",
+            "OK"
+        )->show();
+    }
+
     async::spawn([] -> arc::Future<> {
         // Internet check
         auto check = co_await web::WebRequest()
