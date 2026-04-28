@@ -32,7 +32,6 @@ enum class LevelType {
     Event = 23
 };
 
-/// 1: Daily level, 2: Weekly demon, 3: Event level
 arc::Future<Result<int>> getSpecialID(LevelType type) {
     auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
         "type={}&secret={}",
