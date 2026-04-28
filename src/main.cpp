@@ -22,6 +22,10 @@ $execute {
     }
 }
 
+$on_game(Exiting) {
+    g_mentionManager->cleanup();
+}
+
 enum class LevelType {
     Daily = 21,
     Weekly = 22,

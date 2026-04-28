@@ -16,7 +16,9 @@
 
 using namespace geode::prelude;
 
-MentionManager::MentionManager(std::vector<int> levelIDs) : m_levelIDs(levelIDs) {};
+MentionManager::MentionManager(std::vector<int> levelIDs) : m_levelIDs(levelIDs) {
+    m_previousMentions = Mod::get()->getSavedValue<std::vector<CommentObject>>("mentions");
+};
 
 void MentionManager::start() {
     m_watcher.spawn(
@@ -24,6 +26,11 @@ void MentionManager::start() {
         commentWatcher(),
         [] {}
     );
+}
+
+void MentionManager::cleanup() {
+    m_watcher.cancel();
+    Mod::get()->setSavedValue<std::vector<CommentObject>>("mentions", m_previousMentions);
 }
 
 arc::Future<> MentionManager::commentWatcher() {
@@ -197,7 +204,7 @@ std::vector<std::string> MentionManager::getBlacklistedAccounts() {
     return getListSetting("blacklist");
 }
 
-MentionManager::CommentObject MentionManager::formatCommentObj(const std::string& str) {
+CommentObject MentionManager::formatCommentObj(const std::string& str) {
     auto split = string::split(str, ":");
     // Commented out in case I need them again
     // log::debug("{}", split[0]);
