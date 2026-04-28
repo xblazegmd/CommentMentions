@@ -34,7 +34,7 @@ public:
     ~MentionManager() = default;
 
     void start();
-    void cleanup();
+    void save();
 private:
     std::vector<int> m_levelIDs;
     geode::async::TaskHolder<> m_watcher;

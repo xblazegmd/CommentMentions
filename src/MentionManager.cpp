@@ -28,9 +28,10 @@ void MentionManager::start() {
     );
 }
 
-void MentionManager::cleanup() {
-    m_watcher.cancel();
-    Mod::get()->setSavedValue<std::vector<CommentObject>>("mentions", m_previousMentions);
+void MentionManager::save() {
+    log::debug("Saving mentions...");
+    Mod::get()->setSavedValue("mentions", m_previousMentions);
+    log::debug("Successfully saved mentions");
 }
 
 arc::Future<> MentionManager::commentWatcher() {

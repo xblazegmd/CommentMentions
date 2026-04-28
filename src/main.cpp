@@ -22,8 +22,8 @@ $execute {
     }
 }
 
-$on_game(Exiting) {
-    g_mentionManager->cleanup();
+$on_mod(DataSaved) {
+    g_mentionManager->save();
 }
 
 enum class LevelType {
