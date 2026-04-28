@@ -3,7 +3,7 @@ A daily chatter's favorite mod :)
 
 ## Features
 - Get notified every time someone mentions you
-- Ability to track Daily, Weekly, and Custom levels <c-a6a6a6>(Event level support *may* be added in the future)</c>
+- Ability to track Daily, Weekly, Event, and Custom levels
 - Custom aliases
 
 ## License

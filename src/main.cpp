@@ -22,11 +22,17 @@ $execute {
     }
 }
 
-/// 1: Daily level, 2: Weekly demon
-arc::Future<Result<int>> getSpecialID(const std::string& type) {
+enum class LevelType {
+    Daily = 21,
+    Weekly = 22,
+    Event = 23
+};
+
+/// 1: Daily level, 2: Weekly demon, 3: Event level
+arc::Future<Result<int>> getSpecialID(LevelType type) {
     auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
-        "type=2{}&secret={}",
-        type, xblazeapi::SECRET
+        "type={}&secret={}",
+        static_cast<int>(type), xblazeapi::SECRET
     ));
     if (res.isErr()) {
         log::error("{}", res.unwrapErr());
@@ -63,7 +69,7 @@ $on_game(Loaded) {
 
         // Get daily level
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
-            auto dailyID = co_await getSpecialID("1");
+            auto dailyID = co_await getSpecialID(LevelType::Daily);
             if (dailyID.isErr()) {
                 notifyError(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
             } else {
@@ -73,11 +79,22 @@ $on_game(Loaded) {
 
         // Get weekly demon
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
-            auto weeklyID = co_await getSpecialID("2");
+            auto weeklyID = co_await getSpecialID(LevelType::Weekly);
             if (weeklyID.isErr()) {
                 notifyError(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
             } else {
                 levelIDs.push_back(std::move(weeklyID).unwrap());
+            }
+        }
+
+        // Get event level
+        if (Mod::get()->getSettingValue<bool>("event-lvl")) {
+            auto eventID = co_await getSpecialID(LevelType::Event);
+            if (eventID.isErr()) {
+                notifyError(fmt::format("CommentMentions: Could not get event level ID: {}", eventID.unwrapErr()));
+            } else {
+                log::info("{}", eventID);
+                levelIDs.push_back(std::move(eventID).unwrap());
             }
         }
 

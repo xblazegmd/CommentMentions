@@ -45,6 +45,12 @@
 			"name": "Track Weekly Demon",
 			"default": true
 		},
+		"event-lvl": {
+			"type": "bool",
+			"requires-restart": true,
+			"name": "Track Event Level",
+			"default": false
+		},
 		"use-custom-ids": {
 			"type": "bool",
 			"requires-restart": true,
