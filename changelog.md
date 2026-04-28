@@ -3,7 +3,7 @@
 - <cg>Add</c> innapropriate comment filtering
 - <cg>Add</c> event level support (finally!)
 - <cg>Add</c> user blacklisting <c-a6a6a6>(suggestion by [@SeveralLeaf](user:25371906))</c>
-- <cy>Fix</c> custom ids not working
+- <cs>Fix</c> custom ids not working
 
 ## v1.0.0-beta.3
 - <co>Rewrote</c> previous update <c-a6a6a6>(based on code from </c>*<cl>v1.0.0-beta.1</c>*<c-a6a6a6>)</c>

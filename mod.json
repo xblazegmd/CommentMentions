@@ -36,7 +36,7 @@
 			"type": "bool",
 			"requires-restart": true,
 			"name": "Track Daily Level",
-			"description": "yw dcers",
+			"description": "<cb>yw dcers</c>",
 			"default": true
 		},
 		"weekly-demon": {
@@ -55,7 +55,7 @@
 			"type": "bool",
 			"requires-restart": true,
 			"name": "Track Custom Levels",
-			"description": "Track mentions on any level of your choice",
+			"description": "Track mentions on <cg>any level of your choice</c>",
 			"default": false
 		},
 		"custom-ids": {
@@ -89,14 +89,14 @@
 		"blacklist": {
 			"type": "string",
 			"name": "User Blacklist",
-			"description": "A comma separated <cg>list of account IDs</c> by users who you don't want notifications from\n\n<cb>Suggestion by @SeveralLeaf</c>",
+			"description": "A comma separated <cg>list of usernames</c> by users who you don't want notifications from\n\n<cb>Suggestion by @SeveralLeaf</c>",
 			"default": "[username goes here]",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"hide-inapropriate-comments": {
 			"type": "bool",
 			"name": "Hide Inapropriate Comments",
-			"description": "Filter out any comments that contain possibly inapropriate words (e.g. n word with hard r)\n\ntysm dc now I'm having to add this cuz of you",
+			"description": "Filter out any comments that contain <co>possibly inapropriate words</c> <c-a6a6a6>(e.g. n word with hard r)</c>\n\n<cb>tysm dc now I'm having to add this cuz of you</c>",
 			"default": true
 		},
 		"whitelist": {
@@ -104,7 +104,7 @@
 			"enable-if": "hide-inapropriate-comments",
 			"enable-if-description": "Hide Inappropriate Comments is disabled!",
 			"name": "Word Whitelist",
-			"description": "A comma separated <cg>list of words</c> that <cr>will not be counted as inappropriate</c> (if they are even counted as inappropriate)",
+			"description": "A comma separated <cg>list of words</c> that <cr>will not be counted as inappropriate</c> <c-a6a6a6>(if they are even counted as inappropriate)</c>",
 			"default": ""
 		},
 		"advanced": {
@@ -125,7 +125,7 @@
 		"ignore-self": {
 			"type": "bool",
 			"name": "Ignore Self Mentions",
-			"description": "Ignore mentions when you're the one that mentioned yourself",
+			"description": "Ignore mentions when <co>you're the one that mentioned yourself</c>",
 			"default": true
 		},
 		"show-errors": {
