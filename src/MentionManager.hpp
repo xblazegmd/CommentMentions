@@ -33,7 +33,12 @@ private:
 
     bool isCommentInappropriate(const std::string& comment);
 
+    bool isBlacklisted(const std::string& username);
+
     std::vector<std::string> getAliases();
+    std::vector<std::string> getBlacklistedAccounts();
+
+    std::vector<std::string> getListSetting(const std::string& setting);
 
     CommentObject formatCommentObj(const std::string& str);
 };

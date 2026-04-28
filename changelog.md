@@ -3,7 +3,8 @@
 - <cg>Add</c> a very awful <cl>comment filtering system</c>
     - <c-a6a6a6>my first mistake was trusting dc with this mod</c>
 - <cg>Add</c> event level support (finally!)
-- <cg>Fix</c> custom ids
+- <cg>Add</c> user blacklisting <c-a6a6a6>(suggestion by [@SeveralLeaf](user:25371906))</c>
+- <cy>Fix</c> custom ids
 
 ## v1.0.0-beta.3
 - <co>Rewrote</c> previous update <c-a6a6a6>(based on code from </c>*<cl>v1.0.0-beta.1</c>*<c-a6a6a6>)</c>

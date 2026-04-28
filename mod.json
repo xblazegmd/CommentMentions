@@ -74,12 +74,29 @@
 		},
 		"show-while-playing": {
 			"type": "bool",
-			"name": "Show when playing",
+			"name": "Show While Playing",
 			"default": false
 		},
 		"show-on-editor": {
 			"type": "bool",
-			"name": "Show while on editor",
+			"name": "Show While on Editor",
+			"default": true
+		},
+		"filters": {
+			"type": "title",
+			"name": "Filters"
+		},
+		"blacklist": {
+			"type": "string",
+			"name": "User Blacklist",
+			"description": "A comma separated <cg>list of account IDs</c> by users who you don't want notifications from\n\n<cb>Suggestion by @SeveralLeaf</c>",
+			"default": "[username goes here]",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
+		},
+		"hide-inapropriate-comments": {
+			"type": "bool",
+			"name": "Hide Inapropriate Comments",
+			"description": "Filter out any comments that contain possibly inapropriate words (e.g. n word with hard r)\n\ntysm dc now I'm having to add this cuz of you",
 			"default": true
 		},
 		"advanced": {
@@ -107,12 +124,6 @@
 			"type": "bool",
 			"name": "Show Error Notifications",
 			"description": "In the case a <cr>request fails</c> or any other <co>error</c> occurs, a <cl>notification</c> will appear notifying the error\n\nUseful for catching errors but can be annoying",
-			"default": true
-		},
-		"hide-inapropriate-comments": {
-			"type": "bool",
-			"name": "Hide Inapropriate Comments",
-			"description": "Filter out any comments that contain possibly inapropriate words (e.g. n word with hard r)\n\ntysm dc now I'm having to add this cuz of you",
 			"default": true
 		}
 	}

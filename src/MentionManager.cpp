@@ -63,6 +63,7 @@ arc::Future<> MentionManager::commentWatcher() {
                     if (isPrevious(obj)) continue;
                     if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.author["accountID"]))
                         continue;
+                    if (isBlacklisted(obj.author["userName"])) continue;
 
                     if (isCommentInappropriate(string)) {
                         log::info("Inappropriate comment: {}", string);
@@ -157,7 +158,7 @@ bool MentionManager::isPrevious(const CommentObject& obj) {
             log::info("PLEASE REPORT THIS BUG");
             return false;
         }
-        if (messageID->second == ownMessageID->second) { 
+        if (messageID->second == ownMessageID->second) {
             log::debug("Mention under messageID {} was previously detected, skipping", ownMessageID->second);
             return true; 
         }
@@ -177,12 +178,32 @@ bool MentionManager::isCommentInappropriate(const std::string& comment) {
     return isInapropriate(comment);
 }
 
+bool MentionManager::isBlacklisted(const std::string& username) {
+    auto blacklist = getBlacklistedAccounts();
+    for (const auto& blacklistedUser : blacklist) {
+        if (string::toLower(username) == string::toLower(blacklistedUser)) {
+            log::info("User '{}' is blacklisted, skipping...", username);
+            return true;
+        }
+    }
+    return false;
+}
+
 std::vector<std::string> MentionManager::getAliases() {
-    auto aliases = Mod::get()->getSettingValue<std::string>("aliases");
-    auto aliasesSplit = string::split(aliases, ",");
+    return getListSetting("aliases");
+}
+
+std::vector<std::string> MentionManager::getBlacklistedAccounts() {
+    return getListSetting("blacklist");
+}
+
+std::vector<std::string> MentionManager::getListSetting(const std::string& setting) {
+    auto value = Mod::get()->getSettingValue<std::string>(setting);
+    auto split = string::split(value, ",");
+
     std::vector<std::string> ret;
-    for (const auto& alias : aliasesSplit) {
-        ret.push_back(string::trim(alias));
+    for (const auto& item : split) {
+        ret.push_back(string::trim(item));
     }
     return ret;
 }
