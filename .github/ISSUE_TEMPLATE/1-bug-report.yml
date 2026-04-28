@@ -42,7 +42,7 @@ body:
     id: mod-version
     attributes:
       label: CommentMentions version
-      placeholder: v1.0-alpha.1
+      placeholder: v1.0.0-beta.4
     validations:
       required: true
 
@@ -50,7 +50,7 @@ body:
     id: loader-version
     attributes:
       label: Geode version
-      placeholder: v5.0.0-alpha.1
+      placeholder: v5.6.1
     validations:
       required: true
 
@@ -58,7 +58,7 @@ body:
     id: os-version
     attributes:
       label: OS version
-      placeholder: iOS 26.0.1
+      placeholder: e.g. iOS 26.4.2
     validations:
       required: true
 
@@ -66,7 +66,7 @@ body:
     id: logs
     attributes:
       label: Game logs/Crash logs (optional, required if crash)
-      description: Please only show logs relevant  to the issue
+      description: Please only show logs relevant to the issue
       render: shell
 
   - type: checkboxes
@@ -75,6 +75,4 @@ body:
       label: Verifications
       options:
         - label: I can confirm this issue is related specifically to CommentMentions, and not another Geode mod, or Geode itself
-          required: true
-        - label: I have read the CONTRIBUTING.md guidelines (I'm totally not lying I'm not a loser)
           required: true

@@ -21,19 +21,19 @@ body:
     id: mod-version
     attributes:
       label: CommentMentions version (optional)
-      placeholder: v1.0-alpha.1
+      placeholder: v1.0.0-beta.4
 
   - type: input
     id: loader-version
     attributes:
       label: Geode version (optional)
-      placeholder: v5.0.0-alpha.1
+      placeholder: v5.6.1
 
   - type: input
     id: os-version
     attributes:
       label: OS version (optional)
-      placeholder: iOS 26.0.1
+      placeholder: e.g. iOS 26.4.2
   
   - type: checkboxes
     id: more-stuff
