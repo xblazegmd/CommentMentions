@@ -1,4 +1,9 @@
 # CommentMentions
+## v1.0.0-beta.5
+- <cg>Update</c> website link
+- <cg>Update</c> dependencies
+- <cy>Edit</c> blacklist
+
 ## v1.0.0-beta.4
 - <cg>Add</c> innapropriate comment filtering
 - <cg>Add</c> event level support (finally!)

@@ -46,8 +46,16 @@ const std::vector<std::regex> blacklist = {
     mkRegex("fag"),
     mkRegex("faggot"),
     mkRegex("fuck"),
+    mkRegex("fuk"),
     mkRegex("fuckwithme"),
+    mkRegex("fuk"),
+    mkRegex("fukwithme"),
+    mkRegex("fukmeup"),
     mkRegex("fack"),
+    mkRegex("fackwithme"),
+    mkRegex("fackmeup"),
+    mkRegex("fakwithme"),
+    mkRegex("fakmeup"),
     mkRegex("heigui"),
     mkRegex("jiggaboo"),
     mkRegex("jiggerboo"),
@@ -58,12 +66,14 @@ const std::vector<std::regex> blacklist = {
     mkRegex("nig"),
     mkRegex("nigg"),
     mkRegex("nigr"),
-    mkRegex("niger"),
+    mkRegex("niger"), // rip niger such a wonderful country
     mkRegex("nigga"),
+    mkRegex("nagga"),
     mkRegex("niggah"),
     mkRegex("niggas"),
     mkRegex("niggga"),
     mkRegex("nigger"),
+    mkRegex("nagger"),
     mkRegex("niggger"),
     mkRegex("niggers"),
     mkRegex("niglet"),
@@ -84,7 +94,7 @@ const std::vector<std::regex> blacklist = {
     mkRegex("touchingme"),
     mkRegex("unfuckable"),
     mkRegex("wigga"),
-    mkRegex("wigger"),
+    mkRegex("wigger")
 };
 
 const utils::StringMap<std::string> replacementMap = {
@@ -101,7 +111,9 @@ const utils::StringMap<std::string> replacementMap = {
     {"10", "io"},
     {"11", "h"},
     {"12", "is"},
-    {"@", "a"}
+    {"@", "a"},
+    {"!", "i"},
+    {"0", "o"},
 };
 
 std::string normalizeComment(const std::string& comment) {
