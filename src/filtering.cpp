@@ -103,7 +103,7 @@ const std::vector<std::regex> blacklist = {
     mkRegex("wigger")
 };
 
-const utils::StringMap<std::string> numberMap = {
+const utils::StringMap<std::string> replacementMap = {
     {"0", "o"},
     {"1", "i"},
     {"2", "s"},
@@ -116,25 +116,17 @@ const utils::StringMap<std::string> numberMap = {
     {"9", "p"},
     {"10", "io"},
     {"11", "h"},
-    {"12", "is"}
-};
-
-const utils::StringMap<std::string> charMap = {
+    {"12", "is"},
     {"@", "a"},
     {"!", "i"},
     {"0", "o"},
 };
 
-std::string normalizeComment(const std::string& comment, bool replaceNumbers = true) {
+std::string normalizeComment(const std::string& comment) {
     std::string res = comment;
     string::toLowerIP(res);
-    for (const auto& [k, v] : charMap) {
+    for (const auto& [k, v] : replacementMap) {
         string::replaceIP(res, k, v);
-    }
-    if (replaceNumbers) {
-        for (const auto& [k, v] : numberMap) {
-            string::replaceIP(res, k, v);
-        }
     }
     return res;
 }
