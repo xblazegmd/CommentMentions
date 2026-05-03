@@ -1,9 +1,8 @@
 # CommentMentions
 ## v1.0.0-beta.5
-- <cg>Update</c> website link
-- <cg>Update</c> dependencies
-- <cr>Block</c> notifications from [HVSKY](user:28322782) cuz why not
+- <cg>Update</c> website link and dependencies
 - <cy>Edit</c> blacklist
+- <cr>Block</c> notifications from [HVSKY](user:28322782) and [ViridianXX](user:37362126) cuz why not
 
 ## v1.0.0-beta.4
 - <cg>Add</c> innapropriate comment filtering
