@@ -18,7 +18,7 @@ static std::shared_ptr<MentionManager> g_mentionManager;
 $execute {
     if (!Mod::get()->setSavedValue("loaded-before", true)) {
         auto username = GJAccountManager::get()->m_username;
-        Mod::get()->setSettingValue("aliases", "@everyone, " + string::toLower(username));
+        Mod::get()->setSettingValue("aliases", string::toLower(username));
     }
 }
 
