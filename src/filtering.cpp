@@ -13,9 +13,9 @@
 using namespace geode::prelude;
 
 std::regex mkRegex(const std::string& text, bool autospacing = false) {
+    // Geode's split doesn't work here for my use case
     std::string str;
     if (autospacing) {
-        // Geode's split doesn't work here for my use case
         std::vector<std::string> split;
         split.reserve(text.size());
         for (const char& c : text) {
@@ -23,7 +23,6 @@ std::regex mkRegex(const std::string& text, bool autospacing = false) {
         }
         str = string::join(split, "\\s*");
     } else {
-        // No autospacing, useful for plain regex
         str = text;
     }
 
@@ -104,17 +103,6 @@ const std::vector<std::regex> blacklist = {
     mkRegex("wigger")
 };
 
-const std::vector<std::regex> spamlist = {
-    mkRegex("6+7+", false), // the "+" matches "67", "6677", "66666666667777777777777", etc
-    mkRegex("sixseven"),
-    mkRegex("like\\s*this\\s*(?:if)?", false), // ("like this if")
-    mkRegex("5+5+", false), // sry kingsammelot viewers
-    mkRegex("fivefive"),
-    mkRegex("faifai"),
-    mkRegex("(?:pl[sz])?\\s*play", false), // ("plz play my ___") no begging for level plays
-    mkRegex("latetop")
-};
-
 const utils::StringMap<std::string> numberMap = {
     {"0", "o"},
     {"1", "i"},
@@ -166,18 +154,6 @@ bool isWhitelisted(const std::string& word) {
 bool isInapropriate(const std::string& comment) {
     auto normalized = normalizeComment(comment);
     for (auto& r : blacklist) {
-        std::smatch match;
-        if (std::regex_search(normalized, match, r)) {
-            if (isWhitelisted(match.str())) continue;
-            return true;
-        }
-    }
-    return false;
-}
-
-bool isSpam(const std::string& comment) {
-    auto normalized = normalizeComment(comment, false);
-    for (auto& r : spamlist) {
         std::smatch match;
         if (std::regex_search(normalized, match, r)) {
             if (isWhitelisted(match.str())) continue;
