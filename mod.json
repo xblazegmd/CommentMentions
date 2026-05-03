@@ -82,7 +82,6 @@
 		"everyone-on-dc": {
 			"type": "bool",
 			"name": "Only Show While Chatting",
-			"description": "Only use the <cy>@everyone</c> alias while <cg>daily chatting</c>",
 			"default": false
 		},
 		"notifications": {
