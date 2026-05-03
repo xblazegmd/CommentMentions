@@ -206,7 +206,7 @@ bool MentionManager::isBlacklisted(const std::string& username) {
 
 std::vector<std::string> MentionManager::getAliases() {
     std::vector<std::string> ret;
-    if (Mod::get()->getSettingValue<bool>("enable-everyone") && canNotifyEveryone()) {
+    if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
         ret.push_back("@everyone");
     }
 

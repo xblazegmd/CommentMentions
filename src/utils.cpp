@@ -8,25 +8,6 @@
 
 using namespace geode::prelude;
 
-static bool g_canNotifyEveryone;
-
-class $modify(ILHook, InfoLayer) {
-    struct Fields {
-        ~Fields() {
-            g_canNotifyEveryone = false;
-        }
-    };
-
-    bool init(GJGameLevel* level, GJUserScore* score, GJLevelList* list) {
-        if (!InfoLayer::init(level, score, list)) return false;
-
-        m_fields.self();
-        g_canNotifyEveryone = true;
-
-        return true;
-    }
-};
-
 utils::StringMap<std::string> formatKV(
     const std::string& str,
     geode::utils::StringMap<std::string> map,
@@ -47,13 +28,6 @@ utils::StringMap<std::string> formatKV(
 void notifyError(const std::string& msg) {
     if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
     xblazeapi::quickErrorNotificationTS(msg);
-}
-
-bool canNotifyEveryone() {
-    if (Mod::get()->getSettingValue<bool>("everyone-on-dc")) {
-        return g_canNotifyEveryone;
-    }
-    return true;
 }
 
 std::vector<std::string> getListSetting(const std::string& setting) {

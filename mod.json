@@ -32,6 +32,12 @@
 			"default": "",
 			"filter": "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
+		"enable-everyone": {
+			"type": "bool",
+			"name": "Enable @everyone Alias",
+			"description": "Enable notifications from the <cy>@everyone</c> alias",
+			"default": true
+		},
 		"daily-lvl": {
 			"type": "bool",
 			"requires-restart": true,
@@ -68,22 +74,6 @@
 			"default": "68668045",
 			"filter": "0123456789, "
 		},
-		"everyone": {
-			"type": "title",
-			"name": "@everyone",
-			"description": "Handles notifications from the <cg>@everyone</c> tag\n\n<cb>having to add this cuz dc's dc"
-		},
-		"enable-everyone": {
-			"type": "bool",
-			"name": "Enable @everyone Alias",
-			"description": "Enable notifications from the <cy>@everyone</c> alias",
-			"default": true
-		},
-		"everyone-on-dc": {
-			"type": "bool",
-			"name": "Only Show While Chatting",
-			"default": false
-		},
 		"notifications": {
 			"type": "title",
 			"name": "Notifications"
@@ -102,13 +92,6 @@
 			"type": "title",
 			"name": "Filters"
 		},
-		"blacklist": {
-			"type": "string",
-			"name": "User Blacklist",
-			"description": "A comma separated <cg>list of usernames</c> by users who you don't want notifications from\n\n<cb>Suggestion by @SeveralLeaf</c>",
-			"default": "[username goes here]",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
-		},
 		"hide-inapropriate-comments": {
 			"type": "bool",
 			"name": "Hide Inapropriate Comments",
@@ -120,6 +103,13 @@
 			"name": "Hide Spam Comments",
 			"description": "Filter out any comments that possibly contain <co>spam</c> and/or are flagged as <cr>spam</c> <c-a6a6a6>(so 4+ dislikes)</c>",
 			"default": true
+		},
+		"blacklist": {
+			"type": "string",
+			"name": "User Blacklist",
+			"description": "A comma separated <cg>list of usernames</c> by users who you don't want notifications from\n\n<cb>Suggestion by @SeveralLeaf</c>",
+			"default": "[username goes here]",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"whitelist": {
 			"type": "string",
