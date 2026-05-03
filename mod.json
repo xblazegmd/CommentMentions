@@ -116,6 +116,12 @@
 			"description": "Filter out any comments that contain <co>possibly inapropriate words</c> <c-a6a6a6>(e.g. n word with hard r)</c>\n\n<cb>tysm dc now I'm having to add this cuz of you</c>",
 			"default": true
 		},
+		"hide-spam-comments": {
+			"type": "bool",
+			"name": "Hide Spam Comments",
+			"description": "Filter out any comments that possibly contain <co>spam</c> and/or are flagged as <cr>spam</c> <c-a6a6a6>(so 4+ dislikes)</c>",
+			"default": true
+		},
 		"whitelist": {
 			"type": "string",
 			"enable-if": "hide-inapropriate-comments",

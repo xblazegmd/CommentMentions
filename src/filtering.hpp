@@ -2,3 +2,4 @@
 #pragma once
 
 bool isInapropriate(const std::string& comment);
+bool isSpam(const std::string& comment);

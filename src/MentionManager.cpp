@@ -74,6 +74,7 @@ arc::Future<> MentionManager::commentWatcher() {
                         continue;
                     if (isBlacklisted(obj.author["userName"])) continue;
 
+                    if (Mod::get()->getSettingValue<bool>("hide-spam-comments") && (isSpam(string) || obj.comment["spam"] == "true")) continue;
                     if (isCommentInappropriate(string)) {
                         log::info("Inappropriate comment: {}", string);
                         continue;
