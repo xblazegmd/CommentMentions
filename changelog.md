@@ -1,7 +1,7 @@
 # CommentMentions
 ## v1.0.0-beta.5
-- <cg>Add</c> better support for the <cy>@everyone</c> alias
-    - <c-a6a6a6>*should also try to fix issues with @everyone spammers, sry for the inconvenience!*</c>
+- <cg>Add</c> easy toggle for the <cy>@everyone</c> alias
+    - <c-a6a6a6>*sry for the inconvenience with @everyone spammers*</c>
 - <cg>Add</c> "spam" word comment filtering <c-a6a6a6>(it really just filters out annoying words)</c>
 - <cg>Update</c> website link and dependencies
 - <cy>Edit</c> blacklist
