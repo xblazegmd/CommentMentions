@@ -2,6 +2,7 @@
 ## v1.0.0-beta.5
 - <cg>Update</c> website link
 - <cg>Update</c> dependencies
+- <cr>Block</c> notifications from [HVSKY](user:28322782) cuz why not
 - <cy>Edit</c> blacklist
 
 ## v1.0.0-beta.4

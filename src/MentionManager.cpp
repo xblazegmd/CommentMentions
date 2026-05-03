@@ -69,6 +69,7 @@ arc::Future<> MentionManager::commentWatcher() {
 
                 if (containsMention(string)) {
                     if (isPrevious(obj)) continue;
+                    if (obj.author["accountID"] == "28322782") continue; // bad luck HVSKY
                     if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.author["accountID"]))
                         continue;
                     if (isBlacklisted(obj.author["userName"])) continue;
