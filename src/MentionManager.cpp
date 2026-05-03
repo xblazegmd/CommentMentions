@@ -74,11 +74,11 @@ arc::Future<> MentionManager::commentWatcher() {
                         continue;
                     if (isBlacklisted(obj.author["userName"])) continue;
 
-                    if (Mod::get()->getSettingValue<bool>("hide-spam-comments") && (isSpam(string) || obj.comment["spam"] == "true")) continue;
                     if (isCommentInappropriate(string)) {
                         log::info("Inappropriate comment: {}", string);
                         continue;
                     }
+                    if (isCommentSpam(string, obj.comment["spam"])) continue;
 
                     obj.comment["comment"] = std::move(string);
                     log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
@@ -186,6 +186,11 @@ void MentionManager::storePrevious(const CommentObject& obj) {
 bool MentionManager::isCommentInappropriate(const std::string& comment) {
     if (!Mod::get()->getSettingValue<bool>("hide-inapropriate-comments")) return false;
     return isInapropriate(comment);
+}
+
+bool MentionManager::isCommentSpam(const std::string& comment, const std::string& flag) {
+    if (!Mod::get()->getSettingValue<bool>("hide-inapropriate-comments")) return false;
+    return isInapropriate(comment) || flag == "true";
 }
 
 bool MentionManager::isBlacklisted(const std::string& username) {
