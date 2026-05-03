@@ -2,9 +2,10 @@
 ## v1.0.0-beta.5
 - <cg>Add</c> better support for the <cy>@everyone</c> alias
     - <c-a6a6a6>*should also try to fix issues with @everyone spammers, sry for the inconvenience!*</c>
+- <cg>Add</c> spam comment filtering
 - <cg>Update</c> website link and dependencies
 - <cy>Edit</c> blacklist
-- <cr>Block</c> notifications from [HVSKY](user:28322782) and [ViridianXX](user:37362126) cuz why not
+- <cr>Block</c> notifications from [HVSKY](user:28322782) and [ViridianXX](user:37362126) <c-a6a6a6>(@everyone spammers)</c>
 
 ## v1.0.0-beta.4
 - <cg>Add</c> innapropriate comment filtering
