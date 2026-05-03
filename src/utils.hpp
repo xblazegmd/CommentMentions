@@ -12,4 +12,6 @@ geode::utils::StringMap<std::string> formatKV(
 
 void notifyError(const std::string& msg);
 
+bool canNotifyEveryone();
+
 std::vector<std::string> getListSetting(const std::string& setting);

@@ -200,9 +200,10 @@ bool MentionManager::isBlacklisted(const std::string& username) {
 
 std::vector<std::string> MentionManager::getAliases() {
     std::vector<std::string> ret;
-    if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
+    if (Mod::get()->getSettingValue<bool>("enable-everyone") && canNotifyEveryone()) {
         ret.push_back("@everyone");
     }
+
     auto setting = getListSetting("aliases");
     for (const auto& alias : setting) {
         if (string::contains(alias, "everyone")) continue; // ignore any @everyone's directly in the aliases setting
