@@ -27,7 +27,7 @@
 		},
 		"enabled": {
 			"type": "bool",
-			"name": "Enable",
+			"name": "Enabled",
 			"description": "<cb>do I even need to explain</c>",
 			"default": true
 		},
