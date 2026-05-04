@@ -112,25 +112,25 @@ arc::Future<> MentionManager::commentWatcher() {
 }
 
 void MentionManager::onMention(const CommentObject& obj) {
-    auto usrIt = obj.author.find("userName");
+    geode::queueInMainThread([this, obj] {
+        auto usrIt = obj.author.find("userName");
 
-    std::string username;
-    if (usrIt == obj.author.end()) {
-        username = "Someone";
-    } else {
-        username = usrIt->second;
-    }
+        std::string username;
+        if (usrIt == obj.author.end()) {
+            username = "Someone";
+        } else {
+            username = usrIt->second;
+        }
 
-    auto commentIt = obj.comment.find("comment");
+        auto commentIt = obj.comment.find("comment");
 
-    std::string comment;
-    if (commentIt == obj.author.end()) {
-        comment = "";
-    } else {
-        comment = commentIt->second;
-    }
+        std::string comment;
+        if (commentIt == obj.author.end()) {
+            comment = "";
+        } else {
+            comment = commentIt->second;
+        }
 
-    geode::queueInMainThread([this, username, comment] {
         showNotification(fmt::format("{} mentioned you!", username), comment);
     });
 }
