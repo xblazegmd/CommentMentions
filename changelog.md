@@ -1,4 +1,7 @@
 # CommentMentions
+## v1.0.0-beta.6
+- <co>Optimize</c> my mess of a code
+
 ## v1.0.0-beta.5
 - <cg>Add</c> easy toggle for the <cy>@everyone</c> alias
     - <c-a6a6a6>*sry for the inconvenience with @everyone spammers*</c>

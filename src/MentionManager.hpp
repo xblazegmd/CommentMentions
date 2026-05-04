@@ -2,6 +2,8 @@
 
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
+
+#include <deque>
 #include <matjson.hpp>
 #include <matjson/std.hpp>
 #include <string>
@@ -40,7 +42,7 @@ private:
     geode::async::TaskHolder<> m_watcher;
 
     std::vector<CommentObject> m_mentions;
-    std::vector<CommentObject> m_previousMentions;
+    std::deque<CommentObject> m_previousMentions;
 
     arc::Future<> commentWatcher();
     void onMention(const CommentObject& obj);

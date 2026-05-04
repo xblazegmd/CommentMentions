@@ -13,6 +13,7 @@
 #include <Geode/utils/random.hpp>
 #include <Geode/utils/string.hpp>
 
+#include <ranges>
 #include <string>
 #include <vector>
 
@@ -21,7 +22,7 @@
 using namespace geode::prelude;
 
 MentionManager::MentionManager(std::vector<int> levelIDs) : m_levelIDs(levelIDs) {
-    m_previousMentions = Mod::get()->getSavedValue<std::vector<CommentObject>>("mentions");
+    m_previousMentions = std::ranges::to<std::deque>(Mod::get()->getSavedValue<std::vector<CommentObject>>("mentions"));
 };
 
 void MentionManager::start() {
@@ -203,7 +204,7 @@ bool MentionManager::isPrevious(const CommentObject& obj) {
 void MentionManager::storePrevious(const CommentObject& obj) {
     m_previousMentions.push_back(obj);
     if (m_previousMentions.size() > 20) {
-        m_previousMentions.erase(m_previousMentions.begin()); // Pop front
+        m_previousMentions.pop_front();
     }
 }
 
