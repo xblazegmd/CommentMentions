@@ -1,7 +1,6 @@
 #include "utils.hpp"
 
 #include <Geode/Geode.hpp>
-#include <Geode/modify/InfoLayer.hpp>
 #include <string>
 
 #include <xblazegmd.geode-api/include/XblazeAPI.hpp>
