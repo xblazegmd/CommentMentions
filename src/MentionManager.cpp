@@ -47,6 +47,8 @@ arc::Future<> MentionManager::commentWatcher() {
                 continue;
             }
 
+            updateAliases();
+
             auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
                 "levelID={}&page=0&secret={}",
                 levelID, xblazeapi::SECRET
@@ -155,11 +157,11 @@ void MentionManager::showNotification(const std::string& title, const std::strin
 }
 
 bool MentionManager::containsMention(const std::string& str) {
-    auto aliases = getAliases();
-    for (const auto& tag : aliases)
+    for (const auto& tag : m_aliases) {
         if (string::contains(string::toLower(str), tag)) { 
             return true; 
         }
+    } 
     return false;
 }
 
@@ -171,6 +173,21 @@ bool MentionManager::isSelfMention(const std::string& str) {
         return false;
     }
     return ownAccID == otherAccID.unwrap();
+}
+
+void MentionManager::updateAliases() {
+    std::vector<std::string> val;
+    if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
+        val.push_back("@everyone");
+    }
+
+    auto setting = getListSetting("aliases");
+    for (const auto& alias : setting) {
+        if (string::contains(alias, "everyone")) continue; // ignore any @everyone's directly in the aliases setting
+        val.push_back(alias);
+    }
+
+    m_aliases = std::move(val);
 }
 
 bool MentionManager::isPrevious(const CommentObject& obj) {

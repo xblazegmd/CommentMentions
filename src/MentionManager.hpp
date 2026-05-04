@@ -41,6 +41,7 @@ private:
     std::vector<int> m_levelIDs;
     geode::async::TaskHolder<> m_watcher;
 
+    std::vector<std::string> m_aliases;
     std::vector<CommentObject> m_mentions;
     std::deque<CommentObject> m_previousMentions;
 
@@ -51,6 +52,7 @@ private:
 
     bool containsMention(const std::string& str);
     bool isSelfMention(const std::string& str);
+    void updateAliases();
 
     bool isPrevious(const CommentObject& obj);
     void storePrevious(const CommentObject& obj);
