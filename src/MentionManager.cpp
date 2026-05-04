@@ -1,6 +1,4 @@
 #include "MentionManager.hpp"
-#include "Geode/loader/Loader.hpp"
-#include "Geode/utils/async.hpp"
 
 #include <arc/prelude.hpp>
 #include <fmt/format.h>
@@ -79,7 +77,6 @@ arc::Future<> MentionManager::commentWatcher() {
 
                 if (containsMention(string)) {
                     if (isPrevious(obj)) continue;
-                    if (obj.author["accountID"] == "28322782" || obj.author["accountID"] == "37362126") continue; // bad luck HVSKY and viridian
                     if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.author["accountID"]))
                         continue;
                     if (isBlacklisted(obj.author["userName"])) continue;
