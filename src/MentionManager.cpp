@@ -99,14 +99,10 @@ arc::Future<> MentionManager::commentWatcher() {
 
             if (!m_mentions.empty()) {
                 if (m_mentions.size() > Mod::get()->getSettingValue<int64_t>("max-notifications")) {
-                    co_await async::waitForMainThread([this] {
-                        onMentionCompressed(m_mentions.size());
-                    });
+                    onMentionCompressed(m_mentions.size());
                 } else {
                     for (const auto& mention : m_mentions) {
-                        geode::queueInMainThread([this, mention] {
-                            onMention(mention);
-                        });
+                        onMention(mention);
                     }
                 }
                 m_mentions.clear();
@@ -134,22 +130,24 @@ void MentionManager::onMention(const CommentObject& obj) {
         comment = commentIt->second;
     }
 
-    AchievementNotifier::sharedState()->notifyAchievement(
-        fmt::format("{} mentioned you", username).c_str(),
-        comment.c_str(),
-        "accountBtn_pendingRequest_001.png",
-        true
-    );
+    geode::queueInMainThread([this, username, comment] {
+        showNotification(fmt::format("{} mentioned you!", username), comment);
+    });
 }
 
 void MentionManager::onMentionCompressed(int amount) {
-    std::string msg = "Check them out!";
-    if (random::chance(.1f)) {
-        msg = "Never gonna give you up!";
-    }
+    geode::queueInMainThread([this, amount] {
+        std::string msg = "Check them out!";
+        if (random::chance(.1f)) {
+            msg = "Never gonna give you up!";
+        }
+        showNotification(fmt::format("{} new mentions!", amount), msg);
+    });
+}
 
+void MentionManager::showNotification(const std::string& title, const std::string& msg) {
     AchievementNotifier::sharedState()->notifyAchievement(
-        fmt::format("{} new mentions!", amount).c_str(),
+        title.c_str(),
         msg.c_str(),
         "accountBtn_pendingRequest_001.png",
         true
