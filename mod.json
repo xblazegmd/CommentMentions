@@ -98,6 +98,17 @@
 			"name": "Show While on Editor",
 			"default": true
 		},
+		"max-notifications": {
+			"type": "int",
+			"name": "Max Notifications",
+			"description": "The <co>maximum</c> amount of notifications you can get at once before they get <cr>compressed into one</c>\n\n<cb>e.g. if you get 5 mentions and the max is 4, you will only get 1 notification abt it, whereas if you got only 4 you would get all of the 4 notifications</c>",
+			"min": 1,
+			"max": 20,
+			"default": 3,
+			"control": {
+				"slider": true
+			}
+		},
 		"filters": {
 			"type": "title",
 			"name": "Filters"

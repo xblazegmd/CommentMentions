@@ -44,6 +44,8 @@ private:
 
     arc::Future<> commentWatcher();
     void onMention(const CommentObject& obj);
+    void onMentionCompressed(int amount);
+
     bool containsMention(const std::string& str);
     bool isSelfMention(const std::string& str);
 

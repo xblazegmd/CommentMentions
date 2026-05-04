@@ -1,12 +1,16 @@
 #include "MentionManager.hpp"
+#include "Geode/loader/Loader.hpp"
+#include "Geode/utils/async.hpp"
 
 #include <arc/prelude.hpp>
+#include <fmt/format.h>
 #include <utils.hpp>
 #include <filtering.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/web.hpp>
+#include <Geode/utils/random.hpp>
 #include <Geode/utils/string.hpp>
 
 #include <string>
@@ -94,10 +98,16 @@ arc::Future<> MentionManager::commentWatcher() {
             if (!Mod::get()->getSettingValue<bool>("show-on-editor") && LevelEditorLayer::get()) continue;
 
             if (!m_mentions.empty()) {
-                for (const auto& mention : m_mentions) {
-                    geode::queueInMainThread([this, mention] {
-                        onMention(mention);
+                if (m_mentions.size() > Mod::get()->getSettingValue<int64_t>("max-notifications")) {
+                    co_await async::waitForMainThread([this] {
+                        onMentionCompressed(m_mentions.size());
                     });
+                } else {
+                    for (const auto& mention : m_mentions) {
+                        geode::queueInMainThread([this, mention] {
+                            onMention(mention);
+                        });
+                    }
                 }
                 m_mentions.clear();
             }
@@ -127,6 +137,20 @@ void MentionManager::onMention(const CommentObject& obj) {
     AchievementNotifier::sharedState()->notifyAchievement(
         fmt::format("{} mentioned you", username).c_str(),
         comment.c_str(),
+        "accountBtn_pendingRequest_001.png",
+        true
+    );
+}
+
+void MentionManager::onMentionCompressed(int amount) {
+    std::string msg = "Check them out!";
+    if (random::chance(.1f)) {
+        msg = "Never gonna give you up!";
+    }
+
+    AchievementNotifier::sharedState()->notifyAchievement(
+        fmt::format("{} new mentions!", amount).c_str(),
+        msg.c_str(),
         "accountBtn_pendingRequest_001.png",
         true
     );
