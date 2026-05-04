@@ -12,21 +12,15 @@
 
 using namespace geode::prelude;
 
-std::regex mkRegex(const std::string& text, bool autospacing = false) {
-    std::string str;
-    if (autospacing) {
-        // Geode's split doesn't work here for my use case
-        std::vector<std::string> split;
-        split.reserve(text.size());
-        for (const char& c : text) {
-            split.push_back(std::string(1, c));
-        }
-        str = string::join(split, "\\s*");
-    } else {
-        str = text;
+std::regex mkRegex(const std::string& text) {
+    // Geode's split doesn't work here for my use case
+    std::vector<std::string> split;
+    split.reserve(text.size());
+    for (const char& c : text) {
+        split.push_back(std::string(1, c));
     }
 
-    return std::regex(fmt::format("\\b(?:{})\\b", str), std::regex::icase | std::regex::optimize);
+    return std::regex(fmt::format("\\b(?:{})\\b", string::join(split, "\\s*")), std::regex::icase | std::regex::optimize);
 }
 
 // INAPROPRIATE WORDS IN 5...
