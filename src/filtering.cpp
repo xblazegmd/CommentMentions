@@ -125,8 +125,7 @@ const utils::StringMap<std::string> replacementMap = {
     {"11", "h"},
     {"12", "is"},
     {"@", "a"},
-    {"!", "i"},
-    {"0", "o"},
+    {"!", "i"}
 };
 
 std::string normalizeComment(const std::string& comment) {
