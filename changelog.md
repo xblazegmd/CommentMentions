@@ -3,8 +3,8 @@
 - <cg>Add</c> easy toggle for the <cy>@everyone</c> alias
     - <c-a6a6a6>*sry for the inconvenience with @everyone spammers*</c>
 - <cg>Add</c> custom blacklist setting
-- <cg>Update</c> website link and dependencies
 - <cy>Edit</c> built-in blacklist
+- <cg>Update</c> website link and dependencies
 - <cr>Block</c> notifications from [HVSKY](user:28322782) and [ViridianXX](user:37362126) <c-a6a6a6>(@everyone spammers)</c>
 
 ## v1.0.0-beta.4
