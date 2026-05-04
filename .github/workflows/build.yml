@@ -58,7 +58,7 @@ jobs:
 
   release:
     if: contains(github.event.head_commit.message, '[release]')
-    needs: build
+    needs: ['build', 'package']
     runs-on: ubuntu-latest
     permissions:
       contents: write
