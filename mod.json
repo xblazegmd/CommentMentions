@@ -25,6 +25,12 @@
 			"type": "title",
 			"name": "Basic Options"
 		},
+		"enabled": {
+			"type": "bool",
+			"name": "Enable",
+			"description": "<cb>do I even need to explain</c>",
+			"default": true
+		},
 		"aliases": {
 			"type": "string",
 			"name": "Aliases",
@@ -37,6 +43,10 @@
 			"name": "Notify on @everyone",
 			"description": "Get notified once someone uses the <cg>@everyone alias</c>",
 			"default": true
+		},
+		"lvl-stuff": {
+			"type": "title",
+			"name": "Levels"
 		},
 		"daily-lvl": {
 			"type": "bool",

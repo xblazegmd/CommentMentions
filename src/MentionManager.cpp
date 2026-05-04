@@ -38,6 +38,7 @@ arc::Future<> MentionManager::commentWatcher() {
     while (true) {
         for (const auto& levelID : m_levelIDs) {
             co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
+            if (!Mod::get()->getSettingValue<bool>("enabled")) continue;
 
             auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
                 "levelID={}&page=0&secret={}",
