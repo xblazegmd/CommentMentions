@@ -1,6 +1,6 @@
 # CommentMentions
 ## v1.0.0-beta.6
-- <co>Optimize</c> my mess of a code
+- <cc>Optimize</c> and cleanup my mess of a code
 - <cg>Unblock</c> notifications from [HVSKY](user:28322782) and [ViridianXX](user:37362126) <c-a6a6a6>(yw)</c>
 
 ## v1.0.0-beta.5
