@@ -55,10 +55,10 @@ arc::Future<Result<int>> getSpecialID(LevelType type) {
 
 
 $on_game(Loaded) {
-    if (!Mod::get()->setSavedValue("unset-everyone-popup", true)) {
+    if (!Mod::get()->setSavedValue("imsorry-popup", true)) {
         FLAlertLayer::create(
             "CommentMentions",
-            "Tired of lots of <cl>@everyone</c> notifications? You can remove the <cl>@everyone</c> alias by going to the <co>mod's settings</c>\n<cy>However, I think it's more fun keeping it on /Xblaze</c>",
+            "I'm sorry for any inconveniences causes by ppl spamming <cy>@everyone</c> with the mod. I am trying my best to fix it.\n<cr>DO NOT</c> use the <cy>@everyone</c> tag to <cs>annoy others</c>. It is <co>not funny</c>, and just look what happened to <cg>HVSKY</c> and <cg>ViridianXX</c> <cy>/Xblaze</c>",
             "OK"
         )->show();
     }
