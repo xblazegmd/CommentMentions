@@ -213,7 +213,7 @@ std::vector<std::string> MentionManager::getAliases() {
 }
 
 std::vector<std::string> MentionManager::getBlacklistedAccounts() {
-    return getListSetting("blacklist");
+    return getListSetting("user-blacklist");
 }
 
 CommentObject MentionManager::formatCommentObj(const std::string& str) {

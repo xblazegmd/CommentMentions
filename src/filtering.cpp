@@ -13,9 +13,9 @@
 using namespace geode::prelude;
 
 std::regex mkRegex(const std::string& text, bool autospacing = false) {
-    // Geode's split doesn't work here for my use case
     std::string str;
     if (autospacing) {
+        // Geode's split doesn't work here for my use case
         std::vector<std::string> split;
         split.reserve(text.size());
         for (const char& c : text) {
@@ -34,7 +34,7 @@ std::regex mkRegex(const std::string& text, bool autospacing = false) {
 // INAPROPRIATE WORDS IN 3...
 // INAPROPRIATE WORDS IN 2...
 // INAPROPRIATE WORDS IN 1...
-const std::vector<std::regex> blacklist = {
+const std::vector<std::regex> blacklistedWords = {
     mkRegex("ass"),
     mkRegex("anus"),
     mkRegex("anal"),
@@ -103,6 +103,19 @@ const std::vector<std::regex> blacklist = {
     mkRegex("wigger")
 };
 
+static std::vector<std::regex> blacklist;
+
+$execute {
+    for (const auto& word : blacklistedWords) {
+        blacklist.push_back(word);
+    }
+
+    auto list = getListSetting("word-blacklist");
+    for (const auto& item : list) {
+        blacklist.push_back(mkRegex(item));
+    }
+}
+
 const utils::StringMap<std::string> replacementMap = {
     {"0", "o"},
     {"1", "i"},
@@ -133,7 +146,7 @@ std::string normalizeComment(const std::string& comment) {
 
 bool isWhitelisted(const std::string& word) {
     auto w = string::replace(word, " ", ""); // Normalize
-    auto whitelist = getListSetting("whitelist");
+    auto whitelist = getListSetting("word-whitelist");
     for (const auto& whitelistedWord : whitelist) {
         if (w == whitelistedWord) {
             log::info("Found innapropriate word '{}', however, it'll be ignored as it is whitelisted", w);
