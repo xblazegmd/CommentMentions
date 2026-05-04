@@ -66,21 +66,21 @@ arc::Future<> MentionManager::commentWatcher() {
 
                 log::debug("Encoded: {}", obj.comment["comment"]);
 
-                auto s = base64::decode(obj.comment["comment"], base64::Base64Variant::Url);
+                auto s = base64::decodeString(obj.comment["comment"], base64::Base64Variant::Url);
                 if (s.isErr()) {
                     log::error("Could not decode comment: {}", s.unwrapErr());
                     continue;
                 }
-                std::string string(s.unwrap().begin(), s.unwrap().end());
+                std::string string = std::move(s).unwrap();
 
                 log::debug("Decoded: {}", string);
 
                 if (containsMention(string)) {
+                    // The sea of checks
                     if (isPrevious(obj)) continue;
                     if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.author["accountID"]))
                         continue;
                     if (isBlacklisted(obj.author["userName"])) continue;
-
                     if (isCommentInappropriate(string)) {
                         log::info("Inappropriate comment: {}", string);
                         continue;
