@@ -22,7 +22,9 @@
 using namespace geode::prelude;
 
 MentionManager::MentionManager(std::vector<int> levelIDs) : m_levelIDs(levelIDs) {
-    m_previousMentions = std::ranges::to<std::deque>(Mod::get()->getSavedValue<std::vector<CommentObject>>("mentions"));
+    m_previousMentions = std::ranges::to<std::deque<CommentObject>>(
+        Mod::get()->getSavedValue<std::vector<CommentObject>>("mentions")
+    );
 };
 
 void MentionManager::start() {
@@ -35,7 +37,7 @@ void MentionManager::start() {
 
 void MentionManager::save() {
     log::debug("Saving mentions...");
-    Mod::get()->setSavedValue("mentions", m_previousMentions);
+    Mod::get()->setSavedValue("mentions", std::ranges::to<std::vector<CommentObject>>(m_previousMentions));
     log::debug("Successfully saved mentions");
 }
 
