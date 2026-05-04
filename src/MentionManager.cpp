@@ -116,22 +116,12 @@ arc::Future<> MentionManager::commentWatcher() {
 void MentionManager::onMention(const CommentObject& obj) {
     geode::queueInMainThread([this, obj] {
         auto usrIt = obj.author.find("userName");
-
-        std::string username;
-        if (usrIt == obj.author.end()) {
-            username = "Someone";
-        } else {
-            username = usrIt->second;
-        }
+        const std::string username = usrIt == obj.author.end() ?
+            "Someone" : usrIt->second;
 
         auto commentIt = obj.comment.find("comment");
-
-        std::string comment;
-        if (commentIt == obj.author.end()) {
-            comment = "";
-        } else {
-            comment = commentIt->second;
-        }
+        const std::string comment = commentIt == obj.author.end() ?
+            "" : commentIt->second;
 
         showNotification(fmt::format("{} mentioned you!", username), comment);
     });
@@ -139,10 +129,7 @@ void MentionManager::onMention(const CommentObject& obj) {
 
 void MentionManager::onMentionCompressed(int amount) {
     geode::queueInMainThread([this, amount] {
-        std::string msg = "Check them out!";
-        if (random::chance(.1f)) {
-            msg = "Never gonna give you up!";
-        }
+        const std::string msg = random::chance(.1f) ? "Never gonna give you up!" : "Check them out!";
         showNotification(fmt::format("{} new mentions!", amount), msg);
     });
 }
@@ -200,16 +187,9 @@ bool MentionManager::isPrevious(const CommentObject& obj) {
         return false;
     }
 
-    for (const auto& mention : m_previousMentions) {
-        auto messageID = mention.comment.find("messageID");
-        if (messageID == mention.comment.end()) {
-            notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
-
-            log::error("Could not find 'messageID' in previous mention (THIS SHOULD BE UNREACHABLE)");
-            log::info("PLEASE REPORT THIS BUG");
-            return false;
-        }
-        if (messageID->second == ownMessageID->second) {
+    for (auto& mention : m_previousMentions) {
+        auto messageID = mention.comment["messageID"];
+        if (messageID == ownMessageID->second) {
             log::debug("Mention under messageID {} was previously detected, skipping", ownMessageID->second);
             return true; 
         }
@@ -224,15 +204,16 @@ void MentionManager::storePrevious(const CommentObject& obj) {
     }
 }
 
-bool MentionManager::isCommentInappropriate(const std::string& comment) {
-    if (!Mod::get()->getSettingValue<bool>("hide-inapropriate-comments")) return false;
-    return isInapropriate(comment);
+inline bool MentionManager::isCommentInappropriate(const std::string& comment) {
+    return Mod::get()->getSettingValue<bool>("hide-inapropriate-comments") && isInapropriate(comment);
 }
 
 bool MentionManager::isBlacklisted(const std::string& username) {
     auto blacklist = getBlacklistedAccounts();
+    auto usernameLower = string::toLower(username);
+
     for (const auto& blacklistedUser : blacklist) {
-        if (string::toLower(username) == string::toLower(blacklistedUser)) {
+        if (usernameLower == string::toLower(blacklistedUser)) {
             log::info("User '{}' is blacklisted, skipping...", username);
             return true;
         }

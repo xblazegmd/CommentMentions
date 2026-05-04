@@ -16,11 +16,9 @@ utils::StringMap<std::string> formatKV(
 
     utils::StringMap<std::string> ret;
     for (const auto& [k, v] : kv) {
-        auto it = map.find(k);
-        std::string newk = it != map.end() ? it->second : k;
-        ret[newk] = v;
+        std::string nk = map.contains(k) ? map[k] : k;
+        ret[nk] = v;
     }
-
     return ret;
 }
 

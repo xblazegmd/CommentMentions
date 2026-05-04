@@ -57,7 +57,7 @@ private:
     bool isPrevious(const CommentObject& obj);
     void storePrevious(const CommentObject& obj);
 
-    bool isCommentInappropriate(const std::string& comment);
+    inline bool isCommentInappropriate(const std::string& comment);
     bool isBlacklisted(const std::string& username);
 
     std::vector<std::string> getAliases();
