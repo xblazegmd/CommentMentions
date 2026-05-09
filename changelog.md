@@ -1,6 +1,6 @@
 # CommentMentions
 ## v1.0.0-beta.7
-- <cr>Remove</c> harrassment <c-a6a6a6>(can't namedrop the ppl I originally blocked notifications from)</c>
+- <cr>Remove</c> harrassment
 
 ## v1.0.0-beta.6
 - <cc>Optimize</c> and cleanup my mess of a code
