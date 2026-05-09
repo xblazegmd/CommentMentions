@@ -1,6 +1,6 @@
 # CommentMentions
-# v1.0.0-beta.7
-- <cr>Removed</c> namedrop to the users I blocked notifications from <c-a6a6a6>(replaced usernames with "*[REDACTED]*")</c>
+## v1.0.0-beta.7
+- <cr>Remove</c> harrassment <c-a6a6a6>(can't namedrop the ppl I originally blocked notifications from)</c>
 
 ## v1.0.0-beta.6
 - <cc>Optimize</c> and cleanup my mess of a code
