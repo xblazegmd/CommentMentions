@@ -1,7 +1,10 @@
 # CommentMentions
+# v1.0.0-beta.7
+- <cr>Removed</c> namedrop to the users I blocked notifications from <c-a6a6a6>(replaced usernames with "*[REDACTED]*")</c>
+
 ## v1.0.0-beta.6
 - <cc>Optimize</c> and cleanup my mess of a code
-- <cg>Unblock</c> notifications from [HVSKY](user:28322782) and [ViridianXX](user:37362126) <c-a6a6a6>(yw)</c>
+- <cg>Unblock</c> notifications from <c-a6a6a6>*[REDACTED]*</c> and <c-a6a6a6>*[REDACTED]*</c> <c-a6a6a6>(yw)</c>
 
 ## v1.0.0-beta.5
 - <cg>Add</c> easy toggle for the <cy>@everyone</c> alias
@@ -11,7 +14,7 @@
 - <cg>Add</c> compressed notifications and <cl>Max Notifications</c> setting
 - <cy>Edit</c> built-in blacklist
 - <cg>Update</c> website link and dependencies
-- <cr>Block</c> notifications from [HVSKY](user:28322782) and [ViridianXX](user:37362126) <c-a6a6a6>(@everyone spammers)</c>
+- <cr>Block</c> notifications from <c-a6a6a6>*[REDACTED]*</c> and <c-a6a6a6>*[REDACTED]*</c> <c-a6a6a6>(@everyone spammers)</c>
 
 ## v1.0.0-beta.4
 - <cg>Add</c> innapropriate comment filtering
