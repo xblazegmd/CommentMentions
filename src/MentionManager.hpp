@@ -77,6 +77,8 @@ private:
     bool isPrevious(const CommentObject& obj);
     void storePrevious(const CommentObject& obj);
 
+    void pollUntilWeHaveInternet();
+
     inline bool isCommentInappropriate(const std::string& comment);
     bool isBlacklisted(const std::string& username);
 

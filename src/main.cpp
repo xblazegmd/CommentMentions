@@ -81,7 +81,7 @@ $on_game(Loaded) {
         // Internet check
         if (!co_await xblazeapi::doWeHaveInternet()) {
             log::error("No internet connection!");
-            notifyError("CommentMentions: No internet connection!\nPlease check your internet connection and restart the game");
+            notifyError("CommentMentions: No internet connection!\nPlease verify your internet connection and restart the game");
             co_return;
         }
 

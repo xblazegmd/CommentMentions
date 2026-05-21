@@ -6,6 +6,7 @@
 #include <filtering.hpp>
 
 #include <Geode/Geode.hpp>
+#include <Geode/ui/Notification.hpp>
 #include <Geode/utils/base64.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/random.hpp>
@@ -155,6 +156,14 @@ arc::Future<> MentionManager::commentWatcher() {
                 levelID, xblazeapi::SECRET
             ));
             if (res.isErr()) {
+                // Verify it's not an internet issue
+                if (!co_await xblazeapi::doWeHaveInternet()) {
+                    log::error("No internet connection!");
+                    notifyError("CommentMentions: No internet connection!\nPlease verify your internet connection");
+                    this->pollUntilWeHaveInternet();
+                    co_return;
+                }
+
                 std::string msg = fmt::format("CommentMentions: Failed to fetch comments: {}", res.unwrapErr());
                 log::error("{}", msg);
                 notifyError(msg);
@@ -303,6 +312,22 @@ void MentionManager::storePrevious(const CommentObject& obj) {
     if (m_previousMentions.size() > 20) {
         m_previousMentions.pop_front();
     }
+}
+
+void MentionManager::pollUntilWeHaveInternet() {
+    m_watcher.spawn(
+        "MentionManager::pollUntilWeHaveInternet",
+        [] -> arc::Future<> {
+            while (true) {
+                if (co_await xblazeapi::doWeHaveInternet()) break;
+                co_await xblazeapi::sleepSecs(3);
+            }
+        },
+        [this] {
+            Notification::create("CommentMentions: Back online ;)", NotificationIcon::Success)->show();
+            this->start();
+        }
+    );
 }
 
 inline bool MentionManager::isCommentInappropriate(const std::string& comment) {
