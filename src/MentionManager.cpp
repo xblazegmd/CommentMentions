@@ -293,18 +293,18 @@ bool MentionManager::isSelfMention(const std::string& str) {
 }
 
 void MentionManager::updateAliases() {
+    m_aliases.clear();
+
     std::vector<std::string> val;
     if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
-        val.push_back("@everyone");
+        m_aliases.push_back("@everyone");
     }
 
     auto setting = getListSetting("aliases");
     for (const auto& alias : setting) {
         if (string::contains(alias, "everyone")) continue; // ignore any @everyone's directly in the aliases setting
-        val.push_back(alias);
+        m_aliases.push_back(alias);
     }
-
-    m_aliases = std::move(val);
 }
 
 bool MentionManager::isPrevious(const CommentObject& obj) {
