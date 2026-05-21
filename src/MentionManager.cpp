@@ -26,6 +26,11 @@ MentionManager::MentionManager() {
     );
 };
 
+MentionManager* MentionManager::get() {
+    static MentionManager* instance = new MentionManager();
+    return instance;
+}
+
 void MentionManager::start() {
     m_watcher.spawn(
         "MentionManager::mentionTracker",

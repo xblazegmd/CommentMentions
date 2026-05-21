@@ -5,15 +5,11 @@
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
 
-#include <chrono>
-#include <memory>
 #include <string>
 
 #include <xblazegmd.geode-api/include/XblazeAPI.hpp>
 
 using namespace geode::prelude;
-
-static std::shared_ptr<MentionManager> g_mentionManager;
 
 $execute {
     if (!Mod::get()->setSavedValue("loaded-before", true)) {
@@ -23,49 +19,44 @@ $execute {
 
     listenForSettingChanges<bool>("daily-lvl", [](bool enabled) {
         log::debug("'Track Daily Level' setting was toggled, reloading...");
-        if (!g_mentionManager) return;
         if (enabled) {
-            async::spawn(g_mentionManager->fetchDailyID());
+            async::spawn(MentionManager::get()->fetchDailyID());
         } else {
-            g_mentionManager->disableDailyID();
+            MentionManager::get()->disableDailyID();
         }
     });
 
     listenForSettingChanges<bool>("weekly-demon", [](bool enabled) {
         log::debug("'Track Weekly Demon' setting was toggled, reloading...");
-        if (!g_mentionManager) return;
         if (enabled) {
-            async::spawn(g_mentionManager->fetchWeeklyID());
+            async::spawn(MentionManager::get()->fetchWeeklyID());
         } else {
-            g_mentionManager->disableWeeklyID();
+            MentionManager::get()->disableWeeklyID();
         }
     });
 
     listenForSettingChanges<bool>("event-lvl", [](bool enabled) {
         log::debug("'Track Event Level' setting was toggled, reloading...");
-        if (!g_mentionManager) return;
         if (enabled) {
-            async::spawn(g_mentionManager->fetchEventID());
+            async::spawn(MentionManager::get()->fetchEventID());
         } else {
-            g_mentionManager->disableEventID();
+            MentionManager::get()->disableEventID();
         }
     });
 
     listenForSettingChanges<bool>("use-custom-ids", [](bool enabled) {
         log::debug("'Track Custom Levels' setting was toggled, reloading custom IDs...");
-        if (!g_mentionManager) return;
-        async::spawn(g_mentionManager->loadCustomIDs());
+        async::spawn(MentionManager::get()->loadCustomIDs());
     });
 
     listenForSettingChanges<std::string>("custom-ids", [](std::string) {
         log::debug("Custom IDs were updated, reloading...");
-        if (!g_mentionManager) return;
-        async::spawn(g_mentionManager->loadCustomIDs());
+        async::spawn(MentionManager::get()->loadCustomIDs());
     });
 }
 
 $on_mod(DataSaved) {
-    g_mentionManager->save();
+    MentionManager::get()->save();
 }
 
 $on_game(Loaded) {
@@ -85,29 +76,29 @@ $on_game(Loaded) {
             co_return;
         }
 
-        g_mentionManager = std::make_shared<MentionManager>();
+        auto mentionManager = MentionManager::get();
 
         // Get daily level
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
-            co_await g_mentionManager->fetchDailyID();
+            co_await mentionManager->fetchDailyID();
         }
 
         // Get weekly demon
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
-            co_await g_mentionManager->fetchWeeklyID();
+            co_await mentionManager->fetchWeeklyID();
         }
 
         // Get event level
         if (Mod::get()->getSettingValue<bool>("event-lvl")) {
-            co_await g_mentionManager->fetchEventID();
+            co_await mentionManager->fetchEventID();
         }
 
         // Get custom IDs
         if (Mod::get()->getSettingValue<bool>("use-custom-ids")) {
-            co_await g_mentionManager->loadCustomIDs();
+            co_await mentionManager->loadCustomIDs();
         }
 
         // Start tracking for mentions
-        g_mentionManager->start();
+        mentionManager->start();
     });
 }

@@ -39,6 +39,8 @@ public:
     MentionManager();
     ~MentionManager() = default;
 
+    static MentionManager* get();
+
     void start();
     void save();
 
