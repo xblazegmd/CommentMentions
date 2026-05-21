@@ -94,6 +94,21 @@ arc::Future<> MentionManager::loadCustomIDs() {
     }
 }
 
+// arc::Future<std::optional<int>> MentionManager::getDailyID() {
+//     auto lock = co_await m_dailyID.lock();
+//     co_return *lock;
+// }
+
+// arc::Future<std::optional<int>> MentionManager::getWeeklyID() {
+//     auto lock = co_await m_weeklyID.lock();
+//     co_return *lock;
+// }
+
+// arc::Future<std::optional<int>> MentionManager::getEventID() {
+//     auto lock = co_await m_eventID.lock();
+//     co_return *lock;
+// }
+
 void MentionManager::disableDailyID() {
     async::spawn(
         m_dailyID.lock(),

@@ -18,7 +18,7 @@ $execute {
     }
 
     listenForSettingChanges<bool>("daily-lvl", [](bool enabled) {
-        log::debug("'Track Daily Level' setting was toggled, reloading...");
+        log::info("'Track Daily Level' setting was toggled, reloading...");
         if (enabled) {
             async::spawn(MentionManager::get()->fetchDailyID());
         } else {
@@ -27,7 +27,7 @@ $execute {
     });
 
     listenForSettingChanges<bool>("weekly-demon", [](bool enabled) {
-        log::debug("'Track Weekly Demon' setting was toggled, reloading...");
+        log::info("'Track Weekly Demon' setting was toggled, reloading...");
         if (enabled) {
             async::spawn(MentionManager::get()->fetchWeeklyID());
         } else {
@@ -36,7 +36,7 @@ $execute {
     });
 
     listenForSettingChanges<bool>("event-lvl", [](bool enabled) {
-        log::debug("'Track Event Level' setting was toggled, reloading...");
+        log::info("'Track Event Level' setting was toggled, reloading...");
         if (enabled) {
             async::spawn(MentionManager::get()->fetchEventID());
         } else {
@@ -45,12 +45,12 @@ $execute {
     });
 
     listenForSettingChanges<bool>("use-custom-ids", [](bool enabled) {
-        log::debug("'Track Custom Levels' setting was toggled, reloading custom IDs...");
+        log::info("'Track Custom Levels' setting was toggled, reloading custom IDs...");
         async::spawn(MentionManager::get()->loadCustomIDs());
     });
 
     listenForSettingChanges<std::string>("custom-ids", [](std::string) {
-        log::debug("Custom IDs were updated, reloading...");
+        log::info("Custom IDs were updated, reloading...");
         async::spawn(MentionManager::get()->loadCustomIDs());
     });
 }
