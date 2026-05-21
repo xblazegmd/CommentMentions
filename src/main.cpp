@@ -52,7 +52,7 @@ $execute {
     });
 
     listenForSettingChanges<bool>("use-custom-ids", [](bool enabled) {
-        log::debug("'Track Custom Levels' stting was toggled, reloading custom IDs...");
+        log::debug("'Track Custom Levels' setting was toggled, reloading custom IDs...");
         if (!g_mentionManager) return;
         async::spawn(g_mentionManager->loadCustomIDs());
     });
