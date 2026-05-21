@@ -1,6 +1,8 @@
 #pragma once
 
+#include <arc/future/Future.hpp>
 #include <arc/sync/Mutex.hpp>
+#include <optional>
 #include <utils.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
@@ -42,8 +44,17 @@ public:
 
     arc::Future<> addLevelID(int levelID);
     arc::Future<> fetchSpecialID(LevelType type);
+
+    arc::Future<> fetchDailyID();
+    arc::Future<> fetchWeeklyID();
+    arc::Future<> fetchEventID();
+    arc::Future<> loadCustomIDs();
 private:
-    arc::Mutex<std::vector<int>> m_levelIDs;
+    arc::Mutex<std::optional<int>> m_dailyID;
+    arc::Mutex<std::optional<int>> m_weeklyID;
+    arc::Mutex<std::optional<int>> m_eventID;
+    arc::Mutex<std::vector<int>> m_customIDs;
+
     geode::async::TaskHolder<> m_watcher;
 
     std::vector<std::string> m_aliases;

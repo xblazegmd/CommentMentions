@@ -26,23 +26,10 @@ MentionManager::MentionManager() {
 };
 
 void MentionManager::start() {
-    async::spawn(
-        [this] -> arc::Future<bool> {
-            auto lock = co_await m_levelIDs.lock();
-            co_return lock->empty();
-        },
-        [this](bool empty) {
-            if (!empty) {
-                notifyError("CommentMentions: No levels were given to track");
-                return;
-            }
-
-            m_watcher.spawn(
-                "MentionManager::mentionTracker",
-                commentWatcher(),
-                [] {}
-            );
-        }
+    m_watcher.spawn(
+        "MentionManager::mentionTracker",
+        commentWatcher(),
+        [] {}
     );
 }
 
@@ -52,26 +39,79 @@ void MentionManager::save() {
     log::debug("Successfully saved mentions");
 }
 
-arc::Future<> MentionManager::addLevelID(int levelID) {
-    auto lock = co_await m_levelIDs.lock();
-    lock->push_back(levelID);
-}
-
-arc::Future<> MentionManager::fetchSpecialID(LevelType type) {
-    auto levelID = co_await getSpecialID(type);
+arc::Future<> MentionManager::fetchDailyID() {
+    auto levelID = co_await getSpecialID(LevelType::Daily);
     if (levelID.isErr()) {
-        notifyError(fmt::format("CommentMentions: Could not get level ID: {}", levelID.unwrapErr()));
+        notifyError(fmt::format("CommentMentions: Could not get daily level's ID: {}", levelID.unwrapErr()));
         co_return;
     }
+    auto lock = co_await m_dailyID.lock();
+    *lock = std::move(levelID).unwrap();
+}
 
-    auto lock = co_await m_levelIDs.lock();
-    lock->push_back(levelID.unwrap());
+arc::Future<> MentionManager::fetchWeeklyID() {
+    auto levelID = co_await getSpecialID(LevelType::Weekly);
+    if (levelID.isErr()) {
+        notifyError(fmt::format("CommentMentions: Could not get weekly level's ID: {}", levelID.unwrapErr()));
+        co_return;
+    }
+    auto lock = co_await m_weeklyID.lock();
+    *lock = std::move(levelID).unwrap();
+}
+
+arc::Future<> MentionManager::fetchEventID() {
+    auto levelID = co_await getSpecialID(LevelType::Event);
+    if (levelID.isErr()) {
+        notifyError(fmt::format("CommentMentions: Could not get event level's ID: {}", levelID.unwrapErr()));
+        co_return;
+    }
+    auto lock = co_await m_eventID.lock();
+    *lock = std::move(levelID).unwrap();
+}
+
+arc::Future<> MentionManager::loadCustomIDs() {
+    auto lock = co_await m_customIDs.lock();
+    lock->clear();
+
+    auto customIDs = Mod::get()->getSettingValue<std::string>("custom-ids");
+    auto ids = string::split(customIDs, ",");
+
+    for (const auto& id : ids) {
+        auto idNum = utils::numFromString<int>(string::trim(id));
+        if (idNum.isErr()) {
+            log::error("Error converting ID {} to number: {}", id, idNum.unwrapErr());
+            continue;
+        }
+        lock->push_back(std::move(idNum).unwrap());
+    }
 }
 
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
-        auto lock = co_await m_levelIDs.lock();
-        for (const auto& levelID : *lock) {
+        // ugly as heck but whatever
+        std::vector<int> levelIDs;
+        {
+            auto lock = co_await m_dailyID.lock();
+            if (*lock) levelIDs.push_back(**lock);
+        }
+        {
+            auto lock = co_await m_weeklyID.lock();
+            if (*lock) levelIDs.push_back(**lock);
+        }
+        {
+            auto lock = co_await m_eventID.lock();
+            if (*lock) levelIDs.push_back(**lock);
+        }
+        {
+            auto lock = co_await m_customIDs.lock();
+            levelIDs.insert(levelIDs.end(), lock->begin(), lock->end());
+        }
+
+        if (levelIDs.empty()) {
+            notifyError("CommentMentions: No IDs were given");
+        }
+
+        for (const auto& levelID : levelIDs) {
             co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
             if (!Mod::get()->getSettingValue<bool>("enabled")) {
                 continue;

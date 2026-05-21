@@ -52,32 +52,22 @@ $on_game(Loaded) {
 
         // Get daily level
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
-            co_await g_mentionManager->fetchSpecialID(LevelType::Daily);
+            co_await g_mentionManager->fetchDailyID();
         }
 
         // Get weekly demon
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
-            co_await g_mentionManager->fetchSpecialID(LevelType::Weekly);
+            co_await g_mentionManager->fetchWeeklyID();
         }
 
         // Get event level
         if (Mod::get()->getSettingValue<bool>("event-lvl")) {
-            co_await g_mentionManager->fetchSpecialID(LevelType::Event);
+            co_await g_mentionManager->fetchEventID();
         }
 
         // Get custom IDs
         if (Mod::get()->getSettingValue<bool>("use-custom-ids")) {
-            auto customIDs = Mod::get()->getSettingValue<std::string>("custom-ids");
-            auto ids = string::split(customIDs, ",");
-
-            for (const auto& id : ids) {
-                auto idNum = utils::numFromString<int>(string::trim(id));
-                if (idNum.isErr()) {
-                    log::error("Error converting ID {} to number: {}", id, idNum.unwrapErr());
-                    continue;
-                }
-                co_await g_mentionManager->addLevelID(std::move(idNum).unwrap());
-            }
+            co_await g_mentionManager->loadCustomIDs();
         }
 
         // Start tracking for mentions
