@@ -52,9 +52,9 @@ public:
     arc::Future<> fetchEventID();
     arc::Future<> loadCustomIDs();
 
-    // arc::Future<std::optional<int>> getDailyID();
-    // arc::Future<std::optional<int>> getWeeklyID();
-    // arc::Future<std::optional<int>> getEventID();
+    arc::Future<std::optional<int>> getDailyID();
+    arc::Future<std::optional<int>> getWeeklyID();
+    arc::Future<std::optional<int>> getEventID();
 
     void disableDailyID();
     void disableWeeklyID();
