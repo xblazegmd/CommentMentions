@@ -5,6 +5,7 @@
 - <cg>Add</c> even BETTER internet check
 - <cy>Switch</c> to using <cl>regex</c> for mention finding, basically <cr>eliminating</c> <co>false positives</c>
 - <cg>Add</c> case sensivity/insensivity setting
+- <cg>Add</c> dedicated <cl>Require @</c> setting for exclusive <cy>@</c> support
 - <cg>Update</c> dependencies
 
 ## v1.0.0-beta.7
