@@ -301,7 +301,11 @@ void MentionManager::updateAliases() {
     }
 
     m_aliasRegex = std::regex(
-        fmt::format("\\b(?:{})\\b", string::join(aliases, "|")),
+        fmt::format(
+            "\\b{}(?:{})\\b",
+            Mod::get()->getSettingValue<bool>("require-at") ? "@" : "",
+            string::join(aliases, "|")
+        ),
         Mod::get()->getSettingValue<bool>("case-sensitive") ?
             std::regex::optimize : std::regex::icase | std::regex::optimize
     );

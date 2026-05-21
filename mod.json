@@ -34,15 +34,21 @@
 		"aliases": {
 			"type": "string",
 			"name": "Aliases",
-			"description": "A comma separated <cg>list of aliases</c> to watch for in the comments\n\nWriting an <cy>*@*</c> at the beginning of an alias will make it so you'll only get notified if someone writes a <cl>literal *'@'*</c> at the beginning of the mention\n\n<cb>the *@everyone* alias will be ignored, please use its dedicated setting for it</c>",
+			"description": "A comma separated <cg>list of aliases</c> to watch for in the comments\n\n<cb>the *@everyone* alias will be ignored, please use its dedicated setting for it</c>",
 			"default": "",
-			"filter": "@abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"enable-everyone": {
 			"type": "bool",
 			"name": "Notify on @everyone",
 			"description": "Get <cg>notified</c> once someone uses the <cy>@everyone</c> alias",
 			"default": true
+		},
+		"require-at": {
+			"type": "bool",
+			"name": "Require @ sign",
+			"description": "Only get <cg>notified</c> when someone writes <cl>a literal *'@'*</c> at the beginning of the mention",
+			"default": false
 		},
 		"lvl-stuff": {
 			"type": "title",
