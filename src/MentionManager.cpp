@@ -108,7 +108,7 @@ arc::Future<> MentionManager::commentWatcher() {
         }
 
         if (levelIDs.empty()) {
-            log::error("No IDs were given");
+            log::error("No IDs were found");
             co_await xblazeapi::sleepSecs(1);
             continue;
         }
