@@ -13,6 +13,7 @@
 #include <Geode/utils/string.hpp>
 
 #include <ranges>
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -274,8 +275,9 @@ void MentionManager::showNotification(const std::string& title, const std::strin
 }
 
 bool MentionManager::containsMention(const std::string& str) {
-    for (const auto& tag : m_aliases) {
-        if (string::contains(string::toLower(str), tag)) { 
+    for (const auto& alias : m_aliases) {
+        std::smatch match;
+        if (std::regex_search(str, match, alias)) {
             return true; 
         }
     } 
@@ -295,15 +297,22 @@ bool MentionManager::isSelfMention(const std::string& str) {
 void MentionManager::updateAliases() {
     m_aliases.clear();
 
+    auto toRegex = [](const std::string& str) {
+        return std::regex(
+            fmt::format("\\b{}\\b", str),
+            std::regex::icase | std::regex::optimize
+        );
+    };
+
     std::vector<std::string> val;
     if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
-        m_aliases.push_back("@everyone");
+        m_aliases.push_back(toRegex("@everyone"));
     }
 
     auto setting = getListSetting("aliases");
     for (const auto& alias : setting) {
         if (string::contains(alias, "everyone")) continue; // ignore any @everyone's directly in the aliases setting
-        m_aliases.push_back(alias);
+        m_aliases.push_back(toRegex(alias));
     }
 }
 

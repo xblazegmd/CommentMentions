@@ -10,6 +10,7 @@
 #include <deque>
 #include <matjson.hpp>
 #include <matjson/std.hpp>
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -67,7 +68,7 @@ private:
 
     geode::async::TaskHolder<> m_watcher;
 
-    std::vector<std::string> m_aliases;
+    std::vector<std::regex> m_aliases;
     std::vector<CommentObject> m_mentions;
     std::deque<CommentObject> m_previousMentions;
 
