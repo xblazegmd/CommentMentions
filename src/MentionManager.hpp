@@ -1,5 +1,7 @@
 #pragma once
 
+#include <arc/sync/Mutex.hpp>
+#include <utils.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
 
@@ -32,13 +34,16 @@ struct matjson::Serialize<CommentObject> {
 
 class MentionManager {
 public:
-    MentionManager(std::vector<int> levelIDs);
+    MentionManager();
     ~MentionManager() = default;
 
     void start();
     void save();
+
+    arc::Future<> addLevelID(int levelID);
+    arc::Future<> fetchSpecialID(LevelType type);
 private:
-    std::vector<int> m_levelIDs;
+    arc::Mutex<std::vector<int>> m_levelIDs;
     geode::async::TaskHolder<> m_watcher;
 
     std::vector<std::string> m_aliases;

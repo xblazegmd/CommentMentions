@@ -19,17 +19,30 @@
 
 using namespace geode::prelude;
 
-MentionManager::MentionManager(std::vector<int> levelIDs) : m_levelIDs(levelIDs) {
+MentionManager::MentionManager() {
     m_previousMentions = std::ranges::to<std::deque<CommentObject>>(
         Mod::get()->getSavedValue<std::vector<CommentObject>>("mentions")
     );
 };
 
 void MentionManager::start() {
-    m_watcher.spawn(
-        "MentionManager::mentionTracker",
-        commentWatcher(),
-        [] {}
+    async::spawn(
+        [this] -> arc::Future<bool> {
+            auto lock = co_await m_levelIDs.lock();
+            co_return lock->empty();
+        },
+        [this](bool empty) {
+            if (!empty) {
+                notifyError("CommentMentions: No levels were given to track");
+                return;
+            }
+
+            m_watcher.spawn(
+                "MentionManager::mentionTracker",
+                commentWatcher(),
+                [] {}
+            );
+        }
     );
 }
 
@@ -39,9 +52,26 @@ void MentionManager::save() {
     log::debug("Successfully saved mentions");
 }
 
+arc::Future<> MentionManager::addLevelID(int levelID) {
+    auto lock = co_await m_levelIDs.lock();
+    lock->push_back(levelID);
+}
+
+arc::Future<> MentionManager::fetchSpecialID(LevelType type) {
+    auto levelID = co_await getSpecialID(type);
+    if (levelID.isErr()) {
+        notifyError(fmt::format("CommentMentions: Could not get level ID: {}", levelID.unwrapErr()));
+        co_return;
+    }
+
+    auto lock = co_await m_levelIDs.lock();
+    lock->push_back(levelID.unwrap());
+}
+
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
-        for (const auto& levelID : m_levelIDs) {
+        auto lock = co_await m_levelIDs.lock();
+        for (const auto& levelID : *lock) {
             co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
             if (!Mod::get()->getSettingValue<bool>("enabled")) {
                 continue;

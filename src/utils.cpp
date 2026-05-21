@@ -37,3 +37,24 @@ std::vector<std::string> getListSetting(const std::string& setting) {
     }
     return ret;
 }
+
+arc::Future<Result<int>> getSpecialID(LevelType type) {
+    auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
+        "type={}&secret={}",
+        static_cast<int>(type), xblazeapi::SECRET
+    ));
+    if (res.isErr()) {
+        log::error("{}", res.unwrapErr());
+        co_return Err("{}", res.unwrapErr());
+    }
+
+    auto daily = string::split(string::split(res.unwrap(), "#")[0], "|")[0];
+    auto dailyID = formatKV(daily, {{"1", "daily"}})["daily"];
+    auto intDailyID = utils::numFromString<int>(dailyID);
+
+    if (intDailyID.isErr()) {
+        co_return Err(intDailyID.unwrapErr());
+    }
+
+    co_return Ok(intDailyID.unwrap());
+}

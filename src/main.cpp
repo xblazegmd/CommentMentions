@@ -26,34 +26,6 @@ $on_mod(DataSaved) {
     g_mentionManager->save();
 }
 
-enum class LevelType {
-    Daily = 21,
-    Weekly = 22,
-    Event = 23
-};
-
-arc::Future<Result<int>> getSpecialID(LevelType type) {
-    auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
-        "type={}&secret={}",
-        static_cast<int>(type), xblazeapi::SECRET
-    ));
-    if (res.isErr()) {
-        log::error("{}", res.unwrapErr());
-        co_return Err("{}", res.unwrapErr());
-    }
-
-    auto daily = string::split(string::split(res.unwrap(), "#")[0], "|")[0];
-    auto dailyID = formatKV(daily, {{"1", "daily"}})["daily"];
-    auto intDailyID = utils::numFromString<int>(dailyID);
-
-    if (intDailyID.isErr()) {
-        co_return Err(intDailyID.unwrapErr());
-    }
-
-    co_return Ok(intDailyID.unwrap());
-}
-
-
 $on_game(Loaded) {
     if (!Mod::get()->setSavedValue("imsorry-popup", true)) {
         FLAlertLayer::create(
@@ -76,37 +48,21 @@ $on_game(Loaded) {
             co_return;
         }
 
-        std::vector<int> levelIDs{};
+        g_mentionManager = std::make_shared<MentionManager>();
 
         // Get daily level
         if (Mod::get()->getSettingValue<bool>("daily-lvl")) {
-            auto dailyID = co_await getSpecialID(LevelType::Daily);
-            if (dailyID.isErr()) {
-                notifyError(fmt::format("CommentMentions: Could not get daily level ID: {}", dailyID.unwrapErr()));
-            } else {
-                levelIDs.push_back(std::move(dailyID).unwrap());
-            }
+            co_await g_mentionManager->fetchSpecialID(LevelType::Daily);
         }
 
         // Get weekly demon
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
-            auto weeklyID = co_await getSpecialID(LevelType::Weekly);
-            if (weeklyID.isErr()) {
-                notifyError(fmt::format("CommentMentions: Could not get weekly demon ID: {}", weeklyID.unwrapErr()));
-            } else {
-                levelIDs.push_back(std::move(weeklyID).unwrap());
-            }
+            co_await g_mentionManager->fetchSpecialID(LevelType::Daily);
         }
 
         // Get event level
         if (Mod::get()->getSettingValue<bool>("event-lvl")) {
-            auto eventID = co_await getSpecialID(LevelType::Event);
-            if (eventID.isErr()) {
-                notifyError(fmt::format("CommentMentions: Could not get event level ID: {}", eventID.unwrapErr()));
-            } else {
-                log::info("{}", eventID);
-                levelIDs.push_back(std::move(eventID).unwrap());
-            }
+            co_await g_mentionManager->fetchSpecialID(LevelType::Daily);
         }
 
         // Get custom IDs
@@ -120,19 +76,11 @@ $on_game(Loaded) {
                     log::error("Error converting ID {} to number: {}", id, idNum.unwrapErr());
                     continue;
                 }
-
-                levelIDs.push_back(std::move(idNum).unwrap());
+                co_await g_mentionManager->addLevelID(std::move(idNum).unwrap());
             }
         }
 
-        // Check if there's even any IDs
-        if (levelIDs.empty()) {
-            notifyError("CommentMentions: No IDs were given");
-            co_return;
-        }
-
         // Start tracking for mentions
-        g_mentionManager = std::make_shared<MentionManager>(std::move(levelIDs));
         g_mentionManager->start();
     });
 }
