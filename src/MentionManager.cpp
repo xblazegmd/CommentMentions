@@ -108,7 +108,9 @@ arc::Future<> MentionManager::commentWatcher() {
         }
 
         if (levelIDs.empty()) {
-            notifyError("CommentMentions: No IDs were given");
+            log::error("No IDs were given");
+            co_await xblazeapi::sleepSecs(1);
+            continue;
         }
 
         for (const auto& levelID : levelIDs) {
