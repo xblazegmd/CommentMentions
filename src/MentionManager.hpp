@@ -49,6 +49,10 @@ public:
     arc::Future<> fetchWeeklyID();
     arc::Future<> fetchEventID();
     arc::Future<> loadCustomIDs();
+
+    void disableDailyID();
+    void disableWeeklyID();
+    void disableEventID();
 private:
     arc::Mutex<std::optional<int>> m_dailyID;
     arc::Mutex<std::optional<int>> m_weeklyID;

@@ -73,6 +73,8 @@ arc::Future<> MentionManager::loadCustomIDs() {
     auto lock = co_await m_customIDs.lock();
     lock->clear();
 
+    if (!Mod::get()->getSettingValue<bool>("use-custom-ids")) co_return;
+
     auto customIDs = Mod::get()->getSettingValue<std::string>("custom-ids");
     auto ids = string::split(customIDs, ",");
 
@@ -84,6 +86,33 @@ arc::Future<> MentionManager::loadCustomIDs() {
         }
         lock->push_back(std::move(idNum).unwrap());
     }
+}
+
+void MentionManager::disableDailyID() {
+    async::spawn(
+        m_dailyID.lock(),
+        [](auto lock) {
+            *lock = std::nullopt;
+        }
+    );
+}
+
+void MentionManager::disableWeeklyID() {
+    async::spawn(
+        m_weeklyID.lock(),
+        [](auto lock) {
+            *lock = std::nullopt;
+        }
+    );
+}
+
+void MentionManager::disableEventID() {
+    async::spawn(
+        m_eventID.lock(),
+        [](auto lock) {
+            *lock = std::nullopt;
+        }
+    );
 }
 
 arc::Future<> MentionManager::commentWatcher() {

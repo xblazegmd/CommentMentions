@@ -1,3 +1,4 @@
+#include "Geode/loader/SettingV3.hpp"
 #include <MentionManager.hpp>
 #include <arc/prelude.hpp>
 #include <utils.hpp>
@@ -20,6 +21,48 @@ $execute {
         auto username = GJAccountManager::get()->m_username;
         Mod::get()->setSettingValue("aliases", string::toLower(username));
     }
+
+    listenForSettingChanges<bool>("daily-lvl", [](bool enabled) {
+        log::debug("'Track Daily Level' setting was toggled, reloading...");
+        if (!g_mentionManager) return;
+        if (enabled) {
+            async::spawn(g_mentionManager->fetchDailyID());
+        } else {
+            g_mentionManager->disableDailyID();
+        }
+    });
+
+    listenForSettingChanges<bool>("weekly-demon", [](bool enabled) {
+        log::debug("'Track Weekly Demon' setting was toggled, reloading...");
+        if (!g_mentionManager) return;
+        if (enabled) {
+            async::spawn(g_mentionManager->fetchWeeklyID());
+        } else {
+            g_mentionManager->disableWeeklyID();
+        }
+    });
+
+    listenForSettingChanges<bool>("event-lvl", [](bool enabled) {
+        log::debug("'Track Event Level' setting was toggled, reloading...");
+        if (!g_mentionManager) return;
+        if (enabled) {
+            async::spawn(g_mentionManager->fetchEventID());
+        } else {
+            g_mentionManager->disableEventID();
+        }
+    });
+
+    listenForSettingChanges<bool>("use-custom-ids", [](bool enabled) {
+        log::debug("'Track Custom Levels' stting was toggled, reloading custom IDs...");
+        if (!g_mentionManager) return;
+        async::spawn(g_mentionManager->loadCustomIDs());
+    });
+
+    listenForSettingChanges<std::string>("custom-ids", [](std::string) {
+        log::debug("Custom IDs were updated, reloading...");
+        if (!g_mentionManager) return;
+        async::spawn(g_mentionManager->loadCustomIDs());
+    });
 }
 
 $on_mod(DataSaved) {
