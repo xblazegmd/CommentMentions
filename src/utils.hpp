@@ -22,3 +22,5 @@ void notifyError(const std::string& msg);
 std::vector<std::string> getListSetting(const std::string& setting);
 
 arc::Future<geode::Result<int>> getSpecialID(LevelType type);
+
+arc::Future<> pauseUntilWeHaveInternet();

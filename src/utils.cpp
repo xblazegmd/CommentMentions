@@ -58,3 +58,10 @@ arc::Future<Result<int>> getSpecialID(LevelType type) {
 
     co_return Ok(intDailyID.unwrap());
 }
+
+arc::Future<> pauseUntilWeHaveInternet() {
+    while (true) {
+        if (co_await xblazeapi::doWeHaveInternet()) break;
+        co_await xblazeapi::sleepSecs(3);
+    }
+}

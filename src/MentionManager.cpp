@@ -341,12 +341,7 @@ void MentionManager::storePrevious(const CommentObject& obj) {
 void MentionManager::pollUntilWeHaveInternet() {
     m_watcher.spawn(
         "MentionManager::pollUntilWeHaveInternet",
-        [] -> arc::Future<> {
-            while (true) {
-                if (co_await xblazeapi::doWeHaveInternet()) break;
-                co_await xblazeapi::sleepSecs(3);
-            }
-        },
+        pauseUntilWeHaveInternet(),
         [this] {
             Notification::create("CommentMentions: Back online ;)", NotificationIcon::Success)->show();
             this->start();
