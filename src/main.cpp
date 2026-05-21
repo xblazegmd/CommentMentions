@@ -57,12 +57,12 @@ $on_game(Loaded) {
 
         // Get weekly demon
         if (Mod::get()->getSettingValue<bool>("weekly-demon")) {
-            co_await g_mentionManager->fetchSpecialID(LevelType::Daily);
+            co_await g_mentionManager->fetchSpecialID(LevelType::Weekly);
         }
 
         // Get event level
         if (Mod::get()->getSettingValue<bool>("event-lvl")) {
-            co_await g_mentionManager->fetchSpecialID(LevelType::Daily);
+            co_await g_mentionManager->fetchSpecialID(LevelType::Event);
         }
 
         // Get custom IDs
