@@ -1,4 +1,3 @@
-#include "Geode/loader/SettingV3.hpp"
 #include <MentionManager.hpp>
 #include <arc/prelude.hpp>
 #include <utils.hpp>
