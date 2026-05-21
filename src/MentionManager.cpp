@@ -300,7 +300,8 @@ void MentionManager::updateAliases() {
     auto toRegex = [](const std::string& str) {
         return std::regex(
             fmt::format("\\b{}\\b", str),
-            std::regex::icase | std::regex::optimize
+            Mod::get()->getSettingValue<bool>("case-sensitive") ?
+                std::regex::optimize : std::regex::icase | std::regex::optimize
         );
     };
 

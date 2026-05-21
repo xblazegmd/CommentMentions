@@ -159,6 +159,12 @@
 				"slider": true
 			}
 		},
+		"case-sensitive": {
+			"type": "bool",
+			"name": "Case Sensitive",
+			"description": "Whether the mention lookup should be case-sensitive <c-a6a6a6>(e.g. *\"username\"* gets detected but *\"USERNAME\"* doesn't)</c>",
+			"default": false
+		},
 		"ignore-self": {
 			"type": "bool",
 			"name": "Ignore Self Mentions",

@@ -3,6 +3,7 @@
 - <cg>Add</c> hot reloading for settings <c-a6a6a6>(now you don't need to restart the game to add/remove a level to track)</c>
 - <cg>Add</c> hot reloading for daily, weekly, and event levels <c-a6a6a6>(no need to restart the game on a new daily!)</c>
 - <cg>Add</c> even BETTER internet check
+- <cg>Add</c> case sensivity/insensivity setting
 - <cg>Update</c> dependencies
 
 ## v1.0.0-beta.7
