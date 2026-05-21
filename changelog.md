@@ -1,6 +1,7 @@
 # CommentMentions
 ## v1.0.0-beta.8
 - <cg>Add</c> hot reloading <c-a6a6a6>(now you don't need to restart the game to add/remove a level to track)</c>
+- <cg>Update</c> dependencies
 
 ## v1.0.0-beta.7
 - <cr>Remove</c> harrassment

@@ -79,12 +79,7 @@ $on_game(Loaded) {
 
     async::spawn([] -> arc::Future<> {
         // Internet check
-        auto check = co_await web::WebRequest()
-            .userAgent("Geometry Dash! (internet check)")
-            .timeout(std::chrono::seconds(10))
-            .get("http://connectivitycheck.gstatic.com/generate_204");
-
-        if (!check.ok()) {
+        if (!co_await xblazeapi::doWeHaveInternet()) {
             log::error("No internet connection!");
             notifyError("CommentMentions: No internet connection!\nPlease check your internet connection and restart the game");
             co_return;
