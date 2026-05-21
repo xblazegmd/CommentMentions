@@ -68,7 +68,7 @@ private:
 
     geode::async::TaskHolder<> m_watcher;
 
-    std::vector<std::regex> m_aliases;
+    std::regex m_aliasRegex;
     std::vector<CommentObject> m_mentions;
     std::deque<CommentObject> m_previousMentions;
 
@@ -77,7 +77,7 @@ private:
     void onMentionCompressed(int amount);
     void showNotification(const std::string& title, const std::string& msg);
 
-    bool containsMention(const std::string& str);
+    inline bool containsMention(const std::string& str);
     bool isSelfMention(const std::string& str);
     void updateAliases();
 

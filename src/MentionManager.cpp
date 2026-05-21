@@ -274,14 +274,8 @@ void MentionManager::showNotification(const std::string& title, const std::strin
     );
 }
 
-bool MentionManager::containsMention(const std::string& str) {
-    for (const auto& alias : m_aliases) {
-        std::smatch match;
-        if (std::regex_search(str, match, alias)) {
-            return true; 
-        }
-    } 
-    return false;
+inline bool MentionManager::containsMention(const std::string& str) {
+    return std::regex_search(str, m_aliasRegex);
 }
 
 bool MentionManager::isSelfMention(const std::string& str) {
@@ -295,26 +289,22 @@ bool MentionManager::isSelfMention(const std::string& str) {
 }
 
 void MentionManager::updateAliases() {
-    m_aliases.clear();
-
-    auto toRegex = [](const std::string& str) {
-        return std::regex(
-            fmt::format("\\b{}\\b", str),
-            Mod::get()->getSettingValue<bool>("case-sensitive") ?
-                std::regex::optimize : std::regex::icase | std::regex::optimize
-        );
-    };
-
-    std::vector<std::string> val;
+    std::vector<std::string> aliases;
     if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
-        m_aliases.push_back(toRegex("@everyone"));
+        aliases.push_back("@everyone");
     }
 
     auto setting = getListSetting("aliases");
     for (const auto& alias : setting) {
         if (string::contains(alias, "everyone")) continue; // ignore any @everyone's directly in the aliases setting
-        m_aliases.push_back(toRegex(alias));
+        aliases.push_back(alias);
     }
+
+    m_aliasRegex = std::regex(
+        fmt::format("\\b(?:{})\\b", string::join(aliases, "|")),
+        Mod::get()->getSettingValue<bool>("case-sensitive") ?
+            std::regex::optimize : std::regex::icase | std::regex::optimize
+    );
 }
 
 bool MentionManager::isPrevious(const CommentObject& obj) {
