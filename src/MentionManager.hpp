@@ -1,15 +1,16 @@
 #pragma once
 
-#include <arc/future/Future.hpp>
-#include <arc/sync/Mutex.hpp>
-#include <optional>
 #include <utils.hpp>
+
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
 
+#include <arc/future/Future.hpp>
+#include <arc/sync/Mutex.hpp>
 #include <deque>
 #include <matjson.hpp>
 #include <matjson/std.hpp>
+#include <optional>
 #include <regex>
 #include <string>
 #include <vector>

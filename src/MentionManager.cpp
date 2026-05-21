@@ -1,7 +1,5 @@
 #include "MentionManager.hpp"
 
-#include <arc/prelude.hpp>
-#include <fmt/format.h>
 #include <utils.hpp>
 #include <filtering.hpp>
 
@@ -12,6 +10,8 @@
 #include <Geode/utils/random.hpp>
 #include <Geode/utils/string.hpp>
 
+#include <arc/prelude.hpp>
+#include <fmt/format.h>
 #include <ranges>
 #include <regex>
 #include <string>

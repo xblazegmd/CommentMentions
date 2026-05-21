@@ -1,10 +1,11 @@
 #include <MentionManager.hpp>
-#include <arc/prelude.hpp>
 #include <utils.hpp>
+
 #include <Geode/Geode.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
 
+#include <arc/prelude.hpp>
 #include <string>
 
 #include <xblazegmd.geode-api/include/XblazeAPI.hpp>

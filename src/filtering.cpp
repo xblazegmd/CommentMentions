@@ -1,7 +1,8 @@
 #include "filtering.hpp"
 
 #include <utils.hpp>
-#include <Geode/Result.hpp>
+
+#include <Geode/Geode.hpp>
 #include <Geode/loader/Mod.hpp>
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/string.hpp>

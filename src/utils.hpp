@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Geode/utils/StringMap.hpp>
+
 #include <string>
 #include <vector>
 
