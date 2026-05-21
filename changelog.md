@@ -3,6 +3,8 @@
 - <cg>Add</c> hot reloading for settings <c-a6a6a6>(now you don't need to restart the game to add/remove a level to track)</c>
 - <cg>Add</c> hot reloading for daily, weekly, and event levels <c-a6a6a6>(no need to restart the game on a new daily!)</c>
 - <cg>Add</c> even BETTER internet check
+- <cy>Switch</c> to using <cj>regex</c> for mention finding, basically <cr>eliminating</c> <co>false positives</c>
+    - *<c-a6a6a6>it also improves finding casual mentions (e.g. "XBLAZE!!!!!!")</c>*
 - <cg>Add</c> case sensivity/insensivity setting
 - <cg>Update</c> dependencies
 
