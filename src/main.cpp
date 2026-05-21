@@ -60,10 +60,10 @@ $on_mod(DataSaved) {
 }
 
 $on_game(Loaded) {
-    if (!Mod::get()->setSavedValue("imsorry-popup", true)) {
+    if (!Mod::get()->setSavedValue("random-ahh-popup", true)) {
         FLAlertLayer::create(
             "CommentMentions",
-            "I'm <cb>sorry</c> for any <co>inconveniences</c> causes by ppl spamming <cg>@everyone</c> with the mod. I am <cl>trying</c> my best to fix it.\n<cr>DO NOT</c> use the <cg>@everyone</c> tag to <cs>annoy others</c>. It is <co>not funny</c>, and just look what happened to... <cy>actually nvm I can't namedrop them if I want my mod to be approved mb /Xblaze</c>",
+            "Thank you for using <cy>CommentMentions!</c>. I recommend you take a look at the mod's settings <cj>/Xblaze</c>",
             "OK"
         )->show();
     }
