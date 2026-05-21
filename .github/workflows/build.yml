@@ -74,7 +74,7 @@ jobs:
 
           # Changelog
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          python format_changelog.py >> $GITHUB_OUTPUT
+          python .github/format_changelog.py >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Tag
