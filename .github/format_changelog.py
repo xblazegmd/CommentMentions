@@ -18,4 +18,4 @@ with open("changelog.md", "r") as f:
 
         result += re.sub(r"<c[^>]+>([^<]*)</c>", r"\1", line)
 
-print(result.strip(), end="")
+print(result.strip())
