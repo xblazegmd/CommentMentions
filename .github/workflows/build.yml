@@ -70,7 +70,8 @@ jobs:
         run: |
           # Version
           MSG="${{ github.event.head_commit.message }}"
-          echo 'version=$(echo "$MSG" | sed "s/\[release\]//g" | sed "s/[[:space:]]*$//")' >> $GITHUB_OUTPUT
+          VERSION=$(echo "$MSG" | sed "s/\[release\]//g" | sed "s/[[:space:]]*$//")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
           # Changelog
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
