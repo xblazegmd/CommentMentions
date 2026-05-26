@@ -181,8 +181,8 @@ arc::Future<> MentionManager::commentWatcher() {
                 if (!co_await xblazeapi::doWeHaveInternet()) {
                     log::error("No internet connection!");
                     notifyError("CommentMentions: No internet connection!\nPlease verify your internet connection");
-                    this->pollUntilWeHaveInternet();
-                    co_return;
+                    co_await pauseUntilWeHaveInternet();
+                    continue;
                 }
 
                 // Maybe rob's a troll and rate limited us
@@ -344,17 +344,6 @@ void MentionManager::storePrevious(const CommentObject& obj) {
     if (m_previousMentions.size() > 20) {
         m_previousMentions.pop_front();
     }
-}
-
-void MentionManager::pollUntilWeHaveInternet() {
-    m_watcher.spawn(
-        "MentionManager::pollUntilWeHaveInternet",
-        pauseUntilWeHaveInternet(),
-        [this] {
-            Notification::create("CommentMentions: Back online ;)", NotificationIcon::Success)->show();
-            this->start();
-        }
-    );
 }
 
 inline bool MentionManager::isCommentInappropriate(const std::string& comment) {
