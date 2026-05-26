@@ -185,6 +185,14 @@ arc::Future<> MentionManager::commentWatcher() {
                     co_return;
                 }
 
+                // Maybe rob's a troll and rate limited us
+                auto err = res.unwrapErr();
+                if (err == 429) {
+                    log::error("Rate limited :(");
+                    notifyError("CommentMentions: Rate limited by the GD servers!\nPlease try again later");
+                    co_return; // Exit early since there's no point in doing anything atp
+                }
+
                 std::string msg = fmt::format("CommentMentions: Failed to fetch comments: {}", res.unwrapErr());
                 log::error("{}", msg);
                 notifyError(msg);
