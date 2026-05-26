@@ -1,4 +1,7 @@
 # CommentMentions
+## v1.0.0-beta.9
+- Make <cr>Error Notifications</c> not show up while playing a level <c-a6a6a6>(toggleable in settings)</c>
+
 ## v1.0.0-beta.8
 - <cg>Add</c> hot reloading for settings <c-a6a6a6>(now you don't need to restart the game to add/remove a level to track)</c>
 - <cg>Add</c> hot reloading for daily, weekly, and event levels <c-a6a6a6>(no need to restart the game on a new daily!)</c>

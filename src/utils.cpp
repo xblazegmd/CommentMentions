@@ -24,6 +24,7 @@ utils::StringMap<std::string> formatKV(
 
 void notifyError(const std::string& msg) {
     if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
+    if (PlayLayer::get() && !Mod::get()->getSettingValue<bool>("show-errors-while-playing")) return;
     xblazeapi::quickErrorNotificationTS(msg);
 }
 
