@@ -1,5 +1,6 @@
 # CommentMentions
 ## v1.0.0-beta.9
+- <cg>Add</c> check for rate limits
 - Make <cr>Error Notifications</c> not show up while playing a level <c-a6a6a6>(toggleable in settings)</c>
 
 ## v1.0.0-beta.8
