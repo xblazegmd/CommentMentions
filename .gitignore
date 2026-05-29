@@ -63,9 +63,10 @@ build-*/
 .idea/
 /cmake-build-*/
 
-# You don't need to see my secret design files (affinity)
+# Other stuff
 *.af
 **/*.af
 *.af~lock~
 **/*.af~lock~
 **/design/
+compile_commands.json
