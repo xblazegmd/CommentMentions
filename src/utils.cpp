@@ -40,10 +40,10 @@ std::vector<std::string> getListSetting(const std::string& setting) {
 }
 
 arc::Future<Result<int>> getSpecialID(LevelType type) {
-    auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", fmt::format(
-        "type={}&secret={}",
-        static_cast<int>(type), xblazeapi::SECRET
-    ));
+    auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", xblazeapi::buildBodyString({
+        { "type", utils::numToString(static_cast<int>(type)) },
+        { "secret", xblazeapi::SECRET }
+    }));
     if (res.isErr()) {
         log::error("{}", res.unwrapErr());
         co_return Err("{}", res.unwrapErr());

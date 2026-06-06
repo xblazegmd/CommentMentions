@@ -172,10 +172,11 @@ arc::Future<> MentionManager::commentWatcher() {
 
             updateAliases();
 
-            auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", fmt::format(
-                "levelID={}&page=0&secret={}",
-                levelID, xblazeapi::SECRET
-            ));
+            auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", xblazeapi::buildBodyString({
+                { "levelID", utils::numToString(levelID) },
+                { "page", "0" },
+                { "secret", xblazeapi::SECRET }
+            }));
             if (res.isErr()) {
                 // Verify it's not an internet issue
                 if (!co_await xblazeapi::doWeHaveInternet()) {

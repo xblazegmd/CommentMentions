@@ -2,6 +2,7 @@
 ## v1.0.0-beta.9
 - <cg>Add</c> check for rate limits
 - Make <cr>Error Notifications</c> not show up while playing a level <c-a6a6a6>(toggleable in settings)</c>
+- <cg>Update</c> Xblaze's Geode API to <cl>v2.0.0</c>
 
 ## v1.0.0-beta.8
 - <cg>Add</c> hot reloading for settings <c-a6a6a6>(now you don't need to restart the game to add/remove a level to track)</c>
