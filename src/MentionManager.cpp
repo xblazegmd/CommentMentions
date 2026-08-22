@@ -170,8 +170,29 @@ arc::Future<> MentionManager::commentWatcher() {
                 continue;
             }
 
-            updateAliases();
+            // Update aliases
+            std::vector<std::string> aliases;
+            if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
+                aliases.push_back("@everyone");
+            }
 
+            auto setting = getListSetting("aliases");
+            for (const auto& alias : setting) {
+                if (string::contains(alias, "everyone")) continue; // ignore any @everyone's directly in the aliases setting
+                aliases.push_back(alias);
+            }
+
+            m_aliasRegex = std::regex(
+                fmt::format(
+                    "\\b{}(?:{})\\b",
+                    Mod::get()->getSettingValue<bool>("require-at") ? "@" : "",
+                    string::join(aliases, "|")
+                ),
+                Mod::get()->getSettingValue<bool>("case-sensitive") ?
+                    std::regex::optimize : std::regex::icase | std::regex::optimize
+            );
+
+            // Get comments from the level
             auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", xblazeapi::buildBodyString({
                 { "levelID", utils::numToString(levelID) },
                 { "page", "0" },
@@ -302,29 +323,6 @@ bool MentionManager::isSelfMention(const std::string& str) {
         return false;
     }
     return ownAccID == otherAccID.unwrap();
-}
-
-void MentionManager::updateAliases() {
-    std::vector<std::string> aliases;
-    if (Mod::get()->getSettingValue<bool>("enable-everyone")) {
-        aliases.push_back("@everyone");
-    }
-
-    auto setting = getListSetting("aliases");
-    for (const auto& alias : setting) {
-        if (string::contains(alias, "everyone")) continue; // ignore any @everyone's directly in the aliases setting
-        aliases.push_back(alias);
-    }
-
-    m_aliasRegex = std::regex(
-        fmt::format(
-            "\\b{}(?:{})\\b",
-            Mod::get()->getSettingValue<bool>("require-at") ? "@" : "",
-            string::join(aliases, "|")
-        ),
-        Mod::get()->getSettingValue<bool>("case-sensitive") ?
-            std::regex::optimize : std::regex::icase | std::regex::optimize
-    );
 }
 
 bool MentionManager::isPrevious(const CommentObject& obj) {

@@ -80,7 +80,6 @@ private:
 
     inline bool containsMention(const std::string& str);
     bool isSelfMention(const std::string& str);
-    void updateAliases();
 
     bool isPrevious(const CommentObject& obj);
     void storePrevious(const CommentObject& obj);
