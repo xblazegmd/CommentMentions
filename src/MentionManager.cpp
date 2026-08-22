@@ -179,10 +179,19 @@ arc::Future<> MentionManager::commentWatcher() {
             }));
             if (res.isErr()) {
                 // Verify it's not an internet issue
-                if (!co_await xblazeapi::doWeHaveInternet()) {
+                bool internet;
+                if (Mod::get()->getSettingValue<bool>("internal-internet-check")) {
+                    internet = co_await async::waitForMainThread([] {
+                        return GameToolbox::doWeHaveInternet();
+                    });
+                } else {
+                    internet = co_await xblazeapi::doWeHaveInternet();
+                }
+
+                if (!internet) {
                     log::error("No internet connection!");
-                    notifyError("CommentMentions: No internet connection!\nPlease verify your internet connection");
                     co_await pauseUntilWeHaveInternet();
+                    log::info("Back online ;)");
                     continue;
                 }
 

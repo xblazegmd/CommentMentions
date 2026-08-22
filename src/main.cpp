@@ -71,16 +71,22 @@ $on_game(Loaded) {
 
     async::spawn([] -> arc::Future<> {
         // Internet check
-        if (!co_await xblazeapi::doWeHaveInternet()) {
+        bool connected;
+        if (Mod::get()->getSettingValue<bool>("internal-internet-check")) {
+            connected = co_await async::waitForMainThread([] {
+                return GameToolbox::doWeHaveInternet();
+            });
+        } else {
+            connected = co_await xblazeapi::doWeHaveInternet();
+        }
+
+        if (!connected) {
             log::error("No internet connection!");
-            notifyError("CommentMentions: No internet connection!\nPlease verify your internet connection");
 
             co_await pauseUntilWeHaveInternet(); // Wait until we have internet
 
             // Continue like usual
-            geode::queueInMainThread([] {
-                Notification::create("CommentMentions: Back online ;)", NotificationIcon::Success)->show();
-            });
+            log::error("Back online ;)");
         }
 
         auto mentionManager = MentionManager::get();

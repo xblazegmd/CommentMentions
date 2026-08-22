@@ -177,6 +177,12 @@
 			"description": "Ignore mentions when <co>you're the one that mentioned yourself</c>",
 			"default": true
 		},
+		"internal-internet-check": {
+			"type": "bool",
+			"name": "Use Internal Internet Check",
+			"description": "Use <cy>GameToolbox::doWeHaveInternet</c> to check for an internet connetion instead of a web request. Reliable but annoying because of the 'No Internet Connection' error popup\n\n<cb>Only works on mobile devices. Doesn't get used when trying to check if the connection is back online (to not have a million popups appear every second)</c>",
+			"default": false
+		},
 		"show-errors": {
 			"type": "bool",
 			"name": "Show Error Notifications",
