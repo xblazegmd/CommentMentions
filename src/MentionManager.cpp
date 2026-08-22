@@ -137,6 +137,10 @@ void MentionManager::disableEventID() {
     );
 }
 
+std::deque<CommentObject> MentionManager::getPreviousMentions() const {
+    return m_previousMentions;
+}
+
 arc::Future<> MentionManager::commentWatcher() {
     while (true) {
         // ugly as heck but whatever

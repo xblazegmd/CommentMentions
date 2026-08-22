@@ -61,6 +61,8 @@ public:
     void disableDailyID();
     void disableWeeklyID();
     void disableEventID();
+
+    std::deque<CommentObject> getPreviousMentions() const;
 private:
     arc::Mutex<std::optional<int>> m_dailyID;
     arc::Mutex<std::optional<int>> m_weeklyID;
