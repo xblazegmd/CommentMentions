@@ -3,4 +3,4 @@
 
 #include <string>
 
-bool isInapropriate(const std::string& comment);
+bool isInappropriate(const std::string& comment);

@@ -353,7 +353,7 @@ void MentionManager::storePrevious(const CommentObject& obj) {
 }
 
 inline bool MentionManager::isCommentInappropriate(const std::string& comment) {
-    return Mod::get()->getSettingValue<bool>("hide-inapropriate-comments") && isInapropriate(comment);
+    return Mod::get()->getSettingValue<bool>("hide-inappropriate-comments") && isInappropriate(comment);
 }
 
 bool MentionManager::isBlacklisted(const std::string& username) {
