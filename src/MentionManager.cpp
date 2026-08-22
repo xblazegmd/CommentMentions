@@ -49,7 +49,7 @@ void MentionManager::save() {
 arc::Future<> MentionManager::fetchDailyID() {
     auto levelID = co_await getSpecialID(LevelType::Daily);
     if (levelID.isErr()) {
-        notifyError(fmt::format("CommentMentions: Could not get daily level's ID: {}", levelID.unwrapErr()));
+        log::error("CommentMentions: Could not get daily level's ID: {}", levelID.unwrapErr());
         co_return;
     }
     auto lock = co_await m_dailyID.lock();
@@ -59,7 +59,7 @@ arc::Future<> MentionManager::fetchDailyID() {
 arc::Future<> MentionManager::fetchWeeklyID() {
     auto levelID = co_await getSpecialID(LevelType::Weekly);
     if (levelID.isErr()) {
-        notifyError(fmt::format("CommentMentions: Could not get weekly level's ID: {}", levelID.unwrapErr()));
+        log::error("CommentMentions: Could not get weekly level's ID: {}", levelID.unwrapErr());
         co_return;
     }
     auto lock = co_await m_weeklyID.lock();
@@ -69,7 +69,7 @@ arc::Future<> MentionManager::fetchWeeklyID() {
 arc::Future<> MentionManager::fetchEventID() {
     auto levelID = co_await getSpecialID(LevelType::Event);
     if (levelID.isErr()) {
-        notifyError(fmt::format("CommentMentions: Could not get event level's ID: {}", levelID.unwrapErr()));
+        log::error("CommentMentions: Could not get event level's ID: {}", levelID.unwrapErr());
         co_return;
     }
     auto lock = co_await m_eventID.lock();
@@ -199,13 +199,11 @@ arc::Future<> MentionManager::commentWatcher() {
                 auto err = res.unwrapErr();
                 if (err == 429) {
                     log::error("Rate limited :(");
-                    notifyError("CommentMentions: Rate limited by the GD servers!\nPlease try again later");
+                    log::info("Please restart your game once the rate limit ends");
                     co_return; // Exit early since there's no point in doing anything atp
                 }
 
-                std::string msg = fmt::format("CommentMentions: Failed to fetch comments: {}", res.unwrapErr());
-                log::error("{}", msg);
-                notifyError(msg);
+                log::error("Failed to fetch comments: {}", res.unwrapErr());
                 continue;
             }
             log::debug("{}", res.unwrap());
@@ -332,10 +330,10 @@ void MentionManager::updateAliases() {
 bool MentionManager::isPrevious(const CommentObject& obj) {
     auto ownMessageID = obj.comment.find("messageID");
     if (ownMessageID == obj.comment.end()) {
-        notifyError("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer (include the game logs)");
+        xblazeapi::quickErrorNotificationTS("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer and include the game logs for more info");
 
         log::error("Could not find 'messageID' in mention (THIS SHOULD BE UNREACHABLE)");
-        log::info("PLEASE REPORT THIS BUG");
+        log::info("PLEASE REPORT THIS BUG TO THE COMMENTMENTIONS DEVELOPER");
         return false;
     }
 

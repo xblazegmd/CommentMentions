@@ -182,17 +182,6 @@
 			"name": "Use Internal Internet Check",
 			"description": "Use <cy>GameToolbox::doWeHaveInternet</c> to check for an internet connetion instead of a web request. Reliable but annoying because of the 'No Internet Connection' error popup\n\n<cb>Only works on mobile devices. Doesn't get used when trying to check if the connection is back online (to not have a million popups appear every second)</c>",
 			"default": false
-		},
-		"show-errors": {
-			"type": "bool",
-			"name": "Show Error Notifications",
-			"description": "In the case a <cr>request fails</c> or any other <co>error</c> occurs, a <cl>notification</c> will appear notifying the error\n\nUseful for catching errors but can be annoying",
-			"default": true
-		},
-		"show-errors-while-playing": {
-			"type": "bool",
-			"name": "Show Errors While Playing",
-			"default": false
 		}
 	}
 }

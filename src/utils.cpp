@@ -22,12 +22,6 @@ utils::StringMap<std::string> formatKV(
     return ret;
 }
 
-void notifyError(const std::string& msg) {
-    if (!Mod::get()->getSettingValue<bool>("show-errors")) return;
-    if (PlayLayer::get() && !Mod::get()->getSettingValue<bool>("show-errors-while-playing")) return;
-    xblazeapi::quickErrorNotificationTS(msg);
-}
-
 std::vector<std::string> getListSetting(const std::string& setting) {
     auto value = Mod::get()->getSettingValue<std::string>(setting);
     auto split = string::split(value, ",");

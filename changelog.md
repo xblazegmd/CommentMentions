@@ -1,6 +1,8 @@
 # CommentMentions
 ## v1.0.0-beta.10
 - <cg>Update</c> Xblaze's Geode API to <cl>v2.1.0</c>
+- <cr>Remove</c> most of the annoying error notifications and remove the setting to disable them
+    - <c-a6a6a6>*the ones that do appear are urgent enough for you to need to be notified*</c>
 
 ## v1.0.0-beta.9
 - <cg>Add</c> check for rate limits
