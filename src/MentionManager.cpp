@@ -2,6 +2,7 @@
 
 #include <utils.hpp>
 #include <filtering.hpp>
+#include <CommentObject.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/ui/Notification.hpp>
@@ -236,11 +237,11 @@ arc::Future<> MentionManager::commentWatcher() {
             // Split comment objects
             auto comments = string::split(res.unwrap(), "|");
             for (const auto& comment : comments) {
-                auto obj = formatCommentObj(comment); // Format object
+                auto obj = CommentObject::fromString(comment); // Format object
 
-                log::debug("Encoded: {}", obj.comment["comment"]);
+                log::debug("Encoded: {}", obj.commentt);
 
-                auto s = base64::decodeString(obj.comment["comment"], base64::Base64Variant::Url);
+                auto s = base64::decodeString(obj.commentt, base64::Base64Variant::Url);
                 if (s.isErr()) {
                     log::error("Could not decode comment: {}", s.unwrapErr());
                     continue;
@@ -252,16 +253,16 @@ arc::Future<> MentionManager::commentWatcher() {
                 if (containsMention(string)) {
                     // The sea of checks
                     if (isPrevious(obj)) continue;
-                    if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.author["accountID"]))
+                    if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.accountID))
                         continue;
-                    if (isBlacklisted(obj.author["userName"])) continue;
+                    if (isBlacklisted(obj.username)) continue;
                     if (isCommentInappropriate(string)) {
                         log::info("Inappropriate comment: {}", string);
                         continue;
                     }
 
-                    obj.comment["comment"] = std::move(string);
-                    log::info("Queued mention by {}: {}", obj.author["userName"], obj.comment["comment"]);
+                    obj.commentt = std::move(string);
+                    log::info("Queued mention by {}: {}", obj.username, obj.commentt);
                     storePrevious(obj);
                     m_mentions.push_back(obj);
                 }
@@ -287,15 +288,7 @@ arc::Future<> MentionManager::commentWatcher() {
 
 void MentionManager::onMention(const CommentObject& obj) {
     geode::queueInMainThread([this, obj] {
-        auto usrIt = obj.author.find("userName");
-        const std::string username = usrIt == obj.author.end() ?
-            "Someone" : usrIt->second;
-
-        auto commentIt = obj.comment.find("comment");
-        const std::string comment = commentIt == obj.author.end() ?
-            "" : commentIt->second;
-
-        showNotification(fmt::format("{} mentioned you!", username), comment);
+        showNotification(fmt::format("{} mentioned you!", obj.username), obj.commentt);
     });
 }
 
@@ -319,30 +312,15 @@ inline bool MentionManager::containsMention(const std::string& str) {
     return std::regex_search(str, m_aliasRegex);
 }
 
-bool MentionManager::isSelfMention(const std::string& str) {
-    int ownAccID = GJAccountManager::sharedState()->m_accountID;
-    auto otherAccID = utils::numFromString<int>(str);
-    if (otherAccID.isErr()) {
-        log::debug("Could not convert {} to int", str);
-        return false;
-    }
-    return ownAccID == otherAccID.unwrap();
+inline bool MentionManager::isSelfMention(int accountID) {
+    return GJAccountManager::sharedState()->m_accountID == accountID;
 }
 
 bool MentionManager::isPrevious(const CommentObject& obj) {
-    auto ownMessageID = obj.comment.find("messageID");
-    if (ownMessageID == obj.comment.end()) {
-        xblazeapi::quickErrorNotificationTS("CommentMentions: An unexpected issue occured\nPlease report this issue to the developer and include the game logs for more info");
-
-        log::error("Could not find 'messageID' in mention (THIS SHOULD BE UNREACHABLE)");
-        log::info("PLEASE REPORT THIS BUG TO THE COMMENTMENTIONS DEVELOPER");
-        return false;
-    }
-
     for (auto& mention : m_previousMentions) {
-        auto messageID = mention.comment["messageID"];
-        if (messageID == ownMessageID->second) {
-            log::debug("Mention under messageID {} was previously detected, skipping", ownMessageID->second);
+        auto messageID = mention.messageID;
+        if (messageID == obj.messageID) {
+            log::debug("Mention under message ID {} was previously detected, skipping", messageID);
             return true; 
         }
     }
@@ -375,38 +353,4 @@ bool MentionManager::isBlacklisted(const std::string& username) {
 
 std::vector<std::string> MentionManager::getBlacklistedAccounts() {
     return getListSetting("user-blacklist");
-}
-
-CommentObject MentionManager::formatCommentObj(const std::string& str) {
-    auto split = string::split(str, ":");
-    // Commented out in case I need them again
-    // log::debug("{}", split[0]);
-    // log::debug("{}", split[1]);
-
-    CommentObject ret;
-    ret.comment = formatKV(split[0], {
-        { "1", "levelID" },
-        { "2", "comment" },
-        { "3", "authorPlayerID" },
-        { "4", "likes" },
-        { "5", "dislikes" },
-        { "6", "messageID" },
-        { "7", "spam" },
-        { "8", "authorAccountID" },
-        { "9", "age" },
-        { "10", "percent" },
-        { "11", "modBadge" },
-        { "12", "moderatorChatColor" },
-    }, "~");
-    ret.author = formatKV(split[1], {
-        { "1", "userName" },
-        { "9", "icon" },
-        { "10", "playerColor" },
-        { "11", "playerColor2" },
-        { "14", "iconType" },
-        { "15", "glow" },
-        { "16", "accountID" },
-    }, "~");
-
-    return ret;
 }
