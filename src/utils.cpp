@@ -45,7 +45,7 @@ arc::Future<Result<int>> getSpecialID(LevelType type) {
 
     auto daily = string::split(string::split(res.unwrap(), "#")[0], "|")[0];
     auto dailyID = formatKV(daily, {{"1", "daily"}})["daily"];
-    auto intDailyID = utils::numFromString<int>(dailyID);
+    auto intDailyID = stoicm(dailyID);
 
     if (intDailyID.isErr()) {
         co_return Err(intDailyID.unwrapErr());
