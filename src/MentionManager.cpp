@@ -87,7 +87,7 @@ arc::Future<> MentionManager::loadCustomIDs() {
     auto ids = string::split(customIDs, ",");
 
     for (const auto& id : ids) {
-        auto idNum = utils::numFromString<int>(string::trim(id));
+        auto idNum = stoicm(string::trim(id));
         if (idNum.isErr()) {
             log::error("Error converting ID {} to number: {}", id, idNum.unwrapErr());
             continue;

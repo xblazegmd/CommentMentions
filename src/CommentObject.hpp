@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utils.hpp>
+
 #include <string>
 
 struct CommentObject {
@@ -44,19 +46,19 @@ struct matjson::Serialize<CommentObject> {
                 comment["comment"],
                 comment["age"],
                 author["userName"],
-                geode::utils::numFromString<int>(comment["messageID"]).unwrapOr(-1),
-                geode::utils::numFromString<int>(comment["levelID"]).unwrapOr(-1),
-                geode::utils::numFromString<int>(comment["authorPlayerID"]).unwrapOr(-1),
-                geode::utils::numFromString<int>(author["accountID"]).unwrapOr(-1),
-                geode::utils::numFromString<int>(comment["likes"]).unwrapOr(-1),
-                geode::utils::numFromString<int>(comment["percent"]).unwrapOr(-1),
-                geode::utils::numFromString<int>(comment["modBadge"]).unwrapOr(-1),
-                geode::utils::numFromString<int>(author["icon"]).unwrapOr(1),
-                geode::utils::numFromString<int>(author["color1"]).unwrapOr(0),
-                geode::utils::numFromString<int>(author["color2"]).unwrapOr(3),
-                geode::utils::numFromString<int>(author["iconType"]).unwrapOr(0),
-                static_cast<bool>(geode::utils::numFromString<int>(comment["spam"]).unwrapOr(0)),
-                static_cast<bool>(geode::utils::numFromString<int>(author["glow"]).unwrapOr(0)),
+                stoicm(comment["messageID"], -1),
+                stoicm(comment["levelID"], -1),
+                stoicm(comment["authorPlayerID"], -1),
+                stoicm(author["accountID"], -1),
+                stoicm(comment["likes"], -1),
+                stoicm(comment["percent"], -1),
+                stoicm(comment["modBadge"], -1),
+                stoicm(author["icon"], 1),
+                stoicm(author["color1"], 0),
+                stoicm(author["color2"], 3),
+                stoicm(author["iconType"], 0),
+                static_cast<bool>(stoicm(comment["spam"], 0)),
+                static_cast<bool>(stoicm(author["glow"], 0)),
             });
         }
 
