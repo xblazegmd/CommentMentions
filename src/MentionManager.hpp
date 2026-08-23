@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utils.hpp>
+#include <CommentObject.hpp>
 
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>
@@ -14,27 +15,6 @@
 #include <regex>
 #include <string>
 #include <vector>
-
-struct CommentObject {
-    geode::utils::StringMap<std::string> comment;
-    geode::utils::StringMap<std::string> author;
-};
-
-template <>
-struct matjson::Serialize<CommentObject> {
-    static geode::Result<CommentObject> fromJson(const matjson::Value& val) {
-        GEODE_UNWRAP_INTO(auto comment, val["comment"].as<geode::utils::StringMap<std::string>>());
-        GEODE_UNWRAP_INTO(auto author, val["author"].as<geode::utils::StringMap<std::string>>());
-        return geode::Ok(CommentObject{comment, author});
-    }
-
-    static matjson::Value toJson(const CommentObject& obj) {
-        auto val = matjson::Value();
-        val["comment"] = obj.comment;
-        val["author"] = obj.author;
-        return val;
-    }
-};
 
 class MentionManager {
 public:
@@ -81,7 +61,7 @@ private:
     void showNotification(const std::string& title, const std::string& msg);
 
     inline bool containsMention(const std::string& str);
-    bool isSelfMention(const std::string& str);
+    inline bool isSelfMention(int accountID);
 
     bool isPrevious(const CommentObject& obj);
     void storePrevious(const CommentObject& obj);
@@ -90,6 +70,4 @@ private:
     bool isBlacklisted(const std::string& username);
 
     std::vector<std::string> getBlacklistedAccounts();
-
-    CommentObject formatCommentObj(const std::string& str);
 };
