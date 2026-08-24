@@ -52,7 +52,7 @@ bool MentionHistoryPopup::init() {
 
     // Borders
     auto borders = ListBorders::create();
-    borders->setContentSize(m_listSize);
+    borders->setContentSize(ccp(m_listSize.width, m_listSize.height + 4));
     listContainer->addChildAtPosition(borders, Anchor::Center);
 
     m_mainLayer->addChildAtPosition(listContainer, Anchor::Center, {0, -3});
