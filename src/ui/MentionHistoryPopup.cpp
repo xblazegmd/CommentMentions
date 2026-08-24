@@ -26,7 +26,7 @@ bool MentionHistoryPopup::init() {
     m_buttonMenu->updateLayout();
 
     // List
-    auto listContainer = CCNode::create();
+    auto listContainer = CCLayerColor::create(to4B(m_color1));
     listContainer->setContentSize(m_listSize);
     listContainer->setAnchorPoint({.5f, .5f});
     listContainer->setID("mentions-list"_spr);
