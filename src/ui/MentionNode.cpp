@@ -12,6 +12,8 @@
 #include <Geode/utils/general.hpp>
 #include <Geode/binding/SimplePlayer.hpp>
 #include <Geode/binding/ButtonSprite.hpp>
+#include <Geode/binding/ProfilePage.hpp>
+#include <Geode/binding/LevelBrowserLayer.hpp>
 
 using namespace geode::prelude;
 
@@ -32,6 +34,7 @@ void MentionNode::setBGColor(ccColor3B color) {
 bool MentionNode::init(const CommentObject& obj, float width) {
     if (!CCNode::init()) return false;
     this->setContentSize({width, 50});
+    m_obj = obj;
 
     // Background
     m_bg = CCLayerColor::create({0, 0, 0, 255});
@@ -43,11 +46,11 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     // Player Icon
     auto gameManager = GameManager::get();
 
-    auto icon = SimplePlayer::create(obj.iconID);
-    icon->updatePlayerFrame(obj.iconID, static_cast<IconType>(obj.iconType));
-    icon->setColors(gameManager->colorForIdx(obj.color1), gameManager->colorForIdx(obj.color2));
-    icon->setGlowOutline(gameManager->colorForIdx(obj.color3));
-    if (!obj.glow) icon->disableGlowOutline();
+    auto icon = SimplePlayer::create(m_obj.iconID);
+    icon->updatePlayerFrame(m_obj.iconID, static_cast<IconType>(m_obj.iconType));
+    icon->setColors(gameManager->colorForIdx(m_obj.color1), gameManager->colorForIdx(m_obj.color2));
+    icon->setGlowOutline(gameManager->colorForIdx(m_obj.color3));
+    if (!m_obj.glow) icon->disableGlowOutline();
 
     icon->setAnchorPoint({0, .5f});
     this->addChildAtPosition(icon, Anchor::Left, {40, 0});
@@ -65,12 +68,19 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     );
 
     // Username
-    auto username = Label::create(obj.username, "bigFont.fnt"); // trying out geode::Label for this one
+    auto username = Button::createWithLabel(m_obj.username, "bigFont.fnt", [this](Button*) {
+        bool ownProfile = GJAccountManager::get()->m_accountID == m_obj.accountID;
+        ProfilePage::create(m_obj.accountID, ownProfile)->show();
+    });
     username->setScale(.6f);
     labels->addChild(username);
 
     // Level ID
-    auto levelID = Label::create(fmt::format("Level: {}", obj.levelID), "goldFont.fnt");
+    auto levelID = Button::createWithLabel(fmt::format("Level: {}", m_obj.levelID), "goldFont.fnt", [this](Button*) {
+        auto searchObject = GJSearchObject::create(SearchType::Type19, fmt::format("{}&gameVersion=22", m_obj.levelID));
+        auto scene = LevelBrowserLayer::scene(searchObject);
+        CCDirector::get()->replaceScene(CCTransitionFade::create(.5f, scene));
+    });
     levelID->setScale(.5f);
     labels->addChild(levelID);
 
@@ -80,10 +90,10 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     // "View" button
     auto btnSpr = ButtonSprite::create("View");
     btnSpr->setScale(.8f);
-    auto btn = Button::createWithNode(btnSpr, [obj](Button*) {
+    auto btn = Button::createWithNode(btnSpr, [this](Button*) {
         FLAlertLayer::create(
-            fmt::format("@{}", obj.username).c_str(),
-            obj.commentt.c_str(),
+            fmt::format("@{}", m_obj.username).c_str(),
+            m_obj.commentt.c_str(),
             "OK"
         )->show();
     });
