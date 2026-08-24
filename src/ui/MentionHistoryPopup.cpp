@@ -1,4 +1,5 @@
 #include "MentionHistoryPopup.hpp"
+#include "Geode/ui/Scrollbar.hpp"
 
 #include <Geode/Geode.hpp>
 #include <Geode/ui/Popup.hpp>
@@ -31,10 +32,10 @@ bool MentionHistoryPopup::init() {
     listContainer->setID("mentions-list"_spr);
 
     // Scroll Layer
-    m_list = ScrollLayer::create(m_listSize);
-    m_list->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout(0.f));
-    m_list->setTouchEnabled(true);
-    listContainer->addChildAtPosition(m_list, Anchor::BottomLeft);
+    auto list = ScrollLayer::create(m_listSize);
+    list->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout(0.f));
+    list->setTouchEnabled(true);
+    listContainer->addChildAtPosition(list, Anchor::BottomLeft);
 
     auto mentions = MentionManager::get()->getPreviousMentions();
 
@@ -44,10 +45,10 @@ bool MentionHistoryPopup::init() {
         auto node = MentionNode::create(*it, m_listSize.width);
         node->setBGColor(bg ? m_color1 : m_color2);
         bg = !bg;
-        m_list->m_contentLayer->addChild(node);
+        list->m_contentLayer->addChild(node);
     }
-    m_list->m_contentLayer->updateLayout();
-    m_list->moveToTop();
+    list->m_contentLayer->updateLayout();
+    list->moveToTop();
 
     // Borders
     auto borders = ListBorders::create();
@@ -55,6 +56,13 @@ bool MentionHistoryPopup::init() {
     listContainer->addChildAtPosition(borders, Anchor::Center);
 
     m_mainLayer->addChildAtPosition(listContainer, Anchor::Center, {0, -3});
+
+    // Scrollbar
+    auto scrollbar = Scrollbar::create(list);
+    m_mainLayer->addChildAtPosition(
+        scrollbar, Anchor::Center,
+        ccp(listContainer->getContentWidth() / 2 + 10, -3)
+    );
 
     return true;
 }

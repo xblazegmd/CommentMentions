@@ -18,8 +18,6 @@ public:
         return nullptr;
     }
 private:
-    geode::ScrollLayer* m_list;
-
     const cocos2d::CCSize m_listSize = {340, 196};
     const cocos2d::ccColor3B m_color1 = {191, 114, 62};
     const cocos2d::ccColor3B m_color2 = {161, 88, 44};
