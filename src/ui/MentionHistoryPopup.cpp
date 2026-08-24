@@ -13,9 +13,11 @@
 
 using namespace geode::prelude;
 
-bool MentionHistoryPopup::init() {
+bool MentionHistoryPopup::init(ProfilePage* profilePage) {
     if (!Popup::init(440.f, 290.f)) return false;
     m_noElasticity = true;
+    m_profilePage = profilePage;
+    m_profilePage->setVisible(false);
 
     // Title
     this->setTitle("Mentions", "bigFont.fnt", .8f);
@@ -65,4 +67,9 @@ bool MentionHistoryPopup::init() {
     );
 
     return true;
+}
+
+void MentionHistoryPopup::onClose(CCObject* sender) {
+    Popup::onClose(sender);
+    m_profilePage->setVisible(true);
 }

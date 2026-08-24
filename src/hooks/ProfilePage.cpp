@@ -29,6 +29,6 @@ class $modify(PPHook, ProfilePage) {
     }
 
     void onMentions(CCObject*) {
-        MentionHistoryPopup::create()->show();
+        MentionHistoryPopup::create(this)->show();
     }
 };
