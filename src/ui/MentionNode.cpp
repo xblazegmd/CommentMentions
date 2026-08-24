@@ -1,12 +1,17 @@
 #include "MentionNode.hpp"
 
+#include <MentionManager.hpp>
+
 #include <Geode/Geode.hpp>
 #include <Geode/Enums.hpp>
+
 #include <Geode/ui/Layout.hpp>
+#include <Geode/ui/Label.hpp>
+#include <Geode/ui/Button.hpp>
+
 #include <Geode/utils/general.hpp>
 #include <Geode/binding/SimplePlayer.hpp>
-
-#include <MentionManager.hpp>
+#include <Geode/binding/ButtonSprite.hpp>
 
 using namespace geode::prelude;
 
@@ -26,7 +31,7 @@ void MentionNode::setBGColor(ccColor3B color) {
 
 bool MentionNode::init(const CommentObject& obj, float width) {
     if (!CCNode::init()) return false;
-    this->setContentSize({width, 45});
+    this->setContentSize({width, 60});
 
     // Background
     m_bg = CCLayerColor::create({0, 0, 0, 255});
@@ -35,38 +40,54 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     m_bg->setAnchorPoint({.5f, .5f});
     this->addChildAtPosition(m_bg, Anchor::Center);
 
-    // Main layer
-    auto mainLayer = CCLayer::create();
-    mainLayer->setLayout(
-        RowLayout::create()
+    // Player Icon
+    auto gameManager = GameManager::get();
+
+    auto icon = SimplePlayer::create(obj.iconID);
+    icon->updatePlayerFrame(obj.iconID, static_cast<IconType>(obj.iconType));
+    icon->setColors(gameManager->colorForIdx(obj.color1), gameManager->colorForIdx(obj.color2));
+    icon->setGlowOutline(gameManager->colorForIdx(obj.color3));
+    if (!obj.glow) icon->disableGlowOutline();
+
+    icon->setAnchorPoint({0, .5f});
+    this->addChildAtPosition(icon, Anchor::Left, {40, 0});
+
+    // Labels
+    auto labels = CCLayer::create();
+    labels->setID("labels");
+    labels->setAnchorPoint({0, .5f});
+    labels->setLayout(
+        ColumnLayout::create()
+            ->setAxisReverse(true)
             ->setAutoScale(false)
-            ->setGap(25)
+            ->setCrossAxisLineAlignment(AxisAlignment::Start)
+            ->setGap(0)
     );
 
-    // Player Icon
-    // All of this mess is temporary while I make CommentObject store this data more nicely
-    int iconID = utils::numFromString<int>(obj.author.at("icon")).unwrapOr(1);
-    auto type = utils::numFromString<int>(obj.author.at("iconType")).unwrapOr(1);
-    IconType iconType = static_cast<IconType>(type);
-    int colorA = utils::numFromString<int>(obj.author.at("playerColor")).unwrapOr(1);
-    int colorB = utils::numFromString<int>(obj.author.at("playerColor2")).unwrapOr(1);
-    int glow = utils::numFromString<int>(obj.author.at("glow")).unwrapOr(1);
+    // Username
+    auto username = Label::create(obj.username, "bigFont.fnt"); // trying out geode::Label for this one
+    username->setScale(.6f);
+    labels->addChild(username);
 
-    auto icon = SimplePlayer::create(iconID);
-    icon->updatePlayerFrame(iconID, iconType);
-    icon->setColors(GameManager::get()->colorForIdx(colorA), GameManager::get()->colorForIdx(colorB));
-    icon->setGlowOutline(GameManager::get()->colorForIdx(colorB));
+    // Level ID
+    auto levelID = Label::create(fmt::format("Level: {}", obj.levelID), "goldFont.fnt");
+    levelID->setScale(.5f);
+    labels->addChild(levelID);
 
-    if (!glow) icon->disableGlowOutline();
+    labels->updateLayout();
+    this->addChildAtPosition(labels, Anchor::Left, {70, 0});
 
-    mainLayer->addChild(icon);
+    // "View" button
+    auto btnSpr = ButtonSprite::create("View");
+    btnSpr->setScale(.8f);
+    auto btn = Button::createWithNode(btnSpr, [obj](Button*) {
+        FLAlertLayer::create(
+            fmt::format("@{}", obj.username).c_str(),
+            obj.commentt.c_str(),
+            "OK"
+        )->show();
+    });
+    this->addChildAtPosition(btn, Anchor::Right, {-50, 0});
 
-    // Username label
-    auto username = CCLabelBMFont::create(obj.author.at("userName").c_str(), "bigFont.fnt");
-    username->setScale(.8f);
-    mainLayer->addChild(username);
-
-    mainLayer->updateLayout();
-    this->addChildAtPosition(mainLayer, Anchor::Center);
     return true;
 }

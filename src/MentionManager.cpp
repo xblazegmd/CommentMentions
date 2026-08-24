@@ -262,6 +262,7 @@ arc::Future<> MentionManager::commentWatcher() {
                     }
 
                     obj.commentt = std::move(string);
+                    obj.levelID = levelID;
                     log::info("Queued mention by {}: {}", obj.username, obj.commentt);
                     storePrevious(obj);
                     m_mentions.push_back(obj);
