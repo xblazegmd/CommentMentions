@@ -25,22 +25,16 @@ bool MentionHistoryPopup::init() {
     m_buttonMenu->updateLayout();
 
     // List
-    m_mainLayer->addChildAtPosition(this->createList(), Anchor::Center, {0, -3});
-
-    return true;
-}
-
-CCNode* MentionHistoryPopup::createList() {
-    auto ret = CCNode::create();
-    ret->setContentSize(m_listSize);
-    ret->setAnchorPoint({.5f, .5f});
-    ret->setID("mentions-list"_spr);
+    auto listContainer = CCNode::create();
+    listContainer->setContentSize(m_listSize);
+    listContainer->setAnchorPoint({.5f, .5f});
+    listContainer->setID("mentions-list"_spr);
 
     // Scroll Layer
     m_list = ScrollLayer::create(m_listSize);
     m_list->m_contentLayer->setLayout(ScrollLayer::createDefaultListLayout(0.f));
     m_list->setTouchEnabled(true);
-    ret->addChildAtPosition(m_list, Anchor::BottomLeft);
+    listContainer->addChildAtPosition(m_list, Anchor::BottomLeft);
 
     auto mentions = MentionManager::get()->getPreviousMentions();
 
@@ -58,7 +52,9 @@ CCNode* MentionHistoryPopup::createList() {
     // Borders
     auto borders = ListBorders::create();
     borders->setContentSize(m_listSize);
-    ret->addChildAtPosition(borders, Anchor::Center);
+    listContainer->addChildAtPosition(borders, Anchor::Center);
 
-    return ret;
+    m_mainLayer->addChildAtPosition(listContainer, Anchor::Center, {0, -3});
+
+    return true;
 }

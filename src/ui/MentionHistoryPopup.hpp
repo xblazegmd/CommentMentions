@@ -25,5 +25,4 @@ private:
     const cocos2d::ccColor3B m_color2 = {161, 88, 44};
 
     bool init();
-    CCNode* createList();
 };
