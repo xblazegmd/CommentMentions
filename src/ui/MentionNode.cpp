@@ -31,7 +31,7 @@ void MentionNode::setBGColor(ccColor3B color) {
 
 bool MentionNode::init(const CommentObject& obj, float width) {
     if (!CCNode::init()) return false;
-    this->setContentSize({width, 60});
+    this->setContentSize({width, 50});
 
     // Background
     m_bg = CCLayerColor::create({0, 0, 0, 255});
