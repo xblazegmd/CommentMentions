@@ -20,10 +20,15 @@ public:
     }
 private:
     ProfilePage* m_profilePage;
+    geode::ScrollLayer* m_list;
+
     const cocos2d::CCSize m_listSize = {340, 196};
     const cocos2d::ccColor3B m_color1 = {191, 114, 62};
     const cocos2d::ccColor3B m_color2 = {161, 88, 44};
 
     bool init(ProfilePage* profilePage);
     void onClose(cocos2d::CCObject* sender);
+
+    void populateList();
+    void onRefresh(cocos2d::CCObject*);
 };
