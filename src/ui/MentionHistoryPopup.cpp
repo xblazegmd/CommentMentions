@@ -79,7 +79,7 @@ void MentionHistoryPopup::populateList() {
     bool bg = false;
     for (auto it = mentions.rbegin(); it != mentions.rend(); ++it) {
         auto node = MentionNode::create(*it, m_listSize.width);
-        node->setBGColor(bg ? m_color1 : m_color2);
+        node->setBGColor(bg);
         bg = !bg;
         m_list->m_contentLayer->addChild(node);
     }

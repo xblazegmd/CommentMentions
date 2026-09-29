@@ -28,8 +28,8 @@ MentionNode* MentionNode::create(const CommentObject &obj, float width) {
     return nullptr;
 }
 
-void MentionNode::setBGColor(ccColor3B color) {
-    m_bg->setColor(color);
+void MentionNode::setBGColor(bool color1) {
+    m_bg->setColor(color1 ? ccc3(191, 114, 62) : ccc3(161, 88, 44));
 }
 
 bool MentionNode::init(const CommentObject& obj, float width) {

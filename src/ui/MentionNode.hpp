@@ -7,7 +7,7 @@ class MentionNode : public cocos2d::CCNode {
 public:
     static MentionNode* create(const CommentObject& obj, float width);
 
-    void setBGColor(cocos2d::ccColor3B color);
+    void setBGColor(bool color1);
 private:
     CommentObject m_obj;
     cocos2d::CCLayerColor* m_bg;
