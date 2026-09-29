@@ -34,7 +34,7 @@ void MentionNode::setBGColor(bool color1) {
 
 bool MentionNode::init(const CommentObject& obj, float width) {
     if (!CCNode::init()) return false;
-    this->setContentSize({width, 50});
+    this->setContentSize({width, 40});
     m_obj = obj;
 
     // Background
@@ -54,6 +54,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     if (!m_obj.glow) icon->disableGlowOutline();
 
     icon->setAnchorPoint({0, .5f});
+    icon->setScale(.8f);
     this->addChildAtPosition(icon, Anchor::Left, {40, 0});
 
     // Labels
@@ -65,7 +66,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
             ->setAxisReverse(true)
             ->setAutoScale(false)
             ->setCrossAxisLineAlignment(AxisAlignment::Start)
-            ->setGap(0)
+            ->setGap(1)
     );
 
     // Username
@@ -73,24 +74,22 @@ bool MentionNode::init(const CommentObject& obj, float width) {
         bool ownProfile = GJAccountManager::get()->m_accountID == m_obj.accountID;
         ProfilePage::create(m_obj.accountID, ownProfile)->show();
     });
-    username->setScale(.6f);
+    username->setScale(.5f);
     labels->addChild(username);
 
-    // Level ID
-    auto levelID = Button::createWithLabel(fmt::format("Level: {}", m_obj.levelID), "goldFont.fnt", [this](Button*) {
-        auto searchObject = GJSearchObject::create(SearchType::Type19, fmt::format("{}&gameVersion=22", m_obj.levelID));
-        auto scene = LevelBrowserLayer::scene(searchObject);
-        CCDirector::get()->replaceScene(CCTransitionFade::create(.5f, scene));
-    });
-    levelID->setScale(.5f);
-    labels->addChild(levelID);
+    // Mention preview
+    auto preview = Label::create(fmt::format("Level: {}", m_obj.levelID), "chatFont.fnt");
+    preview->setScale(.5f);
+    preview->setColor({0, 0, 0});
+    preview->setOpacity(125);
+    labels->addChild(preview);
 
     labels->updateLayout();
-    this->addChildAtPosition(labels, Anchor::Left, {70, 0});
+    this->addChildAtPosition(labels, Anchor::Left, {65, 0});
 
     // "View" button
     auto btnSpr = ButtonSprite::create("View");
-    btnSpr->setScale(.8f);
+    btnSpr->setScale(.7f);
     auto btn = Button::createWithNode(btnSpr, [this](Button*) {
         MentionPopup::create(m_obj)->show();
         // FLAlertLayer::create(
