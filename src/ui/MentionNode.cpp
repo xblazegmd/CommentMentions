@@ -56,11 +56,11 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     icon->setScale(.8f);
     this->addChildAtPosition(icon, Anchor::Left, {30, 0});
 
-    // Labels
-    auto labels = CCLayer::create();
-    labels->setID("labels");
-    labels->setAnchorPoint({0, .5f});
-    labels->setLayout(
+    // Info menu
+    auto infoMenu = CCLayer::create();
+    infoMenu->setID("info-menu");
+    infoMenu->setAnchorPoint({0, .5f});
+    infoMenu->setLayout(
         ColumnLayout::create()
             ->setAxisReverse(true)
             ->setAutoScale(false)
@@ -68,23 +68,48 @@ bool MentionNode::init(const CommentObject& obj, float width) {
             ->setGap(1)
     );
 
+    // Username/Info button menu
+    auto usernameMenu = CCLayer::create();
+    usernameMenu->setID("title-menu");
+    usernameMenu->setAnchorPoint({0, .5f});
+    usernameMenu->setLayout(
+        RowLayout::create()
+            ->setAutoScale(false)
+            ->setAxisAlignment(AxisAlignment::Start)
+    );
+    
     // Username
     auto username = Button::createWithLabel(m_obj.username, "bigFont.fnt", [this](Button*) {
         bool ownProfile = GJAccountManager::get()->m_accountID == m_obj.accountID;
         ProfilePage::create(m_obj.accountID, ownProfile)->show();
     });
     username->setScale(.5f);
-    labels->addChild(username);
+    usernameMenu->addChild(username);
+
+    // Info button
+    auto infoBtn = Button::createWithSpriteFrameName("GJ_infoIcon_001.png", [this](Button*) {
+        FLAlertLayer::create(
+            "Mention Info",
+            fmt::format("<cy>Username:</c> {}\n", m_obj.username) +
+            fmt::format("<co>Level ID:</c> {}", m_obj.levelID),
+            "OK"
+        )->show();
+    });
+    infoBtn->setScale(.5f);
+    usernameMenu->addChild(infoBtn);
+
+    usernameMenu->updateLayout();
+    infoMenu->addChild(usernameMenu);
 
     // Mention preview
     auto preview = Label::create(this->getCommentPreview(), "chatFont.fnt");
     preview->setScale(.6f);
     preview->setColor({0, 0, 0});
     preview->setOpacity(125);
-    labels->addChild(preview);
+    infoMenu->addChild(preview);
 
-    labels->updateLayout();
-    this->addChildAtPosition(labels, Anchor::Left, {55, 0});
+    infoMenu->updateLayout();
+    this->addChildAtPosition(infoMenu, Anchor::Left, {55, 0});
 
     // "View" button
     auto btnSpr = ButtonSprite::create("View");
