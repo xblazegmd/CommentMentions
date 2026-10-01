@@ -1,7 +1,6 @@
 #include "MentionNode.hpp"
 
 #include <MentionManager.hpp>
-#include <ui/MentionPopup.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/Enums.hpp>
