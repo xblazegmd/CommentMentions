@@ -29,6 +29,7 @@ MentionPopup* MentionPopup::create(const CommentObject& obj) {
 bool MentionPopup::init(const CommentObject& obj) {
     if (!Popup::init({340, 200}, "GJ_square02.png")) return false;
     m_obj = obj;
+    m_noElasticity = false;
 
     this->setTitle(fmt::format("Mention from @{}", m_obj.username));
 
