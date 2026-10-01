@@ -43,7 +43,7 @@
 		},
 		"enable-everyone": {
 			"type": "bool",
-			"name": "Notify on @everyone",
+			"name": "Enable @everyone",
 			"description": "Get <cg>notified</c> once someone uses the <cy>@everyone</c> alias",
 			"default": true
 		},
@@ -129,6 +129,13 @@
 			"description": "Filter out any comments that possibly contain <co>spam</c> and/or are flagged as <cr>spam</c> <c-a6a6a6>(so 4+ dislikes)</c>",
 			"default": true
 		},
+		"user-blacklist": {
+			"type": "string",
+			"name": "Hidden Users",
+			"description": "A comma separated <cg>list of usernames</c> by users who you don't want notifications from\n\n<cb>Suggestion by @SeveralLeaf</c>",
+			"default": "",
+			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
+		},
 		"word-blacklist": {
 			"type": "string",
 			"enable-if": "hide-inappropriate-comments",
@@ -145,13 +152,6 @@
 			"name": "Word Whitelist",
 			"description": "A comma separated <cg>list of words</c> that <cr>will not be counted as inappropriate</c> <c-a6a6a6>(if they are even counted as inappropriate)</c>",
 			"default": ""
-		},
-		"user-blacklist": {
-			"type": "string",
-			"name": "User Blacklist",
-			"description": "A comma separated <cg>list of usernames</c> by users who you don't want notifications from\n\n<cb>Suggestion by @SeveralLeaf</c>",
-			"default": "[username goes here]",
-			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
 		"advanced": {
 			"type": "title",

@@ -1,6 +1,7 @@
 # CommentMentions
 ## v1.0.0-beta.11
 - <cg>Add</c> mention history viewer in the profile
+- <cy>Reworked</c> mod settings
 - Few <co>internal changes</c>
 
 ## v1.0.0-beta.10
