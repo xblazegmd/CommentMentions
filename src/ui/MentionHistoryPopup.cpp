@@ -43,6 +43,18 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
     settingsBtn->setScale(.7f);
     m_buttonMenu->addChildAtPosition(settingsBtn, Anchor::TopRight, {-25, -25});
 
+    // Info button
+    auto infoBtn = Button::createWithSpriteFrameName("GJ_infoBtn_001.png", [](Button*) {
+        FLAlertLayer::create(
+            "Mention History",
+            "A list of the last few <cy>mentions</c> you have received\n\n"
+            "<cl>This is a work-in-progress. UI is subject to change. You can suggest changes in CommentMention's GitHub page</c>",
+            "OK"
+        )->show();
+    });
+    infoBtn->setScale(.6f);
+    m_buttonMenu->addChildAtPosition(infoBtn, Anchor::BottomLeft, {30, 28});
+
     // List
     auto listContainer = CCLayerColor::create(to4B(m_color1));
     listContainer->setContentSize(m_listSize);
