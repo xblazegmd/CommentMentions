@@ -8,7 +8,7 @@
 	},
 	"id": "xblazegmd.commentmentions",
 	"name": "CommentMentions",
-	"version": "v1.0.0-beta.10",
+	"version": "v1.0.0-beta.11",
 	"developer": "XblazeGMD",
 	"description": "Get notified everytime someone 'mentions' you",
 	"dependencies": {
