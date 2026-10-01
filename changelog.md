@@ -1,8 +1,11 @@
 # CommentMentions
 ## v1.0.0-beta.11
 - <cg>Add</c> mention history viewer in the profile
-- <cy>Reworked</c> mod settings
-- Few <co>internal changes</c>
+- <cc>Renamed</c> User Blacklist to Hidden Users
+- <co>Reorganized</c> mod settings
+    - "Notify on @everyone"> was renamed to "Use @everyone"
+    - "Word Blacklist"and "Word Whitelist"were renamed to just Blacklist" and "Whitelist" respectively
+- Few <cy>internal changes</c>
 
 ## v1.0.0-beta.10
 - <cg>Update</c> Xblaze's Geode API to <cl>v2.1.0</c>
