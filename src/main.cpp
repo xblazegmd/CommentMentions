@@ -1,4 +1,4 @@
-#include <MentionManager.hpp>
+#include <core/MentionManager.hpp>
 #include <utils.hpp>
 
 #include <Geode/Geode.hpp>

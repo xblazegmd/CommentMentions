@@ -8,7 +8,7 @@
 #include <Geode/binding/GJSearchObject.hpp>
 #include <Geode/binding/LevelBrowserLayer.hpp>
 
-#include <CommentObject.hpp>
+#include <core/CommentObject.hpp>
 #include <utils.hpp>
 
 #include <algorithm>

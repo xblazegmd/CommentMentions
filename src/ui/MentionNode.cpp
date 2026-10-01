@@ -1,6 +1,6 @@
 #include "MentionNode.hpp"
 
-#include <MentionManager.hpp>
+#include <core/MentionManager.hpp>
 #include <ui/MentionPopup.hpp>
 
 #include <Geode/Geode.hpp>

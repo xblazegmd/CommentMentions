@@ -1,7 +1,7 @@
 #pragma once
 
 #include <utils.hpp>
-#include <CommentObject.hpp>
+#include <core/CommentObject.hpp>
 
 #include <Geode/utils/StringMap.hpp>
 #include <Geode/utils/async.hpp>

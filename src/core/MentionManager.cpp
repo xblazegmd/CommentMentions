@@ -1,8 +1,8 @@
 #include "MentionManager.hpp"
 
 #include <utils.hpp>
-#include <filtering.hpp>
-#include <CommentObject.hpp>
+#include <core/filtering.hpp>
+#include <core/CommentObject.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/ui/Notification.hpp>

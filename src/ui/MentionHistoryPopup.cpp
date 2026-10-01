@@ -7,7 +7,7 @@
 #include <Geode/ui/Scrollbar.hpp>
 #include <Geode/ui/Layout.hpp>
 
-#include <MentionManager.hpp>
+#include <core/MentionManager.hpp>
 #include <ui/MentionNode.hpp>
 #include <utils.hpp>
 

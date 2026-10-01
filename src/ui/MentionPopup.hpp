@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Geode/ui/Popup.hpp>
-#include <CommentObject.hpp>
+#include <core/CommentObject.hpp>
 #include <regex>
 
 class MentionPopup : public geode::Popup {

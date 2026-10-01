@@ -3,7 +3,7 @@
 #include <Geode/utils/async.hpp>
 #include <Geode/modify/DailyLevelPage.hpp>
 
-#include <MentionManager.hpp>
+#include <core/MentionManager.hpp>
 
 using namespace geode::prelude;
 
