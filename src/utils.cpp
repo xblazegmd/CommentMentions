@@ -33,6 +33,11 @@ std::vector<std::string> getListSetting(const std::string& setting) {
     return ret;
 }
 
+void setListSetting(const std::string& setting, const std::vector<std::string> value) {
+    auto dat = string::join(value, ", ");
+    Mod::get()->setSettingValue(setting, dat);
+}
+
 arc::Future<Result<int>> getSpecialID(LevelType type) {
     auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", xblazeapi::buildBodyString({
         { "type", utils::numToString(static_cast<int>(type)) },

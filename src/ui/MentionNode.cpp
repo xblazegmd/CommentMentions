@@ -1,6 +1,7 @@
 #include "MentionNode.hpp"
 
 #include <MentionManager.hpp>
+#include <ui/MentionPopup.hpp>
 
 #include <Geode/Geode.hpp>
 #include <Geode/Enums.hpp>
@@ -115,11 +116,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     auto btnSpr = ButtonSprite::create("View");
     btnSpr->setScale(.7f);
     auto btn = Button::createWithNode(btnSpr, [this](Button*) {
-        FLAlertLayer::create(
-            fmt::format("@{}", m_obj.username).c_str(),
-            m_obj.commentt.c_str(),
-            "OK"
-        )->show();
+        MentionPopup::create(m_obj)->show();
     });
     this->addChildAtPosition(btn, Anchor::Right, {-50, 0});
 
