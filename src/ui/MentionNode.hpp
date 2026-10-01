@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Geode/Geode.hpp>
-#include <MentionManager.hpp>
+#include <CommentObject.hpp>
 
 class MentionNode : public cocos2d::CCNode {
 public:

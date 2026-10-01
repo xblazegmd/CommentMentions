@@ -3,9 +3,6 @@
 #include <Geode/ui/Popup.hpp>
 #include <Geode/ui/ScrollLayer.hpp>
 #include <Geode/binding/ProfilePage.hpp>
-#include <MentionManager.hpp>
-
-#include <ui/MentionNode.hpp>
 
 class MentionHistoryPopup : public geode::Popup {
 public:

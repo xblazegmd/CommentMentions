@@ -14,7 +14,6 @@
 #include <Geode/binding/SimplePlayer.hpp>
 #include <Geode/binding/ButtonSprite.hpp>
 #include <Geode/binding/ProfilePage.hpp>
-#include <Geode/binding/LevelBrowserLayer.hpp>
 
 using namespace geode::prelude;
 
