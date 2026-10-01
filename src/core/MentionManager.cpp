@@ -250,14 +250,14 @@ arc::Future<> MentionManager::commentWatcher() {
 
                 log::debug("Decoded: {}", string);
 
-                if (containsMention(string)) {
+                if (this->containsMention(string)) {
                     // The sea of checks
-                    if (isPrevious(obj)) continue;
+                    if (this->isPrevious(obj)) continue;
                     if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.accountID))
                         continue;
-                    if (isBlacklisted(obj.username)) continue;
+                    if (this->isBlacklisted(obj.username)) continue;
                     if (this->isSpam(obj)) continue;
-                    if (isCommentInappropriate(string)) {
+                    if (this->isCommentInappropriate(string)) {
                         log::info("Inappropriate comment: {}", string);
                         continue;
                     }
@@ -276,10 +276,10 @@ arc::Future<> MentionManager::commentWatcher() {
 
             if (!m_mentions.empty()) {
                 if (m_mentions.size() > Mod::get()->getSettingValue<int64_t>("max-notifications")) {
-                    onMentionCompressed(m_mentions.size());
+                    this->onMentionCompressed(m_mentions.size());
                 } else {
                     for (const auto& mention : m_mentions) {
-                        onMention(mention);
+                        this->onMention(mention);
                     }
                 }
                 m_mentions.clear();
@@ -290,14 +290,14 @@ arc::Future<> MentionManager::commentWatcher() {
 
 void MentionManager::onMention(const CommentObject& obj) {
     geode::queueInMainThread([this, obj] {
-        showNotification(fmt::format("{} mentioned you!", obj.username), obj.commentt);
+        this->showNotification(fmt::format("{} mentioned you!", obj.username), obj.commentt);
     });
 }
 
 void MentionManager::onMentionCompressed(int amount) {
     geode::queueInMainThread([this, amount] {
         const std::string msg = random::chance(.1f) ? "Never gonna give you up!" : "Check them out!";
-        showNotification(fmt::format("{} new mentions!", amount), msg);
+        this->showNotification(fmt::format("{} new mentions!", amount), msg);
     });
 }
 
@@ -341,7 +341,7 @@ inline bool MentionManager::isCommentInappropriate(const std::string& comment) {
 }
 
 bool MentionManager::isBlacklisted(const std::string& username) {
-    auto blacklist = getBlacklistedAccounts();
+    auto blacklist = this->getBlacklistedAccounts();
     auto usernameLower = string::toLower(username);
 
     for (const auto& blacklistedUser : blacklist) {
