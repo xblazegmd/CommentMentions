@@ -1,6 +1,8 @@
 # CommentMentions
 ## v1.0.0-beta.11
 - <cg>Add</c> mention history viewer in the profile
+- <cg>Implement</c> "Hide Spam Comments"
+    - <c-a6a6a6>(somehow the setting slipped through when it was never implemented ToT)</c>
 - <cc>Renamed</c> User Blacklist to Hidden Users
 - <co>Renamed</c> and <cg>Reorganized</c> many mod settings
     - "Notify on @everyone"> was renamed to "Use @everyone"

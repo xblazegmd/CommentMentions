@@ -68,6 +68,7 @@ private:
 
     inline bool isCommentInappropriate(const std::string& comment);
     bool isBlacklisted(const std::string& username);
+    inline bool isSpam(const CommentObject& obj);
 
     std::vector<std::string> getBlacklistedAccounts();
 };

@@ -127,7 +127,7 @@
 		"hide-spam-comments": {
 			"type": "bool",
 			"name": "Hide Spam Comments",
-			"description": "Filter out any comments that possibly contain <co>spam</c> and/or are flagged as <cr>spam</c> <c-a6a6a6>(so 4+ dislikes)</c>",
+			"description": "Filter out any comments that are flagged as <cr>spam</c> <c-a6a6a6>(so 4+ dislikes)</c>",
 			"default": true
 		},
 		"hide-inappropriate-comments": {

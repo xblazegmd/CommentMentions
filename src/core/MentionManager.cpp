@@ -256,6 +256,7 @@ arc::Future<> MentionManager::commentWatcher() {
                     if (Mod::get()->getSettingValue<bool>("ignore-self") && isSelfMention(obj.accountID))
                         continue;
                     if (isBlacklisted(obj.username)) continue;
+                    if (this->isSpam(obj)) continue;
                     if (isCommentInappropriate(string)) {
                         log::info("Inappropriate comment: {}", string);
                         continue;
@@ -350,6 +351,10 @@ bool MentionManager::isBlacklisted(const std::string& username) {
         }
     }
     return false;
+}
+
+inline bool MentionManager::isSpam(const CommentObject& obj) {
+    return obj.isSpam && Mod::get()->getSettingValue<bool>("hide-spam-comments");
 }
 
 std::vector<std::string> MentionManager::getBlacklistedAccounts() {
