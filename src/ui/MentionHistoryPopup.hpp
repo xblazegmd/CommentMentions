@@ -30,5 +30,4 @@ private:
     void onClose(cocos2d::CCObject* sender);
 
     void populateList();
-    void onRefresh(cocos2d::CCObject*);
 };

@@ -30,11 +30,10 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
     m_buttonMenu->updateLayout();
 
     // Refresh button
-    auto refresh = CCMenuItemSpriteExtra::create(
-        CCSprite::createWithSpriteFrameName("GJ_updateBtn_001.png"),
-        this,
-        menu_selector(MentionHistoryPopup::onRefresh)
-    );
+    auto refresh = Button::createWithSpriteFrameName("GJ_updateBtn_001.png", [this](Button*) {
+        if (!m_list) return;
+        this->populateList();
+    });
     m_buttonMenu->addChildAtPosition(refresh, Anchor::BottomRight, {-10, 10});
 
     // Settings button
@@ -97,9 +96,4 @@ void MentionHistoryPopup::populateList() {
     }
     m_list->m_contentLayer->updateLayout();
     m_list->moveToTop();
-}
-
-void MentionHistoryPopup::onRefresh(CCObject*) {
-    if (!m_list) return;
-    this->populateList();
 }
