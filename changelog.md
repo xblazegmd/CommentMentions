@@ -1,11 +1,11 @@
 # CommentMentions
 ## v1.0.0-beta.11
-- <cg>Add</c> mention history viewer in the profile
+- <cg>Add</c> mention history in the profile <c-a6a6a6>(work in progress!)</c>
 - <cy>Implement</c> "Hide Spam Comments"
     - <c-a6a6a6>(somehow the setting slipped through when it was never implemented ToT)</c>
 - <co>Renamed</c> User Blacklist to Hidden Users
 - <co>Renamed</c> and <cg>Reorganized</c> many mod settings
-    - "Notify on @everyone"> was renamed to "Use @everyone"
+    - "Notify on @everyone" was renamed to "Use @everyone"
     - "Ignore Self Mentions" was renamed to "Ignore Own Mentions"
     - "Max Notifications" was renamed to "Notification Limit"
     - "Word Blacklist"and "Word Whitelist" were renamed to just Blacklist" and "Whitelist" respectively
