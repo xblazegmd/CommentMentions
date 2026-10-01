@@ -36,7 +36,7 @@ MentionManager* MentionManager::get() {
 void MentionManager::start() {
     m_watcher.spawn(
         "MentionManager::mentionTracker",
-        commentWatcher(),
+        this->commentWatcher(),
         [] {}
     );
 }
