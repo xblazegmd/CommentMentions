@@ -8,7 +8,7 @@
     - "Notify on @everyone"> was renamed to "Use @everyone"
     - "Ignore Self Mentions" was renamed to "Ignore Own Mentions"
     - "Max Notifications" was renamed to "Notification Limit"
-    - "Word Blacklist"and "Word Whitelist"were renamed to just Blacklist" and "Whitelist" respectively
+    - "Word Blacklist"and "Word Whitelist" were renamed to just Blacklist" and "Whitelist" respectively
 - Some small <cy>internal refactors</c>
 
 ## v1.0.0-beta.10
