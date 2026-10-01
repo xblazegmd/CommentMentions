@@ -88,7 +88,7 @@ bool MentionPopup::init(const CommentObject& obj) {
 
                 FLAlertLayer::create(
                     "Hidden",
-                    fmt::format("User <cy>@{}</c> was hidden. Any upcoming mentions from them will be ignored", m_obj.commentt).c_str(),
+                    fmt::format("User <cy>@{}</c> was hidden. Any upcoming mentions from them will be ignored", m_obj.username).c_str(),
                     "OK"
                 )->show();
             }
