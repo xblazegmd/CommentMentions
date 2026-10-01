@@ -1,4 +1,5 @@
 #include "MentionHistoryPopup.hpp"
+#include "Geode/ui/GeodeUI.hpp"
 #include "Geode/ui/Scrollbar.hpp"
 
 #include <MentionManager.hpp>
@@ -35,6 +36,13 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
         menu_selector(MentionHistoryPopup::onRefresh)
     );
     m_buttonMenu->addChildAtPosition(refresh, Anchor::BottomRight, {-10, 10});
+
+    // Settings button
+    auto settingsBtn = Button::createWithSpriteFrameName("GJ_optionsBtn_001.png", [](Button*) {
+        geode::openSettingsPopup(Mod::get());
+    });
+    settingsBtn->setScale(.7f);
+    m_buttonMenu->addChildAtPosition(settingsBtn, Anchor::TopRight, {-25, -25});
 
     // List
     auto listContainer = CCLayerColor::create(to4B(m_color1));
