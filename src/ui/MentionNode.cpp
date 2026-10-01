@@ -91,12 +91,11 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     auto btnSpr = ButtonSprite::create("View");
     btnSpr->setScale(.7f);
     auto btn = Button::createWithNode(btnSpr, [this](Button*) {
-        MentionPopup::create(m_obj)->show();
-        // FLAlertLayer::create(
-        //     fmt::format("@{}", m_obj.username).c_str(),
-        //     m_obj.commentt.c_str(),
-        //     "OK"
-        // )->show();
+        FLAlertLayer::create(
+            fmt::format("@{}", m_obj.username).c_str(),
+            m_obj.commentt.c_str(),
+            "OK"
+        )->show();
     });
     this->addChildAtPosition(btn, Anchor::Right, {-50, 0});
 
