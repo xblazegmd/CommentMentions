@@ -1,4 +1,7 @@
 # CommentMentions
+## v1.0.0-beta.11
+- <cg>Add</c> mention history viewer in the profile
+
 ## v1.0.0-beta.10
 - <cg>Update</c> Xblaze's Geode API to <cl>v2.1.0</c>
 - <cr>Remove</c> most of the annoying error notifications and remove the setting to disable them
