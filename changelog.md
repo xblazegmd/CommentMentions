@@ -2,9 +2,10 @@
 ## v1.0.0-beta.11
 - <cg>Add</c> mention history viewer in the profile
 - <cc>Renamed</c> User Blacklist to Hidden Users
-- <co>Reorganized</c> mod settings
+- <co>Renamed</c> and <cg>Reorganized</c> many mod settings
     - "Notify on @everyone"> was renamed to "Use @everyone"
     - "Ignore Self Mentions" was renamed to "Ignore Own Mentions"
+    - "Max Notifications" was renamed to "Notification Limit"
     - "Word Blacklist"and "Word Whitelist"were renamed to just Blacklist" and "Whitelist" respectively
 - Few <cy>internal changes</c>
 
