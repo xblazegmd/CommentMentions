@@ -21,7 +21,7 @@ class $modify(PPHook, ProfilePage) {
             m_fields->m_loaded = true;
 
             // Using text cuz I'm lazy :P
-            auto spr = CircleButtonSprite::create(CCSprite::create("mentionSprite.png"_spr));
+            auto spr = CircleButtonSprite::create(CCSprite::create("mentionIcon.png"_spr), CircleBaseColor::Cyan);
             spr->setScale(.7f);
 
             auto btn = CCMenuItemSpriteExtra::create(spr, this, menu_selector(PPHook::onMentions));
