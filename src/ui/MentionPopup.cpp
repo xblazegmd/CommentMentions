@@ -11,6 +11,7 @@
 #include <CommentObject.hpp>
 #include <utils.hpp>
 
+#include <algorithm>
 #include <regex>
 
 using namespace geode::prelude;
@@ -83,6 +84,14 @@ bool MentionPopup::init(const CommentObject& obj) {
                 if (!btn) return;
 
                 auto hiddenUsers = getListSetting("user-blacklist");
+                if (std::ranges::find(hiddenUsers, m_obj.username) != hiddenUsers.end()) {
+                    FLAlertLayer::create(
+                        "Error",
+                        fmt::format("User <cy>@{}</c> is <co>already hidden</c>", m_obj.username).c_str(),
+                        "OK"
+                    )->show();
+                }
+
                 hiddenUsers.push_back(m_obj.username);
                 setListSetting("user-blacklist", hiddenUsers);
 
