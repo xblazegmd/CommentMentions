@@ -78,8 +78,8 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     labels->addChild(username);
 
     // Mention preview
-    auto preview = Label::create(fmt::format("Level: {}", m_obj.levelID), "chatFont.fnt");
-    preview->setScale(.5f);
+    auto preview = Label::create(this->getCommentPreview(), "chatFont.fnt");
+    preview->setScale(.6f);
     preview->setColor({0, 0, 0});
     preview->setOpacity(125);
     labels->addChild(preview);
@@ -101,4 +101,13 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     this->addChildAtPosition(btn, Anchor::Right, {-50, 0});
 
     return true;
+}
+
+std::string MentionNode::getCommentPreview() {
+    auto comment = m_obj.commentt;
+    int limit = 30;
+    if (comment.length() > limit) {
+        comment = comment.substr(0, limit) + "...";
+    }
+    return fmt::format("\"{}\"", comment);
 }

@@ -13,4 +13,5 @@ private:
     cocos2d::CCLayerColor* m_bg;
 
     bool init(const CommentObject& obj, float width);
+    std::string getCommentPreview();
 };
