@@ -176,7 +176,7 @@
 		},
 		"ignore-self": {
 			"type": "bool",
-			"name": "Ignore Self Mentions",
+			"name": "Ignore Own Mentions",
 			"description": "Ignore mentions when <co>you're the one that mentioned yourself</c>",
 			"default": true
 		},
