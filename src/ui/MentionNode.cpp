@@ -55,7 +55,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
 
     icon->setAnchorPoint({0, .5f});
     icon->setScale(.8f);
-    this->addChildAtPosition(icon, Anchor::Left, {40, 0});
+    this->addChildAtPosition(icon, Anchor::Left, {30, 0});
 
     // Labels
     auto labels = CCLayer::create();
@@ -85,7 +85,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     labels->addChild(preview);
 
     labels->updateLayout();
-    this->addChildAtPosition(labels, Anchor::Left, {65, 0});
+    this->addChildAtPosition(labels, Anchor::Left, {55, 0});
 
     // "View" button
     auto btnSpr = ButtonSprite::create("View");
