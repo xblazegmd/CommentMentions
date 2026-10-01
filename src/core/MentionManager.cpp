@@ -232,14 +232,11 @@ arc::Future<> MentionManager::commentWatcher() {
                 log::error("Failed to fetch comments: {}", res.unwrapErr());
                 continue;
             }
-            log::debug("{}", res.unwrap());
 
             // Split comment objects
             auto comments = string::split(res.unwrap(), "|");
             for (const auto& comment : comments) {
                 auto obj = CommentObject::fromString(comment); // Format object
-
-                log::debug("Encoded: {}", obj.commentt);
 
                 auto s = base64::decodeString(obj.commentt, base64::Base64Variant::Url);
                 if (s.isErr()) {
@@ -247,8 +244,6 @@ arc::Future<> MentionManager::commentWatcher() {
                     continue;
                 }
                 std::string string = std::move(s).unwrap();
-
-                log::debug("Decoded: {}", string);
 
                 if (this->containsMention(string)) {
                     // The sea of checks
