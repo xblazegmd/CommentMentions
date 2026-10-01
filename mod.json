@@ -117,18 +117,6 @@
 			"type": "title",
 			"name": "Filters"
 		},
-		"hide-inappropriate-comments": {
-			"type": "bool",
-			"name": "Hide Inappropriate Comments",
-			"description": "Filter out any comments that contain <co>possibly inappropriate words</c> <c-a6a6a6>(e.g. n word with hard r)</c>\n\n<cb>tysm dc now I'm having to add this cuz of you</c>",
-			"default": true
-		},
-		"hide-spam-comments": {
-			"type": "bool",
-			"name": "Hide Spam Comments",
-			"description": "Filter out any comments that possibly contain <co>spam</c> and/or are flagged as <cr>spam</c> <c-a6a6a6>(so 4+ dislikes)</c>",
-			"default": true
-		},
 		"user-blacklist": {
 			"type": "string",
 			"name": "Hidden Users",
@@ -136,12 +124,24 @@
 			"default": "",
 			"filter": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789, "
 		},
+		"hide-spam-comments": {
+			"type": "bool",
+			"name": "Hide Spam Comments",
+			"description": "Filter out any comments that possibly contain <co>spam</c> and/or are flagged as <cr>spam</c> <c-a6a6a6>(so 4+ dislikes)</c>",
+			"default": true
+		},
+		"hide-inappropriate-comments": {
+			"type": "bool",
+			"name": "Hide Inappropriate Comments",
+			"description": "Filter out any comments that contain <co>possibly inappropriate words</c> <c-a6a6a6>(e.g. n word with hard r)</c>\n\n<cb>tysm dc now I'm having to add this cuz of you</c>",
+			"default": true
+		},
 		"word-blacklist": {
 			"type": "string",
 			"enable-if": "hide-inappropriate-comments",
 			"enable-if-description": "Hide Inappropriate Comments is disabled!",
 			"requires-restart": true,
-			"name": "Word Blacklist",
+			"name": "Blacklist",
 			"description": "A comma separated <cg>list of words</c> that <cr>will be counted as inappropriate</c>",
 			"default": ""
 		},
@@ -149,7 +149,7 @@
 			"type": "string",
 			"enable-if": "hide-inappropriate-comments",
 			"enable-if-description": "Hide Inappropriate Comments is disabled!",
-			"name": "Word Whitelist",
+			"name": "Whitelist",
 			"description": "A comma separated <cg>list of words</c> that <cr>will not be counted as inappropriate</c> <c-a6a6a6>(if they are even counted as inappropriate)</c>",
 			"default": ""
 		},
