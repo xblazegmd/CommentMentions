@@ -20,6 +20,8 @@ geode::utils::StringMap<std::string> formatKV(
 
 std::vector<std::string> getListSetting(const std::string& setting);
 
+void setListSetting(const std::string& setting, const std::vector<std::string> value);
+
 arc::Future<geode::Result<int>> getSpecialID(LevelType type);
 
 arc::Future<> pauseUntilWeHaveInternet();

@@ -20,6 +20,9 @@
 		"homepage": "https://xblaze.netlify.app",
 		"source": "https://github.com/xblazegmd/CommentMentions"
 	},
+    "resources": {
+        "sprites": ["resources/*.png"]
+    },
 	"settings": {
 		"basic-settings": {
 			"type": "title",

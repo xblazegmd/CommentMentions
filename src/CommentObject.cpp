@@ -39,7 +39,7 @@ CommentObject CommentObject::fromString(const std::string &str) {
     ret.iconType = stoicm(authorStr["14"], 0);
 
     ret.isSpam = static_cast<bool>(stoicm(commentStr["7"], 0));
-    ret.glow = static_cast<bool>(stoicm(commentStr["15"], 0));
+    ret.glow = static_cast<bool>(stoicm(authorStr["15"], 0));
 
     return ret;
 }
