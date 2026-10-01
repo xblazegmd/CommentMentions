@@ -90,6 +90,7 @@ bool MentionPopup::init(const CommentObject& obj) {
                         fmt::format("User <cy>@{}</c> is <co>already hidden</c>", m_obj.username).c_str(),
                         "OK"
                     )->show();
+                    return;
                 }
 
                 hiddenUsers.push_back(m_obj.username);
