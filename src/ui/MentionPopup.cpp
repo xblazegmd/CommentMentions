@@ -101,6 +101,7 @@ bool MentionPopup::init(const CommentObject& obj) {
                     fmt::format("User <cy>@{}</c> was hidden. Any upcoming mentions from them will be ignored", m_obj.username).c_str(),
                     "OK"
                 )->show();
+                this->onClose(nullptr);
             }
         );
     });

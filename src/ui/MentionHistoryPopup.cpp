@@ -1,15 +1,16 @@
 #include "MentionHistoryPopup.hpp"
 #include "Geode/ui/Scrollbar.hpp"
 
+#include <MentionManager.hpp>
+#include <ui/MentionNode.hpp>
+
 #include <Geode/Geode.hpp>
 #include <Geode/ui/Popup.hpp>
 #include <Geode/ui/General.hpp>
 #include <Geode/ui/ScrollLayer.hpp>
 #include <Geode/ui/Layout.hpp>
 
-#include <ui/MentionNode.hpp>
-
-#include <MentionManager.hpp>
+#include <utils.hpp>
 
 using namespace geode::prelude;
 
@@ -73,11 +74,14 @@ void MentionHistoryPopup::onClose(CCObject* sender) {
 void MentionHistoryPopup::populateList() {
     m_list->m_contentLayer->removeAllChildren();
 
+    auto hiddenUsers = getListSetting("user-blacklist");
+
     auto mentions = MentionManager::get()->getPreviousMentions();
 
     // Iterate backwards cuz that's how the list is ordered
     bool bg = false;
     for (auto it = mentions.rbegin(); it != mentions.rend(); ++it) {
+        if (std::ranges::find(hiddenUsers, it->username) != hiddenUsers.end()) continue; // Ignore all hidden users
         auto node = MentionNode::create(*it, m_listSize.width);
         node->setBGColor(bg);
         bg = !bg;
