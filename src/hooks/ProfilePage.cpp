@@ -1,4 +1,6 @@
 #include <Geode/Geode.hpp>
+#include <Geode/ui/BasedButtonSprite.hpp>
+#include <Geode/ui/Label.hpp>
 #include <Geode/modify/ProfilePage.hpp>
 
 #include <ui/MentionHistoryPopup.hpp>
@@ -18,7 +20,8 @@ class $modify(PPHook, ProfilePage) {
             if (m_fields->m_loaded) return;
             m_fields->m_loaded = true;
 
-            auto spr = CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png");
+            // Using text cuz I'm lazy :P
+            auto spr = CircleButtonSprite::create(CCSprite::create("mentionSprite.png"_spr));
             spr->setScale(.7f);
 
             auto btn = CCMenuItemSpriteExtra::create(spr, this, menu_selector(PPHook::onMentions));
