@@ -27,7 +27,7 @@ MentionPopup* MentionPopup::create(const CommentObject& obj) {
 }
 
 bool MentionPopup::init(const CommentObject& obj) {
-    if (!Popup::init({340, 200}, "GJ_square02.png")) return false;
+    if (!Popup::init({390, 220}, "GJ_square02.png")) return false;
     m_obj = obj;
     m_noElasticity = false;
 
@@ -65,7 +65,7 @@ bool MentionPopup::init(const CommentObject& obj) {
 
     // View Level
     auto viewLvlSpr = ButtonSprite::create("View Level", "bigFont.fnt", "GJ_button_01.png");
-    viewLvlSpr->setScale(.5f);
+    viewLvlSpr->setScale(.6f);
     auto viewLvlBtn = Button::createWithNode(viewLvlSpr, [this](Button*) {
         auto searchObj = GJSearchObject::create(SearchType::Type19, fmt::format("{}&gameVersion=22", m_obj.levelID));
         auto scene = LevelBrowserLayer::scene(searchObj);
@@ -75,7 +75,7 @@ bool MentionPopup::init(const CommentObject& obj) {
 
     // Hide User
     auto hideUserSpr = ButtonSprite::create("Hide User", "bigFont.fnt", "GJ_button_06.png");
-    hideUserSpr->setScale(.5f);
+    hideUserSpr->setScale(.6f);
     auto hideUserBtn = Button::createWithNode(hideUserSpr, [this](Button*) {
         geode::createQuickPopup(
             "Hide User",
@@ -109,7 +109,7 @@ bool MentionPopup::init(const CommentObject& obj) {
     btnMenu->addChild(hideUserBtn);
 
     btnMenu->updateLayout();
-    m_mainLayer->addChildAtPosition(btnMenu, Anchor::Bottom, {0, 25});
+    m_mainLayer->addChildAtPosition(btnMenu, Anchor::Bottom, {0, 27});
 
     return true;
 }

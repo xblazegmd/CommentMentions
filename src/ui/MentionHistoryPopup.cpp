@@ -20,7 +20,7 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
     m_profilePage->setVisible(false);
 
     // Title
-    this->setTitle("Mentions", "bigFont.fnt", .8f);
+    this->setTitle("Mentions", "bigFont.fnt", .7f, 22);
 
     // Close button
     this->setCloseButtonSpr(CCSprite::createWithSpriteFrameName("GJ_backBtn_001.png"));
@@ -38,7 +38,7 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
     auto settingsBtn = Button::createWithSpriteFrameName("GJ_optionsBtn_001.png", [](Button*) {
         geode::openSettingsPopup(Mod::get());
     });
-    settingsBtn->setScale(.7f);
+    settingsBtn->setScale(.75f);
     m_buttonMenu->addChildAtPosition(settingsBtn, Anchor::TopRight, {-25, -25});
 
     // Info button
@@ -50,7 +50,7 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
             "OK"
         )->show();
     });
-    infoBtn->setScale(.6f);
+    infoBtn->setScale(.7f);
     m_buttonMenu->addChildAtPosition(infoBtn, Anchor::BottomLeft, {30, 28});
 
     // List

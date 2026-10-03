@@ -33,7 +33,7 @@ void MentionNode::setBGColor(bool color1) {
 
 bool MentionNode::init(const CommentObject& obj, float width) {
     if (!CCNode::init()) return false;
-    this->setContentSize({width, 40});
+    this->setContentSize({width, 45});
     m_obj = obj;
 
     // Background
@@ -53,7 +53,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     if (!m_obj.glow) icon->disableGlowOutline();
 
     icon->setAnchorPoint({0, .5f});
-    icon->setScale(.8f);
+    icon->setScale(.9f);
     this->addChildAtPosition(icon, Anchor::Left, {30, 0});
 
     // Info menu
@@ -83,7 +83,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
         bool ownProfile = GJAccountManager::get()->m_accountID == m_obj.accountID;
         ProfilePage::create(m_obj.accountID, ownProfile)->show();
     });
-    username->setScale(.5f);
+    username->setScale(.6f);
     usernameMenu->addChild(username);
 
     // Info button
@@ -95,7 +95,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
             "OK"
         )->show();
     });
-    infoBtn->setScale(.5f);
+    infoBtn->setScale(.6f);
     usernameMenu->addChild(infoBtn);
 
     usernameMenu->updateLayout();
@@ -103,7 +103,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
 
     // Mention preview
     auto preview = Label::create(this->getCommentPreview(), "chatFont.fnt");
-    preview->setScale(.6f);
+    preview->setScale(.7f);
     preview->setColor({0, 0, 0});
     preview->setOpacity(125);
     infoMenu->addChild(preview);
@@ -113,7 +113,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
 
     // "View" button
     auto btnSpr = ButtonSprite::create("View");
-    btnSpr->setScale(.7f);
+    btnSpr->setScale(.8f);
     auto btn = Button::createWithNode(btnSpr, [this](Button*) {
         MentionPopup::create(m_obj)->show();
     });
