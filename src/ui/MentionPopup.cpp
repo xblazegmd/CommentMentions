@@ -31,7 +31,7 @@ bool MentionPopup::init(const CommentObject& obj) {
     m_obj = obj;
     m_noElasticity = false;
 
-    this->setTitle(fmt::format("Mention from @{}", m_obj.username));
+    this->setTitle(fmt::format("Mention from @{}", m_obj.username), "goldFont.fnt", .7f, 22);
 
     // Comment area
     auto commentArea = CCLayer::create();

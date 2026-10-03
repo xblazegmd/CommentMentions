@@ -20,7 +20,7 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
     m_profilePage->setVisible(false);
 
     // Title
-    this->setTitle("Mentions", "bigFont.fnt", .7f, 22);
+    this->setTitle("Mentions", "bigFont.fnt", .8f);
 
     // Close button
     this->setCloseButtonSpr(CCSprite::createWithSpriteFrameName("GJ_backBtn_001.png"));
