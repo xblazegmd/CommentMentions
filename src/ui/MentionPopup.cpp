@@ -9,6 +9,7 @@
 #include <Geode/binding/LevelBrowserLayer.hpp>
 
 #include <core/CommentObject.hpp>
+#include <ui/ReplyPopup.hpp>
 #include <utils.hpp>
 
 #include <algorithm>
@@ -55,28 +56,29 @@ bool MentionPopup::init(const CommentObject& obj) {
     // Buttons
     auto btnMenu = CCMenu::create();
     btnMenu->setID("buttons"_spr);
-    btnMenu->setContentSize({ m_commentAreaSize.width - 10, 20});
+    btnMenu->setContentSize({ m_commentAreaSize.width - 40, 20});
     btnMenu->setAnchorPoint({.5f, .5f});
     btnMenu->setLayout(
         RowLayout::create()
             ->setAutoScale(false)
+            ->setAxisAlignment(AxisAlignment::Between)
             ->setGap(20)
     );
+    
+    // Reply
+    auto replyCb = [this](Button*) {
+        ReplyPopup::create(m_obj.levelID, m_obj.username)->show();
+    };
 
     // View Level
-    auto viewLvlSpr = ButtonSprite::create("View Level", "bigFont.fnt", "GJ_button_01.png");
-    viewLvlSpr->setScale(.6f);
-    auto viewLvlBtn = Button::createWithNode(viewLvlSpr, [this](Button*) {
+    auto viewCb = [this](Button*) {
         auto searchObj = GJSearchObject::create(SearchType::Type19, fmt::format("{}&gameVersion=22", m_obj.levelID));
         auto scene = LevelBrowserLayer::scene(searchObj);
         CCDirector::get()->replaceScene(CCTransitionFade::create(.5f, scene));
-    });
-    btnMenu->addChild(viewLvlBtn);
+    };
 
     // Hide User
-    auto hideUserSpr = ButtonSprite::create("Hide User", "bigFont.fnt", "GJ_button_06.png");
-    hideUserSpr->setScale(.6f);
-    auto hideUserBtn = Button::createWithNode(hideUserSpr, [this](Button*) {
+    auto hideCb = [this](Button*) {
         geode::createQuickPopup(
             "Hide User",
             fmt::format("Are you sure you want to <cp>hide</c> user <cy>@{}</c>? <cj>(mentions from that user will be ignored)</c>", m_obj.username),
@@ -105,8 +107,18 @@ bool MentionPopup::init(const CommentObject& obj) {
                 this->onClose(nullptr);
             }
         );
-    });
-    btnMenu->addChild(hideUserBtn);
+    };
+
+    for (auto& item : std::array<std::tuple<const char*, const char*, Button::ButtonCallback>, 3>{{
+        {"Reply", "GJ_button_01.png", std::move(replyCb)},
+        {"Level", "GJ_button_04.png", std::move(viewCb)},
+        {"Hide", "GJ_button_06.png", std::move(hideCb)}
+    }}) {
+        auto spr = ButtonSprite::create(std::get<0>(item), "bigFont.fnt", std::get<1>(item), .85f);
+        spr->setScale(.65f);
+        auto btn = Button::createWithNode(spr, std::move(std::get<2>(item)));
+        btnMenu->addChild(btn);
+    }
 
     btnMenu->updateLayout();
     m_mainLayer->addChildAtPosition(btnMenu, Anchor::Bottom, {0, 27});
