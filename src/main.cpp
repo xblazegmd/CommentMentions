@@ -1,9 +1,11 @@
-#include <core/MentionManager.hpp>
-#include <utils.hpp>
 
 #include <Geode/Geode.hpp>
+#include <Geode/loader/SettingV3.hpp>
 #include <Geode/utils/web.hpp>
 #include <Geode/utils/string.hpp>
+
+#include <core/MentionManager.hpp>
+#include <utils.hpp>
 
 #include <arc/prelude.hpp>
 #include <string>
@@ -13,6 +15,14 @@
 using namespace geode::prelude;
 
 $execute {
+    ButtonSettingPressedEventV3(Mod::get(), "blacklist-buttons").listen([](auto key) {
+        if (key == "blacklist") {
+            FLAlertLayer::create("Blacklist", "TODO", "OK")->show();
+        } else if (key == "whitelist") {
+            FLAlertLayer::create("Whitelist", "TODO", "OK")->show();
+        }
+    }).leak();
+
     if (!Mod::get()->setSavedValue("loaded-before", true)) {
         auto username = GJAccountManager::get()->m_username;
         Mod::get()->setSettingValue("aliases", string::toLower(username));

@@ -153,6 +153,13 @@
 			"description": "A comma separated <cg>list of words</c> that <cr>will not be counted as inappropriate</c> <c-a6a6a6>(if they are even counted as inappropriate)</c>",
 			"default": ""
 		},
+        "blacklist-buttons": {
+            "type": "button",
+            "buttons": {
+                "blacklist": "Edit Blacklist",
+                "whitelist": "Edit Whitelist"
+            }
+        },
 		"advanced": {
 			"type": "title",
 			"name": "Advanced Options"
