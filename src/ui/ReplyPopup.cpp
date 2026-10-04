@@ -98,7 +98,7 @@ bool ReplyPopup::init(int levelID, const std::string& username) {
 }
 
 int ReplyPopup::getRemainingChars() {
-    return 100 - m_textInput->getString().length();
+    return 100 - m_textInput->getString().size();
 }
 
 // ReplyUploadPopup (where the comment gets uploaded)
