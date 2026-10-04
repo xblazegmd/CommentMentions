@@ -1,4 +1,8 @@
 # CommentMentions
+## v1.0.0-beta.12
+- <cg>Add</c> replying to mentions
+- <cg>Update</c> mention history UI to look better on mobile
+
 ## v1.0.0-beta.11
 - <cg>Add</c> mention history in the profile <c-a6a6a6>(work in progress!)</c>
 - <cy>Implement</c> "Hide Spam Comments"
