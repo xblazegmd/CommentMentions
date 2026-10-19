@@ -2,7 +2,7 @@
 
 # Comment Mentions
 ###### (will prob rename to smth like "User Mentions!" later)
-Add the @mentioning feature to Geometry Dash
+Adds the @mentioning feature to Geometry Dash!
 
 ## Features
 - Get a notifications every time someone **mentions you** on a comment or group chat
