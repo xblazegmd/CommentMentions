@@ -12,7 +12,6 @@
 	"developer": "XblazeGMD",
 	"description": "Get notified everytime someone 'mentions' you",
 	"dependencies": {
-		"geode.node-ids": ">=v1.20.0",
 		"xblazegmd.geode-api": ">=2.1.0"
 	},
 	"tags": ["online", "enhancement", "interface"],
