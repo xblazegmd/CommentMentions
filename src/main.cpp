@@ -83,9 +83,10 @@ $on_game(Loaded) {
         // Internet check
         bool connected;
         if (Mod::get()->getSettingValue<bool>("internal-internet-check")) {
-            connected = co_await async::waitForMainThread([] {
+            auto connectedOpt = co_await async::waitForMainThread([] {
                 return GameToolbox::doWeHaveInternet();
             });
+            connected = connectedOpt.has_value() && *connectedOpt;
         } else {
             connected = co_await xblazeapi::doWeHaveInternet();
         }

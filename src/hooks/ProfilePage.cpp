@@ -1,3 +1,4 @@
+#if 0
 #include <Geode/Geode.hpp>
 #include <Geode/ui/BasedButtonSprite.hpp>
 #include <Geode/ui/Label.hpp>
@@ -35,3 +36,4 @@ class $modify(PPHook, ProfilePage) {
         MentionHistoryPopup::create(this)->show();
     }
 };
+#endif

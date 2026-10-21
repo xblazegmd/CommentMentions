@@ -44,6 +44,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     this->addChildAtPosition(m_bg, Anchor::Center);
 
     // Player Icon
+    #if 0
     auto gameManager = GameManager::get();
 
     auto icon = SimplePlayer::create(m_obj.iconID);
@@ -55,6 +56,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
     icon->setAnchorPoint({0, .5f});
     icon->setScale(.9f);
     this->addChildAtPosition(icon, Anchor::Left, {30, 0});
+    #endif
 
     // Info menu
     auto infoMenu = CCLayer::create();

@@ -207,9 +207,10 @@ arc::Future<> MentionManager::commentWatcher() {
                 // Verify it's not an internet issue
                 bool internet;
                 if (Mod::get()->getSettingValue<bool>("internal-internet-check")) {
-                    internet = co_await async::waitForMainThread([] {
+                    auto internetOpt = co_await async::waitForMainThread([] {
                         return GameToolbox::doWeHaveInternet();
                     });
+                    internet = internetOpt.has_value() && *internetOpt;
                 } else {
                     internet = co_await xblazeapi::doWeHaveInternet();
                 }
