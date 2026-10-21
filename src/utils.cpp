@@ -6,8 +6,6 @@
 #include <arc/prelude.hpp>
 #include <string>
 
-#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
-
 using namespace geode::prelude;
 
 arc::Future<ServerResponse> requestGDServersCM(
@@ -41,6 +39,16 @@ arc::Future<ServerResponse> requestGDServersCM(
     co_return Ok(unwrapped);
 }
 
+std::unordered_map<std::string, std::string> formatResponseCM(const std::string& response, std::string sep) {
+    auto pieces = string::split(response, sep);
+    std::unordered_map<std::string, std::string> ret;
+    ret.reserve(pieces.size() / 2);
+    for (size_t i = 0; i < pieces.size(); i += 2) {
+        ret.emplace(pieces[i], pieces[i + 1]);
+    }
+    return ret;
+}
+
 std::string buildBodyStringCM(std::initializer_list<std::pair<std::string, std::string>> body) {
     fmt::memory_buffer out;
 
@@ -64,12 +72,7 @@ utils::StringMap<std::string> formatKV(
     geode::utils::StringMap<std::string> map,
     const std::string& sep
 ) {
-    auto pieces = string::split(str, sep);
-    std::unordered_map<std::string, std::string> kv;
-    kv.reserve(pieces.size() / 2);
-    for (size_t i = 0; i < pieces.size(); i += 2) {
-        kv.emplace(pieces[i], pieces[i + 1]);
-    }
+    auto kv = formatResponseCM(str, sep);
 
     utils::StringMap<std::string> ret;
     for (const auto& [k, v] : kv) {
@@ -96,9 +99,9 @@ void setListSetting(const std::string& setting, const std::vector<std::string> v
 }
 
 arc::Future<Result<int>> getSpecialID(LevelType type) {
-    auto res = co_await requestGDServersCM("getGJLevels21.php", xblazeapi::buildBodyString({
+    auto res = co_await requestGDServersCM("getGJLevels21.php", buildBodyStringCM({
         { "type", utils::numToString(static_cast<int>(type)) },
-        { "secret", xblazeapi::SECRET }
+        { "secret", SECRET }
     }));
     if (res.isErr()) {
         log::error("{}", res.unwrapErr());

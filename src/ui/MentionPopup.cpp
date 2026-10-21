@@ -36,7 +36,7 @@ bool MentionPopup::init(const CommentObject& obj) {
 
     // Comment area
     auto commentArea = CCLayer::create();
-    commentArea->setID("comment-area"_spr);
+    // commentArea->setID("comment-area"_spr);
 
     // Background
     auto bg = NineSlice::create("square02_small.png");
@@ -55,7 +55,7 @@ bool MentionPopup::init(const CommentObject& obj) {
 
     // Buttons
     auto btnMenu = CCMenu::create();
-    btnMenu->setID("buttons"_spr);
+    // btnMenu->setID("buttons"_spr);
     btnMenu->setContentSize({ m_commentAreaSize.width - 40, 20});
     btnMenu->setAnchorPoint({.5f, .5f});
     btnMenu->setLayout(

@@ -61,7 +61,7 @@ bool ReplyPopup::init(int levelID, const std::string& username) {
 
     // Buttons
     auto btnMenu = CCMenu::create();
-    btnMenu->setID("buttons"_spr);
+    // btnMenu->setID("buttons"_spr);
     btnMenu->setContentSize(m_textInput->getContentSize());
     btnMenu->setAnchorPoint({.5f, .5f});
     btnMenu->setLayout(

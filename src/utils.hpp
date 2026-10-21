@@ -21,8 +21,9 @@ arc::Future<ServerResponse> requestGDServersCM(
     int timeout = 10
 );
 
-std::string buildBodyStringCM(std::initializer_list<std::pair<std::string, std::string>> body);
+std::unordered_map<std::string, std::string> formatResponseCM(const std::string& response, std::string sep);
 
+std::string buildBodyStringCM(std::initializer_list<std::pair<std::string, std::string>> body);
 
 arc::Future<bool> doWeHaveInternetCM(const std::string& url = "http://connectivitycheck.gstatic.com/generate_204");
 

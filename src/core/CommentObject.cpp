@@ -7,14 +7,12 @@
 #include <Geode/utils/string.hpp>
 #include <string>
 
-#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
-
 using namespace geode::prelude;
 
 CommentObject CommentObject::fromString(const std::string &str) {
     auto split = string::split(str, ":");
-    auto commentStr = xblazeapi::formatResponse(split[0], "~");
-    auto authorStr = xblazeapi::formatResponse(split[1], "~");
+    auto commentStr = formatResponseCM(split[0], "~");
+    auto authorStr = formatResponseCM(split[1], "~");
 
     CommentObject ret;
 

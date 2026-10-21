@@ -57,7 +57,7 @@ bool MentionHistoryPopup::init(ProfilePage* profilePage) {
     auto listContainer = CCLayerColor::create(to4B(m_color1));
     listContainer->setContentSize(m_listSize);
     listContainer->setAnchorPoint({.5f, .5f});
-    listContainer->setID("mentions-list"_spr);
+    // listContainer->setID("mentions-list"_spr);
 
     // Scroll Layer
     m_list = ScrollLayer::create(m_listSize);

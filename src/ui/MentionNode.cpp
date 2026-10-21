@@ -60,7 +60,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
 
     // Info menu
     auto infoMenu = CCLayer::create();
-    infoMenu->setID("info-menu");
+    // infoMenu->setID("info-menu");
     infoMenu->setAnchorPoint({0, .5f});
     infoMenu->setLayout(
         ColumnLayout::create()
@@ -72,7 +72,7 @@ bool MentionNode::init(const CommentObject& obj, float width) {
 
     // Username/Info button menu
     auto usernameMenu = CCLayer::create();
-    usernameMenu->setID("title-menu");
+    // usernameMenu->setID("title-menu");
     usernameMenu->setAnchorPoint({0, .5f});
     usernameMenu->setLayout(
         RowLayout::create()
