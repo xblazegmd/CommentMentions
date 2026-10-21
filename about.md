@@ -1,4 +1,4 @@
-# User Mentions!
+# User Mentions
 Adds @mentioning to Geometry Dash!
 
 ## Features

@@ -1,4 +1,4 @@
-# CommentMentions
+# User Mentions
 ## v1.0.0-beta.12
 - <cg>Add</c> replying to mentions
 - <cg>Update</c> mention history UI to look better on mobile

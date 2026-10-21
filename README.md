@@ -1,6 +1,6 @@
 <img src="logo.png" width="80" height=auto alt="A beautiful logo that should be in a museum imo" />
 
-# User Mentions!
+# User Mentions
 Adds @mentioning to Geometry Dash!
 
 ## Features
