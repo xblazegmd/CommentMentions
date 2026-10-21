@@ -1,4 +1,9 @@
 # User Mentions
+## v1.0.0-beta.13
+- <cg>Update</c> to Geode v6
+- <co>Rename</c> mod to "User Mentions"
+- <cg>Update</c> mod logo
+
 ## v1.0.0-beta.12
 - <cg>Add</c> replying to mentions
 - <cg>Update</c> mention history UI to look better on mobile
