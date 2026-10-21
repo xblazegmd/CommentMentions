@@ -12,6 +12,20 @@ enum class LevelType {
     Event = 23
 };
 
+inline const std::string SECRET = "Wmfd2893gb7";
+using ServerResponse = geode::Result<std::string, int>;
+
+arc::Future<ServerResponse> requestGDServersCM(
+    const std::string& endpoint,
+    const std::string& body,
+    int timeout = 10
+);
+
+std::string buildBodyStringCM(std::initializer_list<std::pair<std::string, std::string>> body);
+
+
+arc::Future<bool> doWeHaveInternetCM(const std::string& url = "http://connectivitycheck.gstatic.com/generate_204");
+
 geode::utils::StringMap<std::string> formatKV(
     const std::string& str,
     geode::utils::StringMap<std::string> map,

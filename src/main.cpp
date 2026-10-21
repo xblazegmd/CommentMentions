@@ -10,8 +10,6 @@
 #include <arc/prelude.hpp>
 #include <string>
 
-#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
-
 using namespace geode::prelude;
 
 $execute {
@@ -88,7 +86,7 @@ $on_game(Loaded) {
             });
             connected = connectedOpt.has_value() && *connectedOpt;
         } else {
-            connected = co_await xblazeapi::doWeHaveInternet();
+            connected = co_await doWeHaveInternetCM();
         }
 
         if (!connected) {

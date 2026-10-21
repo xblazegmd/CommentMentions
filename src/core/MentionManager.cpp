@@ -18,8 +18,6 @@
 #include <string>
 #include <vector>
 
-#include <xblazegmd.geode-api/include/XblazeAPI.hpp>
-
 using namespace geode::prelude;
 
 MentionManager::MentionManager() {
@@ -165,12 +163,12 @@ arc::Future<> MentionManager::commentWatcher() {
 
         if (levelIDs.empty()) {
             log::error("No IDs were found");
-            co_await xblazeapi::sleepSecs(1);
+            co_await arc::sleep(asp::Duration::fromSecs(1));
             continue;
         }
 
         for (const auto& levelID : levelIDs) {
-            co_await xblazeapi::sleepSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate"));
+            co_await arc::sleep(asp::Duration::fromSecs(Mod::get()->getSettingValue<int64_t>("refresh-rate")));
             if (!Mod::get()->getSettingValue<bool>("enabled")) {
                 continue;
             }
@@ -198,10 +196,10 @@ arc::Future<> MentionManager::commentWatcher() {
             );
 
             // Get comments from the level
-            auto res = co_await xblazeapi::requestGDServers("getGJComments21.php", xblazeapi::buildBodyString({
+            auto res = co_await requestGDServersCM("getGJComments21.php", buildBodyStringCM({
                 { "levelID", utils::numToString(levelID) },
                 { "page", "0" },
-                { "secret", xblazeapi::SECRET }
+                { "secret", SECRET }
             }));
             if (res.isErr()) {
                 // Verify it's not an internet issue
@@ -212,7 +210,7 @@ arc::Future<> MentionManager::commentWatcher() {
                     });
                     internet = internetOpt.has_value() && *internetOpt;
                 } else {
-                    internet = co_await xblazeapi::doWeHaveInternet();
+                    internet = co_await doWeHaveInternetCM();
                 }
 
                 if (!internet) {

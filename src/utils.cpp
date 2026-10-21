@@ -1,18 +1,75 @@
 #include "utils.hpp"
 
 #include <Geode/Geode.hpp>
+#include <fmt/format.h>
+#include <fmt/compile.h>
+#include <arc/prelude.hpp>
 #include <string>
 
 #include <xblazegmd.geode-api/include/XblazeAPI.hpp>
 
 using namespace geode::prelude;
 
+arc::Future<ServerResponse> requestGDServersCM(
+    const std::string& endpoint,
+    const std::string& body,
+    int timeout
+) {
+    auto req = web::WebRequest()
+        .userAgent("")
+        .bodyString(body)
+        .timeout(std::chrono::seconds(timeout));
+
+    auto res = co_await req.post(fmt::format("https://www.boomlings.com/database/{}", endpoint));
+    if (!res.ok()) {
+        log::error("Failed to request endpoint '{}' ({}): {}", endpoint, res.code(), res.errorMessage());
+        co_return Err(res.code());
+    }
+
+    auto ret = res.string();
+
+    if (ret.isErr()) {
+        log::error("Could not get response from endpoint '{}': {}", endpoint, ret.unwrapErr());
+        co_return Err(0);
+    }
+    auto unwrapped = ret.unwrap();
+    auto num = utils::numFromString<int>(unwrapped);
+    if (num.isOk() && num.unwrap() < 0) {
+        co_return Err(num.unwrap());
+    }
+
+    co_return Ok(unwrapped);
+}
+
+std::string buildBodyStringCM(std::initializer_list<std::pair<std::string, std::string>> body) {
+    fmt::memory_buffer out;
+
+    for (const auto& [k, v] : body)
+        fmt::format_to(std::back_inserter(out), FMT_COMPILE("{}={}&"), k, v);
+
+    out.resize(out.size() - 1);
+    return fmt::to_string(out);
+}
+
+arc::Future<bool> doWeHaveInternetCM(const std::string& url) {
+    auto check = co_await web::WebRequest()
+        .userAgent("GeometryDash/2.2091")
+        .timeout(std::chrono::seconds(10))
+        .get(url);
+    co_return check.ok();
+}
+
 utils::StringMap<std::string> formatKV(
     const std::string& str,
     geode::utils::StringMap<std::string> map,
     const std::string& sep
 ) {
-    auto kv = xblazeapi::formatResponse(str, sep);
+    auto pieces = string::split(str, sep);
+    std::unordered_map<std::string, std::string> kv;
+    kv.reserve(pieces.size() / 2);
+    for (size_t i = 0; i < pieces.size(); i += 2) {
+        kv.emplace(pieces[i], pieces[i + 1]);
+    }
 
     utils::StringMap<std::string> ret;
     for (const auto& [k, v] : kv) {
@@ -39,7 +96,7 @@ void setListSetting(const std::string& setting, const std::vector<std::string> v
 }
 
 arc::Future<Result<int>> getSpecialID(LevelType type) {
-    auto res = co_await xblazeapi::requestGDServers("getGJLevels21.php", xblazeapi::buildBodyString({
+    auto res = co_await requestGDServersCM("getGJLevels21.php", xblazeapi::buildBodyString({
         { "type", utils::numToString(static_cast<int>(type)) },
         { "secret", xblazeapi::SECRET }
     }));
@@ -61,7 +118,7 @@ arc::Future<Result<int>> getSpecialID(LevelType type) {
 
 arc::Future<> pauseUntilWeHaveInternet() {
     while (true) {
-        if (co_await xblazeapi::doWeHaveInternet()) break;
-        co_await xblazeapi::sleepSecs(3);
+        if (co_await doWeHaveInternetCM()) break;
+        co_await arc::sleep(asp::Duration::fromSecs(5));
     }
 }
