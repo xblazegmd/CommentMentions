@@ -45,7 +45,7 @@ bool MentionPopup::init(const CommentObject& obj) {
     commentArea->addChildAtPosition(bg, Anchor::Center);
 
     // Text Area
-    auto textArea = RichTextArea::create(this->getCommentWithHighlight());
+    auto textArea = SimpleTextArea::create(this->getCommentWithHighlight());
     textArea->setWidth(m_commentAreaSize.width - 30);
     textArea->setWrappingMode(WrappingMode::CUTOFF_WRAP);
     textArea->setAlignment(cocos2d::kCCTextAlignmentCenter);
@@ -136,9 +136,9 @@ std::string MentionPopup::getCommentWithHighlight() {
     for (auto it = begin; it != end; ++it) {
         auto match = *it;
         ret += m_obj.commentt.substr(last, match.position() - last);
-        ret += "<color=#96FFFF>";
+        ret += "<cf>";
         ret += match.str();
-        ret += "</color>";
+        ret += "</c>";
         last = match.position() + match.length();
     }
 
