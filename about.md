@@ -1,5 +1,5 @@
-# CommentMentions
-A daily chatter's favorite mod :)
+# User Mentions!
+Adds @mentioning to Geometry Dash!
 
 ## Features
 - Get notified every time someone mentions you

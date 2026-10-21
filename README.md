@@ -1,8 +1,7 @@
 <img src="logo.png" width="80" height=auto alt="A beautiful logo that should be in a museum imo" />
 
-# Comment Mentions
-###### (will prob rename to smth like "User Mentions!" later)
-Adds the @mentioning feature to Geometry Dash!
+# User Mentions!
+Adds @mentioning to Geometry Dash!
 
 ## Features
 - Get a notifications every time someone **mentions you** on a comment or group chat
