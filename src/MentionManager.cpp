@@ -264,7 +264,7 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChatMessages() {
                 accountID,
                 stoicm(split[0], -1),
                 asp::Instant::fromRawNanos(
-                    asp::time_detail::secs_to_nanos(stoicm(split[4], 0))
+                    asp::time_detail::secs_to_nanos(stoicm(split[3], 0))
                 )
             };
             if (mentionExists(mention)) continue;
