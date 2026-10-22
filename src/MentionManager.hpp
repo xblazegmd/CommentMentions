@@ -6,7 +6,6 @@
 
 #include <vector>
 #include <deque>
-#include <regex>
 
 enum class TargetType {
     Level,
@@ -30,7 +29,6 @@ private:
     std::vector<Target> m_targets;
     std::deque<UserMention> m_mentions;
     std::vector<UserMention> m_queue;
-    std::regex m_aliasRegex = std::regex(R"(\b@xblaze\b)"); // Temporary while I'm testing
 
     arc::Future<> poll();
 
