@@ -64,7 +64,6 @@ arc::Future<> MentionManager::init() {
 
     // Load group chats
     auto accMan = GJAccountManager::get();
-
     auto res = co_await requestGDServersCM("getGJThreads.php", buildBodyStringCM({
         { "accountID", utils::numToString(accMan->m_accountID) },
         { "gjp2", accMan->m_GJP2 },
@@ -184,6 +183,7 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments() {
                 )
             };
             if (mentionExists(mention)) continue;
+            if (Mod::get()->getSettingValue<bool>("ignore-self") && isOwnMention(mention)) continue;
 
             addMention(mention);
             m_queue.push_back(mention);
@@ -250,6 +250,7 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChatMessages() {
                 )
             };
             if (mentionExists(mention)) continue;
+            if (Mod::get()->getSettingValue<bool>("ignore-self") && isOwnMention(mention)) continue;
 
             addMention(mention);
             m_queue.push_back(mention);
@@ -279,8 +280,12 @@ int MentionManager::nextGroupChat() {
     return m_groupChats[current];
 }
 
-bool MentionManager::containsMention(const std::string& message) {
+inline bool MentionManager::containsMention(const std::string& message) {
     return string::contains(message, "@xblaze");
+}
+
+inline bool MentionManager::isOwnMention(const UserMention& mention) {
+    return mention.accountID == GJAccountManager::get()->m_accountID;
 }
 
 bool MentionManager::mentionExists(const UserMention& other) {

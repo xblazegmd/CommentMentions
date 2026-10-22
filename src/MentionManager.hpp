@@ -36,7 +36,8 @@ private:
     int nextLevel();
     int nextGroupChat();
 
-    bool containsMention(const std::string& message);
+    inline bool containsMention(const std::string& message);
+    inline bool isOwnMention(const UserMention& mention);
 
     bool mentionExists(const UserMention& mention);
     void addMention(const UserMention& mention);
