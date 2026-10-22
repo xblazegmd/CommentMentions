@@ -52,7 +52,6 @@ arc::Future<> MentionManager::getLevels() {
                 log::error("Could not get level ID: {}", num.unwrapErr());
                 continue;
             }
-
             m_targets.emplace_back(TargetType::Level, num.unwrap());
         }
     }
@@ -123,8 +122,6 @@ void MentionManager::stop() {
 arc::Future<> MentionManager::poll() {
     while (true) {
         for (const auto& target : m_targets) {
-            co_await arc::sleep(asp::Duration::fromSecs(10));
-
             auto res = target.type == TargetType::Level ?
                 co_await searchLevelComments(target.id) :
                 co_await searchGroupChat(target.id);
@@ -149,6 +146,8 @@ arc::Future<> MentionManager::poll() {
                 }
                 m_queue.clear();
             }
+
+            co_await arc::sleep(asp::Duration::fromSecs(10));
         }
     }
 }
@@ -185,7 +184,6 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments(int levelID) {
                     asp::time_detail::secs_to_nanos(stoicm(commentStr["15"], 0))
                 )
             };
-
             if (mentionExists(mention)) continue;
 
             addMention(mention);
@@ -240,17 +238,29 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
         }
 
         if (containsMention(str.unwrap())) {
+            int accountID = stoicm(split[1], -1);
+
+            // Find username
+            auto users = string::split(splitMetadata[1], "1");
+            std::string username;
+            for (const auto& user : users) {
+                auto data = formatResponseCM(user, ":");
+                if (stoicm(data["16"], 0) == accountID) {
+                    username = data["1"];
+                    break;
+                }
+            }
+
             auto mention = UserMention{
                 MentionType::DM,
                 str.unwrap(),
-                "[USER]", // TODO: Get actual username
-                stoicm(split[1], -1),
+                username,
+                accountID,
                 stoicm(split[0], -1),
                 asp::Instant::fromRawNanos(
                     asp::time_detail::secs_to_nanos(stoicm(split[4], 0))
                 )
             };
-
             if (mentionExists(mention)) continue;
 
             addMention(mention);
