@@ -100,10 +100,6 @@ void MentionManager::start() {
     );
 }
 
-void MentionManager::stop() {
-    m_pollTask.cancel();
-}
-
 void MentionManager::save() {
     log::info("Saving mentions...");
     Mod::get()->setSavedValue("mention-history", std::ranges::to<std::vector<UserMention>>(m_mentions));

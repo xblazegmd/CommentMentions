@@ -10,12 +10,9 @@
 class MentionManager {
 public:
     static MentionManager* get();
-
     arc::Future<> init();
 
     void start();
-    void stop();
-
     void save();
 private:
     geode::async::TaskHolder<> m_pollTask;
