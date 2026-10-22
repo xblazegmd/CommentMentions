@@ -25,7 +25,7 @@ arc::Future<> MentionManager::getLevels() {
     auto addSpecialLevel = [this](LevelType type) -> arc::Future<> {
         auto id = co_await getSpecialID(type);
         if (id.isOk()) {
-            m_targets.emplace_back(TargetType::Level, id.unwrap());
+            m_levels.push_back(id.unwrap());
         } else {
             log::error("Could not get level ID: {}", id.unwrapErr());
         }
@@ -44,7 +44,7 @@ arc::Future<> MentionManager::getLevels() {
     if (mod->getSettingValue<bool>("use-custom-ids")) {
         auto ids = mod->getSettingValue<std::string>("custom-ids");
         auto split = string::split(ids, ",");
-        m_targets.reserve(split.size());
+        m_levels.reserve(split.size());
 
         for (const auto& id : split) {
             auto num = stoicm(string::trim(id));
@@ -52,7 +52,7 @@ arc::Future<> MentionManager::getLevels() {
                 log::error("Could not get level ID: {}", num.unwrapErr());
                 continue;
             }
-            m_targets.emplace_back(TargetType::Level, num.unwrap());
+            m_levels.push_back(num.unwrap());
         }
     }
 }
@@ -98,16 +98,11 @@ arc::Future<> MentionManager::getGroupChats() {
             log::error("Could not get thread ID: {}", id.unwrapErr());
             continue;
         }
-        m_targets.emplace_back(TargetType::GroupChat, id.unwrap());
+        m_groupChats.push_back(id.unwrap());
     }
 }
 
 void MentionManager::start() {
-    if (m_targets.empty()) {
-        log::error("No targets were found");
-        return;
-    }
-
     m_pollTask.spawn(
         "User Mentions Mention Manager",
         poll(),
@@ -121,38 +116,45 @@ void MentionManager::stop() {
 
 arc::Future<> MentionManager::poll() {
     while (true) {
-        for (const auto& target : m_targets) {
-            auto res = target.type == TargetType::Level ?
-                co_await searchLevelComments(target.id) :
-                co_await searchGroupChat(target.id);
+        geode::queueInMainThread([this] {
+            pushNotification("Checking", "Looking for mentions. Next check in 60 seconds");
+        });
 
+        if (!m_levels.empty()) {
+            auto res = co_await searchLevelComments();
             if (res.isErr()) {
                 log::error("{}", res.unwrapErr());
-                geode::queueInMainThread([res] {
-                    Notification::create(fmt::format("{}", res.unwrapErr()))->show();
-                });
             }
-
-            if (!Mod::get()->getSettingValue<bool>("show-while-playing") && PlayLayer::get()) continue;
-            if (!Mod::get()->getSettingValue<bool>("show-on-editor") && LevelEditorLayer::get()) continue;
-
-            if (!m_queue.empty()) {
-                if (m_queue.size() > Mod::get()->getSettingValue<int>("max-notifications")) {
-                    notifyMentions(m_queue.size());
-                } else {
-                    for (const auto& mention : m_queue) {
-                        notifyMention(mention);
-                    }
-                }
-                m_queue.clear();
-            }
-
-            co_await arc::sleep(asp::Duration::fromSecs(10));
         }
+
+        if (!m_groupChats.empty()) {
+            auto res = co_await searchGroupChatMessages();
+            if (res.isErr()) {
+                log::error("{}", res.unwrapErr());
+            }
+        }
+
+        if (!Mod::get()->getSettingValue<bool>("show-while-playing") && PlayLayer::get()) continue;
+        if (!Mod::get()->getSettingValue<bool>("show-on-editor") && LevelEditorLayer::get()) continue;
+
+        if (!m_queue.empty()) {
+            if (m_queue.size() > Mod::get()->getSettingValue<int>("max-notifications")) {
+                notifyMentions(m_queue.size());
+            } else {
+                for (const auto& mention : m_queue) {
+                    notifyMention(mention);
+                }
+            }
+            m_queue.clear();
+        }
+
+        co_await arc::sleep(asp::Duration::fromSecs(60));
     }
 }
 
-arc::Future<geode::Result<>> MentionManager::searchLevelComments(int levelID) {
+arc::Future<geode::Result<>> MentionManager::searchLevelComments() {
+    int levelID = nextLevel();
+
     auto res = co_await requestGDServersCM("getGJComments21.php", buildBodyStringCM({
         { "levelID", utils::numToString(levelID) },
         { "page", "0" },
@@ -194,7 +196,9 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments(int levelID) {
     co_return Ok();
 }
 
-arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
+arc::Future<geode::Result<>> MentionManager::searchGroupChatMessages() {
+    int threadID = nextGroupChat();
+
     // There has to be a better way to get this
     auto accountID = co_await async::waitForMainThread([] {
         return GJAccountManager::get()->m_accountID;
@@ -270,6 +274,26 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
     }
     
     co_return Ok();
+}
+
+int MentionManager::nextLevel() {
+    int current = m_levelIdx;
+    m_levelIdx++;
+    
+    if (m_levelIdx >= m_levels.size())
+        m_levelIdx = 0;
+    
+    return m_levels[current];
+}
+
+int MentionManager::nextGroupChat() {
+    int current = m_groupChatIdx;
+    m_groupChatIdx++;
+    
+    if (m_groupChatIdx >= m_groupChats.size())
+        m_groupChatIdx = 0;
+    
+    return m_groupChats[current];
 }
 
 bool MentionManager::containsMention(const std::string& message) {
