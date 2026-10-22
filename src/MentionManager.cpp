@@ -237,6 +237,9 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChatMessages() {
             continue;
         }
 
+        // If the message is deleted (5th list item is 1) skip it
+        if (split[4] == "1") continue;
+
         auto str = base64::decodeString(split[2]);
         if (str.isErr()) {
             log::error("Could not decode base64: {}", str.unwrapErr());
