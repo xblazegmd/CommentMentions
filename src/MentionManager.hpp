@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Geode/utils/async.hpp>
+
+#include <core/UserMention.hpp>
 #include <vector>
 
 enum class TargetType {
@@ -25,4 +27,9 @@ private:
     std::vector<Target> m_targets;
 
     arc::Future<> poll();
+
+    arc::Future<geode::Result<>> searchLevelComments(int levelID);
+    arc::Future<geode::Result<>> searchGroupChat(int threadID);
+
+    bool containsMention(const std::string& message);
 };

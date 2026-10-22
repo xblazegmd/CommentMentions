@@ -1,7 +1,9 @@
 #include "MentionManager.hpp"
 
 #include <Geode/Geode.hpp>
+#include <Geode/Result.hpp>
 #include <Geode/utils/async.hpp>
+#include <Geode/utils/base64.hpp>
 
 #include <utils.hpp>
 
@@ -107,7 +109,106 @@ void MentionManager::start() {
 arc::Future<> MentionManager::poll() {
     while (true) {
         for (const auto& target : m_targets) {
-            // TODO: Actual polling
+            auto res = target.type == TargetType::Level ?
+                co_await searchLevelComments(target.id) :
+                co_await searchGroupChat(target.id);
+
+            if (res.isErr()) {
+                // TODO: Error handling
+                log::error("{}", res.unwrapErr());
+                continue;
+            }
+
+            // Skip if playing/on editor
+            if (!Mod::get()->getSettingValue<bool>("show-while-playing") && PlayLayer::get()) continue;
+            if (!Mod::get()->getSettingValue<bool>("show-on-editor") && LevelEditorLayer::get()) continue;
+
+            // TODO: Notifying
         }
     }
+}
+
+arc::Future<geode::Result<>> MentionManager::searchLevelComments(int levelID) {
+    auto res = co_await requestGDServersCM("getGJComments21.php", buildBodyStringCM({
+        { "levelID", utils::numToString(levelID) },
+        { "page", "0" },
+        { "secret", SECRET }
+    }));
+    if (res.isErr())
+        co_return Err("Could not get comments for level ID '{}': {}", levelID, res.unwrapErr());
+
+    auto comments = string::split(res.unwrap(), "|");
+    for (const auto& comment : comments) {
+        auto split = string::split(comment, ":");
+        auto commentStr = formatResponseCM(split[0], "~");
+        auto authorStr = formatResponseCM(split[1], "~");
+
+        auto str = base64::decodeString(commentStr["2"]);
+        if (str.isErr()) {
+            log::error("Could not decode base64: {}", str.unwrapErr());
+            continue;
+        }
+
+        if (containsMention(str.unwrap())) {
+            // TODO: Store mention
+        }
+    }
+
+    co_return Ok();
+}
+
+arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
+    // There has to be a better way to get this
+    auto accountID = co_await async::waitForMainThread([] {
+        return GJAccountManager::get()->m_accountID;
+    });
+    if (!accountID) {
+        co_return Err("Could not get group chats (failed to get account ID)");
+    }
+
+    auto gjp2 = co_await async::waitForMainThread([] {
+        return GJAccountManager::get()->m_GJP2;
+    });
+    if (!gjp2) {
+        co_return Err("Could not get group chats (failed to get gjp2)");
+    }
+
+    auto res = co_await requestGDServersCM("getGJThreadMessages.php", buildBodyStringCM({
+        { "accountID", utils::numToString(*accountID) },
+        { "gjp2", *gjp2 },
+        { "secret", SECRET },
+        { "threadID", utils::numToString(threadID) }
+    }));
+    if (res.isErr())
+        co_return Err("Could not get messages for thread ID '{}': {}", threadID, res.unwrapErr());
+
+    auto splitMetadata = string::split(res.unwrap(), "#");
+    auto messages = string::split(splitMetadata[0], "|");
+    for (const auto& message : messages) {
+        auto split = string::split(message, ":");
+
+        // System messages have "accountID" (2nd list item) set to 0
+        // We don't care about those so we skip them
+        if (split[1] == "0") {
+            log::debug("Found system message, skipping...");
+            continue;
+        }
+
+        auto str = base64::decodeString(split[2]);
+        if (str.isErr()) {
+            log::error("Could not decode base64: {}", str.unwrapErr());
+            continue;
+        }
+
+        if (containsMention(str.unwrap())) {
+            // TODO: Store mention
+        }
+    }
+    
+    co_return Ok();
+}
+
+bool MentionManager::containsMention(const std::string& message) {
+    // TODO: Check for mentions
+    return true;
 }
