@@ -19,9 +19,10 @@ MentionManager* MentionManager::get() {
     return instance;
 }
 
-arc::Future<> MentionManager::getLevels() {
+arc::Future<> MentionManager::init() {
     auto mod = Mod::get();
 
+    // Load levels
     auto addSpecialLevel = [this](LevelType type) -> arc::Future<> {
         auto id = co_await getSpecialID(type);
         if (id.isOk()) {
@@ -55,9 +56,8 @@ arc::Future<> MentionManager::getLevels() {
             m_levels.push_back(num.unwrap());
         }
     }
-}
 
-arc::Future<> MentionManager::getGroupChats() {
+    // Load group chats
     auto accountID = co_await async::waitForMainThread([] {
         return GJAccountManager::get()->m_accountID;
     });

@@ -11,8 +11,7 @@ class MentionManager {
 public:
     static MentionManager* get();
 
-    arc::Future<> getLevels();
-    arc::Future<> getGroupChats();
+    arc::Future<> init();
 
     void start();
     void stop();
