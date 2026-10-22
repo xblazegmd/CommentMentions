@@ -179,7 +179,7 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments() {
             auto mention = UserMention{
                 MentionType::Comment,
                 str.unwrap(),
-                authorStr["0"],
+                authorStr["1"],
                 stoicm(authorStr["16"], -1),
                 stoicm(commentStr["6"], -1),
                 asp::Instant::fromRawNanos(
