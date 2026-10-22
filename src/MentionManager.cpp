@@ -103,6 +103,11 @@ arc::Future<> MentionManager::getGroupChats() {
 }
 
 void MentionManager::start() {
+    if (m_targets.empty()) {
+        log::error("No targets were found");
+        return;
+    }
+
     m_pollTask.spawn(
         "User Mentions Mention Manager",
         poll(),
