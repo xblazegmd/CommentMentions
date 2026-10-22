@@ -5,7 +5,7 @@
 #include <Geode/utils/async.hpp>
 #include <Geode/utils/base64.hpp>
 
-#include <core/UserMention.hpp>
+#include <UserMention.hpp>
 #include <utils.hpp>
 
 #include <arc/prelude.hpp>

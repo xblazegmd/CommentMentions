@@ -2,7 +2,7 @@
 
 #include <Geode/utils/async.hpp>
 
-#include <core/UserMention.hpp>
+#include <UserMention.hpp>
 
 #include <vector>
 #include <deque>
