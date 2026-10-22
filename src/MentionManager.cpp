@@ -221,6 +221,7 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
 
     auto splitMetadata = string::split(res.unwrap(), "#");
     auto messages = string::split(splitMetadata[0], "|");
+
     for (const auto& message : messages) {
         auto split = string::split(message, ":");
 
@@ -242,7 +243,7 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
 
             // Find username
             auto users = string::split(splitMetadata[1], "|");
-            std::string username;
+            std::string username = "user";
             for (const auto& user : users) {
                 auto data = formatResponseCM(user, ":");
                 if (stoicm(data["16"], 0) == accountID) {
