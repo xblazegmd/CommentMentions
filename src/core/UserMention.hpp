@@ -19,6 +19,14 @@ struct UserMention {
 
     int messageID;
     asp::Instant date;
+
+    bool operator==(const UserMention& other) const {
+        return this->messageID == other.messageID;
+    }
+
+    bool operator !=(const UserMention& other) const {
+        return !(*this == other);
+    }
 };
 
 template<>
