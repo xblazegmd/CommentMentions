@@ -137,7 +137,7 @@ arc::Future<> MentionManager::poll() {
                 if (m_queue.size() > Mod::get()->getSettingValue<int>("max-notifications")) {
                     notifyMentions(m_queue.size());
                 } else {
-                    for (const auto& mention : m_mentions) {
+                    for (const auto& mention : m_queue) {
                         notifyMention(mention);
                     }
                 }
