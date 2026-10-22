@@ -1,0 +1,113 @@
+#include "MentionManager.hpp"
+
+#include <Geode/Geode.hpp>
+#include <Geode/utils/async.hpp>
+
+#include <utils.hpp>
+
+using namespace geode::prelude;
+
+MentionManager* MentionManager::get() {
+    static MentionManager* instance = new MentionManager();
+    return instance;
+}
+
+arc::Future<> MentionManager::getLevels() {
+    auto mod = Mod::get();
+
+    auto addSpecialLevel = [this](LevelType type) -> arc::Future<> {
+        auto id = co_await getSpecialID(type);
+        if (id.isOk()) {
+            m_targets.emplace_back(TargetType::Level, id.unwrap());
+        } else {
+            log::error("Could not get level ID: {}", id.unwrapErr());
+        }
+    };
+
+    if (mod->getSettingValue<bool>("daily-lvl")) {
+        co_await addSpecialLevel(LevelType::Daily);
+    }
+    if (mod->getSettingValue<bool>("weekly-demon")) {
+        co_await addSpecialLevel(LevelType::Weekly);
+    }
+    if (mod->getSettingValue<bool>("event-lvl")) {
+        co_await addSpecialLevel(LevelType::Event);
+    }
+
+    if (mod->getSettingValue<bool>("use-custom-ids")) {
+        auto ids = mod->getSettingValue<std::string>("custom-ids");
+        auto split = string::split(ids, ",");
+        m_targets.reserve(split.size());
+
+        for (const auto& id : split) {
+            auto num = stoicm(string::trim(id));
+            if (num.isErr()) {
+                log::error("Could not get level ID: {}", num.unwrapErr());
+                continue;
+            }
+
+            m_targets.emplace_back(TargetType::Level, num.unwrap());
+        }
+    }
+}
+
+arc::Future<> MentionManager::getGroupChats() {
+    auto accountID = co_await async::waitForMainThread([] {
+        return GJAccountManager::get()->m_accountID;
+    });
+    if (!accountID) {
+        log::error("Could not get group chats (failed to get account ID)");
+        co_return;
+    }
+
+    auto gjp2 = co_await async::waitForMainThread([] {
+        return GJAccountManager::get()->m_GJP2;
+    });
+    if (!gjp2) {
+        log::error("Could not get group chats (failed to get gjp2)");
+        co_return;
+    }
+
+    auto res = co_await requestGDServersCM("getGJThreads.php", buildBodyStringCM({
+        { "accountID", utils::numToString(*accountID) },
+        { "gjp2", *gjp2 },
+        { "secret", SECRET }
+    }));
+
+    if (res.isErr()) {
+        log::error("Failed to get group chats: {}", res.unwrapErr());
+        co_return;
+    }
+
+    auto threads = string::split(res.unwrap(), "|");
+    for (const auto& thread : threads) {
+        auto split = string::split(thread, ":");
+        if (split[12] == "1") {
+            log::debug("Thread '{}' is not a group chat, skipping...", split[0]);
+            continue;
+        }
+
+        auto id = stoicm(split[0]);
+        if (id.isErr()) {
+            log::error("Could not get thread ID: {}", id.unwrapErr());
+            continue;
+        }
+        m_targets.emplace_back(TargetType::GroupChat, id.unwrap());
+    }
+}
+
+void MentionManager::start() {
+    m_pollTask.spawn(
+        "User Mentions Mention Manager",
+        poll(),
+        [] {}
+    );
+}
+
+arc::Future<> MentionManager::poll() {
+    while (true) {
+        for (const auto& target : m_targets) {
+            // TODO: Actual polling
+        }
+    }
+}
