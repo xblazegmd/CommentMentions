@@ -23,7 +23,9 @@ arc::Future<> MentionManager::init() {
     auto mod = Mod::get();
 
     // Load mentions
-    m_mentions = mod->getSavedValue<std::deque<UserMention>>("mention-history");
+    m_mentions = std::ranges::to<std::deque<UserMention>>(
+        mod->getSavedValue<std::vector<UserMention>>("mention-history")
+    );
 
     // Load levels
     auto addSpecialLevel = [this](LevelType type) -> arc::Future<> {
@@ -119,7 +121,7 @@ void MentionManager::stop() {
 
 void MentionManager::save() {
     log::info("Saving mentions...");
-    Mod::get()->setSavedValue("mention-history", m_mentions);
+    Mod::get()->setSavedValue("mention-history", std::ranges::to<std::vector<UserMention>>(m_mentions));
     log::info("Sucessfully saved mentions!");
 }
 
