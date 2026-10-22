@@ -241,7 +241,7 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
             int accountID = stoicm(split[1], -1);
 
             // Find username
-            auto users = string::split(splitMetadata[1], "1");
+            auto users = string::split(splitMetadata[1], "|");
             std::string username;
             for (const auto& user : users) {
                 auto data = formatResponseCM(user, ":");
