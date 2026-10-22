@@ -108,9 +108,6 @@ void MentionManager::save() {
 
 arc::Future<> MentionManager::poll() {
     while (true) {
-        geode::queueInMainThread([this] {
-            pushNotification("Checking", "Looking for mentions. Next check in 60 seconds");
-        });
 
         if (!m_levels.empty()) {
             auto res = co_await searchLevelComments();
