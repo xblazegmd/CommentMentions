@@ -63,25 +63,11 @@ arc::Future<> MentionManager::init() {
     }
 
     // Load group chats
-    auto accountID = co_await async::waitForMainThread([] {
-        return GJAccountManager::get()->m_accountID;
-    });
-    if (!accountID) {
-        log::error("Could not get group chats (failed to get account ID)");
-        co_return;
-    }
-
-    auto gjp2 = co_await async::waitForMainThread([] {
-        return GJAccountManager::get()->m_GJP2;
-    });
-    if (!gjp2) {
-        log::error("Could not get group chats (failed to get gjp2)");
-        co_return;
-    }
+    auto accMan = GJAccountManager::get();
 
     auto res = co_await requestGDServersCM("getGJThreads.php", buildBodyStringCM({
-        { "accountID", utils::numToString(*accountID) },
-        { "gjp2", *gjp2 },
+        { "accountID", utils::numToString(accMan->m_accountID) },
+        { "gjp2", accMan->m_GJP2 },
         { "secret", SECRET }
     }));
 
@@ -210,24 +196,10 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments() {
 arc::Future<geode::Result<>> MentionManager::searchGroupChatMessages() {
     int threadID = nextGroupChat();
 
-    // There has to be a better way to get this
-    auto accountID = co_await async::waitForMainThread([] {
-        return GJAccountManager::get()->m_accountID;
-    });
-    if (!accountID) {
-        co_return Err("Could not get group chats (failed to get account ID)");
-    }
-
-    auto gjp2 = co_await async::waitForMainThread([] {
-        return GJAccountManager::get()->m_GJP2;
-    });
-    if (!gjp2) {
-        co_return Err("Could not get group chats (failed to get gjp2)");
-    }
-
+    auto accMan = GJAccountManager::get();
     auto res = co_await requestGDServersCM("getGJThreadMessages.php", buildBodyStringCM({
-        { "accountID", utils::numToString(*accountID) },
-        { "gjp2", *gjp2 },
+        { "accountID", utils::numToString(accMan->m_accountID) },
+        { "gjp2", accMan->m_GJP2 },
         { "secret", SECRET },
         { "threadID", utils::numToString(threadID) }
     }));
