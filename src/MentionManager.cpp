@@ -22,6 +22,9 @@ MentionManager* MentionManager::get() {
 arc::Future<> MentionManager::init() {
     auto mod = Mod::get();
 
+    // Load mentions
+    m_mentions = mod->getSavedValue<std::deque<UserMention>>("mention-history");
+
     // Load levels
     auto addSpecialLevel = [this](LevelType type) -> arc::Future<> {
         auto id = co_await getSpecialID(type);
@@ -112,6 +115,12 @@ void MentionManager::start() {
 
 void MentionManager::stop() {
     m_pollTask.cancel();
+}
+
+void MentionManager::save() {
+    log::info("Saving mentions...");
+    Mod::get()->setSavedValue("mention-history", m_mentions);
+    log::info("Sucessfully saved mentions!");
 }
 
 arc::Future<> MentionManager::poll() {

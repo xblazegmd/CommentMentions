@@ -15,6 +15,8 @@ public:
 
     void start();
     void stop();
+
+    void save();
 private:
     geode::async::TaskHolder<> m_pollTask;
 
