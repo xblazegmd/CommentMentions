@@ -110,6 +110,10 @@ void MentionManager::start() {
     );
 }
 
+void MentionManager::stop() {
+    m_pollTask.cancel();
+}
+
 arc::Future<> MentionManager::poll() {
     while (true) {
         for (const auto& target : m_targets) {

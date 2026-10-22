@@ -23,7 +23,9 @@ public:
 
     arc::Future<> getLevels();
     arc::Future<> getGroupChats();
+
     void start();
+    void stop();
 private:
     geode::async::TaskHolder<> m_pollTask;
     std::vector<Target> m_targets;
