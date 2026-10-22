@@ -35,6 +35,7 @@ private:
 
     inline bool containsMention(const std::string& message);
     inline bool isOwnMention(const UserMention& mention);
+    inline bool skipMention(const UserMention& mention);
 
     bool mentionExists(const UserMention& mention);
     void addMention(const UserMention& mention);

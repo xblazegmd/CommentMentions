@@ -200,8 +200,7 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments() {
                     asp::time_detail::secs_to_nanos(stoicm(commentStr["15"], 0))
                 )
             };
-            if (mentionExists(mention)) continue;
-            if (Mod::get()->getSettingValue<bool>("ignore-self") && isOwnMention(mention)) continue;
+            if (skipMention(mention)) continue; // moved the sea of checks elsewhere
 
             addMention(mention);
             m_queue.push_back(mention);
@@ -270,8 +269,7 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChatMessages() {
                     asp::time_detail::secs_to_nanos(stoicm(split[3], 0))
                 )
             };
-            if (mentionExists(mention)) continue;
-            if (Mod::get()->getSettingValue<bool>("ignore-self") && isOwnMention(mention)) continue;
+            if (skipMention(mention)) continue; // ditto
 
             addMention(mention);
             m_queue.push_back(mention);
@@ -307,6 +305,13 @@ inline bool MentionManager::containsMention(const std::string& message) {
 
 inline bool MentionManager::isOwnMention(const UserMention& mention) {
     return mention.accountID == GJAccountManager::get()->m_accountID;
+}
+
+inline bool MentionManager::skipMention(const UserMention& mention) {
+    return (
+        mentionExists(mention) ||
+        (Mod::get()->getSettingValue<bool>("ignore-self") && isOwnMention(mention))
+    );
 }
 
 bool MentionManager::mentionExists(const UserMention& other) {
