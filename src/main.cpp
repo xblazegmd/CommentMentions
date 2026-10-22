@@ -12,6 +12,10 @@
 
 using namespace geode::prelude;
 
+$on_mod(DataSaved) {
+    MentionManager::get()->save();
+}
+
 $on_game(Loaded) {
     if (!Mod::get()->setSavedValue("random-ahh-popup", true)) {
         FLAlertLayer::create(
@@ -43,10 +47,7 @@ $on_game(Loaded) {
         }
 
         auto mentionManager = MentionManager::get();
-
-        // Load levels and group chats
-        co_await mentionManager->getLevels();
-        co_await mentionManager->getGroupChats();
+        co_await mentionManager->init();
 
         // Bit of delay to not get rate-limited
         co_await arc::sleep(asp::Duration::fromSecs(1));
