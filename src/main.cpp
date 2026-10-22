@@ -46,8 +46,10 @@ $on_game(Loaded) {
 
         // Load levels and group chats
         co_await mentionManager->getLevels();
-        co_await arc::sleep(asp::Duration::fromSecs(1));
         co_await mentionManager->getGroupChats();
+
+        // Bit of delay to not get rate-limited
+        co_await arc::sleep(asp::Duration::fromSecs(1));
 
         // Start looking for mentions
         mentionManager->start();
