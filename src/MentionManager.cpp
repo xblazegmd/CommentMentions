@@ -107,19 +107,44 @@ void MentionManager::save() {
 }
 
 arc::Future<> MentionManager::poll() {
-    while (true) {
+    // So I don't have to have a copy-paste of my error handling logic
+    // If it returns true then stop polling
+    auto handleError = [this](const std::string& error) -> arc::Future<bool> {
+        if (!co_await doWeHaveInternet()) {
+            log::error("No internet connection!");
+            co_await pauseUntilWeHaveInternet();
+            log::info("Back online");
+            co_return false;
+        }
 
+        if (error == "Rate limited") {
+            geode::queueInMainThread([] {
+                Notification::create(
+                    "User Mentions: Rate limited by the Geometry Dash servers\nPlease restart your game once the rate limit ends",
+                    NotificationIcon::Error
+                )->show();
+            });
+            co_return true;
+        }
+
+        log::error("{}", error);
+        co_return false;
+    };
+
+    while (true) {
         if (!m_levels.empty()) {
             auto res = co_await searchLevelComments();
             if (res.isErr()) {
-                log::error("{}", res.unwrapErr());
+                auto exit = co_await handleError(res.unwrapErr());
+                if (exit) co_return;
             }
         }
 
         if (!m_groupChats.empty()) {
             auto res = co_await searchGroupChatMessages();
             if (res.isErr()) {
-                log::error("{}", res.unwrapErr());
+                auto exit = co_await handleError(res.unwrapErr());
+                if (exit) co_return;
             }
         }
 
@@ -318,4 +343,13 @@ void MentionManager::pushNotification(const std::string& title, const std::strin
         "particle_299_001.png",
         true
     );
+}
+
+arc::Future<bool> MentionManager::doWeHaveInternet() {
+    #ifdef GEODE_IS_MOBILE
+    if (Mod::get()->getSettingValue<bool>("internal-internet-check")) {
+        co_return GameToolbox::doWeHaveInternet();
+    }
+    #endif
+    co_return co_await doWeHaveInternetCM();
 }

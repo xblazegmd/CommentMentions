@@ -42,4 +42,6 @@ private:
     void notifyMention(const UserMention& mention);
     void notifyMentions(int mentions);
     void pushNotification(const std::string& title, const std::string& message);
+
+    arc::Future<bool> doWeHaveInternet();
 };
