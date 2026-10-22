@@ -5,7 +5,11 @@
 #include <Geode/utils/async.hpp>
 #include <Geode/utils/base64.hpp>
 
+#include <core/UserMention.hpp>
 #include <utils.hpp>
+
+#include <asp/time.hpp>
+#include <regex>
 
 using namespace geode::prelude;
 
@@ -123,7 +127,16 @@ arc::Future<> MentionManager::poll() {
             if (!Mod::get()->getSettingValue<bool>("show-while-playing") && PlayLayer::get()) continue;
             if (!Mod::get()->getSettingValue<bool>("show-on-editor") && LevelEditorLayer::get()) continue;
 
-            // TODO: Notifying
+            if (!m_queue.empty()) {
+                if (m_queue.size() > Mod::get()->getSettingValue<int>("max-notifications")) {
+                    notifyMentions(m_queue.size());
+                } else {
+                    for (const auto& mention : m_mentions) {
+                        notifyMention(mention);
+                    }
+                }
+                m_queue.clear();
+            }
         }
     }
 }
@@ -150,7 +163,19 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments(int levelID) {
         }
 
         if (containsMention(str.unwrap())) {
-            // TODO: Store mention
+            auto mention = UserMention{
+                MentionType::Comment,
+                str.unwrap(),
+                authorStr["0"],
+                stoicm(authorStr["16"], -1),
+                stoicm(commentStr["6"], -1),
+                asp::Instant::fromRawNanos(stoicm(commentStr["15"], 0) * 1e9)
+            };
+
+            if (mentionExists(mention)) continue;
+
+            addMention(mention);
+            m_queue.push_back(mention);
         }
     }
 
@@ -201,7 +226,19 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
         }
 
         if (containsMention(str.unwrap())) {
-            // TODO: Store mention
+            auto mention = UserMention{
+                MentionType::DM,
+                str.unwrap(),
+                "[USER]", // TODO: Get actual username
+                stoicm(split[1], -1),
+                stoicm(split[0], -1),
+                asp::Instant::fromRawNanos(stoicm(split[4], 0) * 1e9)
+            };
+
+            if (mentionExists(mention)) continue;
+
+            addMention(mention);
+            m_queue.push_back(mention);
         }
     }
     
@@ -209,6 +246,44 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
 }
 
 bool MentionManager::containsMention(const std::string& message) {
-    // TODO: Check for mentions
-    return true;
+    return std::regex_search(message, m_aliasRegex);
+}
+
+bool MentionManager::mentionExists(const UserMention& other) {
+    for (const auto& mention : m_mentions) {
+        if (mention == other) {
+            log::info("Mention under message ID '{}' was previously detected, skipping...", mention.messageID);
+            return true;
+        }
+    }
+    return false;
+}
+
+void MentionManager::addMention(const UserMention& mention) {
+    m_mentions.push_front(mention);
+    if (m_mentions.size() > 20) {
+        m_mentions.pop_back();
+    }
+}
+
+void MentionManager::notifyMention(const UserMention& mention) {
+    geode::queueInMainThread([this, mention] {
+        pushNotification(fmt::format("@{} mentioned you!", mention.username), mention.message);
+    });
+}
+
+void MentionManager::notifyMentions(int mentions) {
+    geode::queueInMainThread([this, mentions] {
+        const std::string msg = random::chance(.1f) ? "Never gonna give you up!" : "Check them out!";
+        pushNotification(fmt::format("{} new mentions!", mentions), msg);
+    });
+}
+
+void MentionManager::pushNotification(const std::string& title, const std::string& message) {
+    AchievementNotifier::sharedState()->notifyAchievement(
+        title.c_str(),
+        message.c_str(),
+        "particle_299_001.png",
+        true
+    );
 }

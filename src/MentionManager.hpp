@@ -3,7 +3,10 @@
 #include <Geode/utils/async.hpp>
 
 #include <core/UserMention.hpp>
+
 #include <vector>
+#include <deque>
+#include <regex>
 
 enum class TargetType {
     Level,
@@ -25,6 +28,9 @@ public:
 private:
     geode::async::TaskHolder<> m_pollTask;
     std::vector<Target> m_targets;
+    std::deque<UserMention> m_mentions;
+    std::vector<UserMention> m_queue;
+    std::regex m_aliasRegex = std::regex(R"(\b@xblaze\b)"); // Temporary while I'm testing
 
     arc::Future<> poll();
 
@@ -32,4 +38,11 @@ private:
     arc::Future<geode::Result<>> searchGroupChat(int threadID);
 
     bool containsMention(const std::string& message);
+
+    bool mentionExists(const UserMention& mention);
+    void addMention(const UserMention& mention);
+
+    void notifyMention(const UserMention& mention);
+    void notifyMentions(int mentions);
+    void pushNotification(const std::string& title, const std::string& message);
 };
