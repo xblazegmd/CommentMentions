@@ -10,6 +10,7 @@
 
 #include <arc/prelude.hpp>
 #include <asp/time.hpp>
+#include <asp/time/detail.hpp>
 
 using namespace geode::prelude;
 
@@ -180,7 +181,9 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments(int levelID) {
                 authorStr["0"],
                 stoicm(authorStr["16"], -1),
                 stoicm(commentStr["6"], -1),
-                asp::Instant::fromRawNanos(stoicm(commentStr["15"], 0) * 1e9)
+                asp::Instant::fromRawNanos(
+                    asp::time_detail::secs_to_nanos(stoicm(commentStr["15"], 0))
+                )
             };
 
             if (mentionExists(mention)) continue;
@@ -243,7 +246,9 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
                 "[USER]", // TODO: Get actual username
                 stoicm(split[1], -1),
                 stoicm(split[0], -1),
-                asp::Instant::fromRawNanos(stoicm(split[4], 0) * 1e9)
+                asp::Instant::fromRawNanos(
+                    asp::time_detail::secs_to_nanos(stoicm(split[4], 0))
+                )
             };
 
             if (mentionExists(mention)) continue;
