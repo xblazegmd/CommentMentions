@@ -1,3 +1,4 @@
+#if 0
 #include "MentionNode.hpp"
 
 #include <core/MentionManager.hpp>
@@ -132,3 +133,4 @@ std::string MentionNode::getCommentPreview() {
     }
     return fmt::format("\"{}\"", comment);
 }
+#endif

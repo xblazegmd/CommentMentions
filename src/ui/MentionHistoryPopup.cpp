@@ -1,3 +1,4 @@
+#if 0
 #include "MentionHistoryPopup.hpp"
 
 #include <Geode/Geode.hpp>
@@ -106,3 +107,4 @@ void MentionHistoryPopup::populateList() {
     m_list->m_contentLayer->updateLayout();
     m_list->moveToTop();
 }
+#endif

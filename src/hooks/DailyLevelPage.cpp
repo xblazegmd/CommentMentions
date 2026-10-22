@@ -1,3 +1,4 @@
+#if 0
 #include <Geode/Geode.hpp>
 #include <Geode/Enums.hpp>
 #include <Geode/utils/async.hpp>
@@ -34,3 +35,4 @@ class $modify(DLPHook, DailyLevelPage) {
         }
     }
 };
+#endif

@@ -1,3 +1,4 @@
+#if 0
 #include "MentionPopup.hpp"
 
 #include <Geode/Geode.hpp>
@@ -145,3 +146,4 @@ std::string MentionPopup::getCommentWithHighlight() {
     ret += m_obj.commentt.substr(last);
     return ret;
 }
+#endif

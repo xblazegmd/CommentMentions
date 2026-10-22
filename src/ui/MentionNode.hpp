@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 
 #include <Geode/Geode.hpp>
 #include <core/CommentObject.hpp>
@@ -15,3 +16,4 @@ private:
     bool init(const CommentObject& obj, float width);
     std::string getCommentPreview();
 };
+#endif

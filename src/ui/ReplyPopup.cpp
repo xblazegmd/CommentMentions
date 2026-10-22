@@ -1,3 +1,4 @@
+#if 0
 #include "ReplyPopup.hpp"
 
 #include <Geode/Enums.hpp>
@@ -168,3 +169,4 @@ ReplyUploadPopup::~ReplyUploadPopup() {
         glm->m_commentUploadDelegate = nullptr;
     }
 }
+#endif

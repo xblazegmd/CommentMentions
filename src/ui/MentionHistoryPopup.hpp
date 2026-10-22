@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 
 #include <Geode/ui/Popup.hpp>
 #include <Geode/ui/ScrollLayer.hpp>
@@ -28,3 +29,4 @@ private:
 
     void populateList();
 };
+#endif

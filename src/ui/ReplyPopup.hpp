@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 
 #include <Geode/Enums.hpp>
 #include <Geode/ui/Popup.hpp>
@@ -43,3 +44,4 @@ protected:
 private:
     ~ReplyUploadPopup();
 };
+#endif
