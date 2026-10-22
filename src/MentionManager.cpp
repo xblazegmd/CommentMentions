@@ -174,8 +174,11 @@ arc::Future<geode::Result<>> MentionManager::searchLevelComments() {
         { "page", "0" },
         { "secret", SECRET }
     }));
-    if (res.isErr())
+    if (res.isErr()) {
+        if (res.unwrapErr() == 429)
+            co_return Err("Rate limited");
         co_return Err("Could not get comments for level ID '{}': {}", levelID, res.unwrapErr());
+    }
 
     auto comments = string::split(res.unwrap(), "|");
     for (const auto& comment : comments) {
@@ -220,8 +223,11 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChatMessages() {
         { "secret", SECRET },
         { "threadID", utils::numToString(threadID) }
     }));
-    if (res.isErr())
+    if (res.isErr()) {
+        if (res.unwrapErr() == 429)
+            co_return Err("Rate limited");
         co_return Err("Could not get messages for thread ID '{}': {}", threadID, res.unwrapErr());
+    }
 
     auto splitMetadata = string::split(res.unwrap(), "#");
     auto messages = string::split(splitMetadata[0], "|");
