@@ -8,8 +8,8 @@
 #include <core/UserMention.hpp>
 #include <utils.hpp>
 
+#include <arc/prelude.hpp>
 #include <asp/time.hpp>
-#include <regex>
 
 using namespace geode::prelude;
 
@@ -123,7 +123,6 @@ arc::Future<> MentionManager::poll() {
                 continue;
             }
 
-            // Skip if playing/on editor
             if (!Mod::get()->getSettingValue<bool>("show-while-playing") && PlayLayer::get()) continue;
             if (!Mod::get()->getSettingValue<bool>("show-on-editor") && LevelEditorLayer::get()) continue;
 
@@ -246,7 +245,7 @@ arc::Future<geode::Result<>> MentionManager::searchGroupChat(int threadID) {
 }
 
 bool MentionManager::containsMention(const std::string& message) {
-    return std::regex_search(message, m_aliasRegex);
+    return string::contains(message, "@xblaze");
 }
 
 bool MentionManager::mentionExists(const UserMention& other) {
