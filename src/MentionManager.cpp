@@ -113,14 +113,17 @@ void MentionManager::start() {
 arc::Future<> MentionManager::poll() {
     while (true) {
         for (const auto& target : m_targets) {
+            co_await arc::sleep(asp::Duration::fromSecs(10));
+
             auto res = target.type == TargetType::Level ?
                 co_await searchLevelComments(target.id) :
                 co_await searchGroupChat(target.id);
 
             if (res.isErr()) {
-                // TODO: Error handling
                 log::error("{}", res.unwrapErr());
-                continue;
+                geode::queueInMainThread([res] {
+                    Notification::create(fmt::format("{}", res.unwrapErr()))->show();
+                });
             }
 
             if (!Mod::get()->getSettingValue<bool>("show-while-playing") && PlayLayer::get()) continue;
